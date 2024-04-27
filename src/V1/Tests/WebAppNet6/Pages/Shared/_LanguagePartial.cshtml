@@ -1,0 +1,31 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+<header class="layout-language">    
+    <span>
+        <form id="languageForm" name="languageForm" method="post" action="/Home/SetLanguage">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="returnUrl" name="returnUrl" value="" />
+            <label for="culture">@Localizer.GetString("Language")</label>
+            <select id="culture" name="culture" title="culture">
+            @{
+                Dictionary<string, string> languages = new Dictionary<string, string>()
+                {
+                    { "en", Localizer.GetString("English") },
+                    { "es", Localizer.GetString("Spanish") },
+                };              
+                foreach(var langKey in languages.Keys)
+                {                    
+                    if(langKey == System.Threading.Thread.CurrentThread.CurrentCulture.Name)
+                    {
+                        <option selected="selected" value="@langKey">@languages[langKey]</option>
+                    }            
+                    else
+                    {
+                        <option value="@langKey">@languages[langKey]</option>
+                    }
+                }
+            }
+            </select>
+            <button type="button" class="btn btn-sm btn-primary" onclick="$('#returnUrl').val(window.location.pathname); this.form.submit();">@Localizer.GetString("Change")</button>
+        </form>
+    </span>
+</header>

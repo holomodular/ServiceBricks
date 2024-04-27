@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Version>1.0.4</Version>
+		<Description>ServiceBricks is the cornerstone for building a microservices foundation. Visit http://ServiceBricks.com to learn more.</Description>
+		<AssemblyTitle>ServiceBricks.Storage.AzureDataTables</AssemblyTitle>
+		<Authors>holomodular</Authors>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+		<Copyright>Copyright © 2023 HoloModular LLC. All Rights Reserved. Visit http://HoloModular.com to learn more.</Copyright>
+		<PackageProjectUrl>http://ServiceBricks.com</PackageProjectUrl>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageTags>service;bricks;storage;azure;datatables</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>ServiceBricks.Storage.AzureDataTables.snk</AssemblyOriginatorKeyFile>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Extensions\IConfigurationExtensions.cs" Link="IConfigurationExtensions.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Interface\IAzureDataTablesDomainObject.cs" Link="IAzureDataTablesDomainObject.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Interface\IAzureDataTablesStorageRepository.cs" Link="IAzureDataTablesStorageRepository.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\AzureDataTablesDomainObject.cs" Link="AzureDataTablesDomainObject.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\AzureDataTablesStorageRepository.cs" Link="AzureDataTablesStorageRepository.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\PartionKeyResolver.cs" Link="PartionKeyResolver.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\RowKeyResolver.cs" Link="RowKeyResolver.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\StorageAzureDataTablesConstants.cs" Link="StorageAzureDataTablesConstants.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\StorageAzureDataTablesModule.cs" Link="StorageAzureDataTablesModule.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\StorageKeyResolver.cs" Link="StorageKeyResolver.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ServiceBricks.Debug\ServiceBricks.Debug.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Azure.Data.Tables" Version="12.8.3" />
+		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<PackageReference Include="Azure.Data.Tables" Version="12.8.3" />
+		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Azure.Data.Tables" Version="12.8.3" />
+		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
+	</ItemGroup>
+	
+</Project>

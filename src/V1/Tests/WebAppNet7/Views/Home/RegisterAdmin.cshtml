@@ -1,0 +1,29 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model WebApp.ViewModel.Home.HomeViewModel
+@{
+    ViewBag.Title = @Localizer.GetString("Register Admin");
+    ViewBag.Description = "Register Admin";
+    ViewBag.Keywords = "Register Admin";
+}
+<div class="container">
+<h1>@Localizer.GetString("Register Admin")</h1>
+<p>
+    @Localizer.GetString("This is the SERVICE BRICK Web API Starter Application.")
+    @Localizer.GetString("An administrator is required to manage this website.")
+    @Localizer.GetString("Please enter an email and password below to register as an Admin.")    
+</p>        
+<div class="text-danger">
+    @Html.ValidationSummary()
+</div>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-5 padding-bottom-2x">
+        <form action="/Home/RegisterAdmin" id="regAdminForm" name="regAdminForm" method="post">
+            @Html.AntiForgeryToken()
+            <input id="email" name="email" class="form-control" type="email" placeholder="@Localizer.GetString("Email")" required value="UnitTest@ServiceBrick.com">
+            <input id="password" name="password" class="form-control" type="password" placeholder="@Localizer.GetString("Password")" required value="UnitTest123!@@#">
+            <input class="btn btn-primary" type="submit" value="@Localizer.GetString("Submit")">
+        </form>
+    </div>
+</div>
+</div>

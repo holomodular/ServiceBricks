@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\TestFiles\ApiClientReturnResponseTest.cs" Link="ApiClientReturnResponseTest.cs" />
+		<Compile Include="..\TestFiles\ApiClientTest.cs" Link="ApiClientTest.cs" />
+		<Compile Include="..\TestFiles\ApiControllerTest.cs" Link="ApiControllerTest.cs" />
+		<Compile Include="..\TestFiles\Constants.cs" Link="Constants.cs" />
+		<Compile Include="..\TestFiles\ExampleDto.cs" Link="ExampleDto.cs" />
+		<Compile Include="..\TestFiles\ISystemManager.cs" Link="ISystemManager.cs" />
+		<Compile Include="..\TestFiles\ITestManager.cs" Link="ITestManager.cs" />
+		<Compile Include="..\TestFiles\MappingTest.cs" Link="MappingTest.cs" />
+		<Compile Include="..\TestFiles\ServiceBrickStartup.cs" Link="ServiceBrickStartup.cs" />
+		<Compile Include="..\TestFiles\ServiceBrickTestModule.cs" Link="ServiceBrickTestModule.cs" />
+		<Compile Include="..\TestFiles\SystemManager.cs" Link="SystemManager.cs" />
+		<Compile Include="..\TestFiles\TestManager.cs" Link="TestManager.cs" />
+		<Compile Include="..\TestFiles\TestStartup.cs" Link="TestStartup.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.2" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+		<PackageReference Include="xunit" Version="2.7.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="6.0.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ServiceBricks.Debug\ServiceBricks.Debug.csproj" />
+  </ItemGroup>
+
+
+</Project>

@@ -1,0 +1,41 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Http.Features
+@{
+    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
+    var showConsent = !consentFeature?.HasConsent ?? false;
+    var cookieString = consentFeature?.CreateConsentCookie();
+}
+@if (showConsent)
+{    
+    <div id="withdrawCookiesConsentView" name="withdrawCookiesConsentView" class="layout-cookies-consent-withdraw container" style="display:none;">
+    <form id="withdrawCookiesConsentForm" name="withdrawCookiesConsentForm" method="POST" action="/Home/WithdrawCookiesConsent">
+        @Html.AntiForgeryToken()
+        <a href="#" onclick="$('#withdrawCookiesConsentForm').submit();">@Localizer.GetString("Withdraw Cookies Consent")</a>
+    </form>
+</div>
+    <div id="cookiesConsentView" name="cookiesConsentView" class="layout-cookies-consent">
+        <span>
+            @Localizer.GetString("We need your consent to allow us to use cookies and other technologies to store and process personal data from you on our website.")
+        </span>
+        <button id="cookiesConsentOk" name="cookiesConsentOk" type="button" class="btn btn-primary" data-cookie-string="@cookieString" onclick="grantCookiesConsent(this);">
+            <span aria-hidden="true">@Localizer.GetString("I Agree")</span>
+        </button>
+    </div>
+    <script type="text/javascript">       
+    function grantCookiesConsent(button) {
+        document.cookie = button.dataset.cookieString;
+        $('#cookiesConsentView').hide();
+        $('#withdrawCookiesConsentView').show();
+    }
+    </script>
+}
+else
+{
+<div id="withdrawCookiesConsentView" name="withdrawCookiesConsentView" class="layout-cookies-consent-withdraw container">
+    <form id="withdrawCookiesConsentForm" name="withdrawCookiesConsentForm" method="POST" action="/Home/WithdrawCookiesConsent">
+        @Html.AntiForgeryToken()
+        <a href="#" onclick="$('#withdrawCookiesConsentForm').submit();">@Localizer.GetString("Withdraw Cookies Consent")</a>
+    </form>
+</div> 
+}
+
