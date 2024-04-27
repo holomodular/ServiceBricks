@@ -1,6 +1,6 @@
 ![ServiceBricks Logo](https://github.com/holomodular/ServiceBricks/blob/main/Logo.png)  
 
-# ServiceBricks - API and Microservices Foundation
+# ServiceBricks - An API and Microservices Foundation
 
 ServiceBricks is the cornerstone for building a microservices foundation.
 Visit http://ServiceBricks.com to learn more.
