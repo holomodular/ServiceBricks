@@ -4,38 +4,50 @@
 ![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/holomodular-support/bdb5c7c570a7a88ffb3efb3505273e34/raw/servicebricks-codecoverage.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-# ServiceBricks - Microservices Foundation
+# ServiceBricks - A Microservices Foundation
 
 ServiceBricks is the cornerstone for building a microservices foundation. Visit http://ServiceBricks.com to learn more.
 
-# Quick Notes From Author
+## Quick Notes from the Author
 
-* I am working to get everything uploaded, creating examples and documentation. The new website is currently not working yet but the old one is. Check out http://ServiceBrick.com for the time being.
+### Update 4/30/2024
+
+* I am working to get everything uploaded, only security microservice is left to go.
+* The new website is currently not working yet but the old one is. Check out http://ServiceBrick.com for the time being.
+* I am creating examples and documentation.
 * Start a discussion if you need any help.
 
 ## Overview
 
-ServiceBricks provides the core architectural patterns, implementation, standardization and governance for your microservice foundation.
+ServiceBricks provides the core architectural patterns, implementation, standardization and governance for your microservices foundation.
 It exposes a storage platform agnostic model and repository-based API that works the same for SQL and NoSQL database engines.
 
 ## Major Features
 
-* Extensive use of generics allowing the compiler to generate most of the required code needed to support new objects.
-* Templated-based, REST API services for quickly exposing standard CRUD methods or new methods you define.
-* Use of [ServiceQuery](https://github.com/holomodular/ServiceQuery) to support standardized, polyglot data querying along with standard CRUD methods.
+* Extensive use of generics allowing the compiler to generate most of the required code needed.
+* Templated, repository-based, REST API services for quickly exposing standard CRUD methods or new methods you define.
+* [ServiceQuery](https://github.com/holomodular/ServiceQuery) to support standardized, polyglot data querying for SQL and NoSQL database engines.
 * Business Rule engine and use of polymorphic techniques to build business logic once that can be applied to any supported object.
-* Event-based design for customizing business logic for any object.
+* Domain-driven design and event-based design for customizing business logic for any supported object and method.
 * Background processes, tasks and rules to support asynchronous processing.
-* Service Bus engine to support publication and subscription of system data.
+* Service Bus engine to support publication and subscription of system data, supporting Azure ServiceBus (basic) or (standard and premium - topics and subscriptions) out of the box.
 * Supporting most SQL and NoSQL database engines with standard support for the following database engines out of the box: AzureDataTables, CosmosDb, InMemory, MongoDb, MySql, Postgres, Sqlite and SqlServer.
-* All packages published via NuGet to quickly build new services and applications quickly
+* All packages published via NuGet to quickly build new services and applications quickly.
+* Full Xunit unit test package, ServiceBricks.Xunit, to ensure your objects work correctly in the framework. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
 
 
 ## Artificial Intelligence Integration
 
-We are currently training AI on how to build new ServiceBricks microservices and are getting great results! More updates coming on this soon!
+We are currently training AI on how to build new ServiceBricks microservices and are getting fantastic results! More updates coming on this soon!
 
-## Pre-Built Services
+
+# Getting Started
+
+To help you get started, we have created the following repository to store all of our examples (Coming soon!)
+
+[ServiceBricks Examples](https://github.com/holomodular/ServiceBricks-Examples)
+
+# Official Pre-Built Microservices
 
 We have developed several pre-built microservices to help get you started. View the following repositories for more information:
 
@@ -53,13 +65,7 @@ This repository is a notification and delivery of emails and SMS messages micros
 
 * [Security Microservice](https://github.com/holomodular/ServiceBricks-Security)
 
-This repository is a authentication, authorization and application security microservice.
-
-# Getting Started
-
-To help you get started, we have created the following repository to store all of our examples (Coming soon!)
-
-[ServiceBricks Examples](https://github.com/holomodular/ServiceBricks-Examples)
+This repository is an authentication, authorization and application security microservice supporting JWT token membership for all ServiceBricks microservices.
 
 # About
 
