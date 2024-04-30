@@ -18,6 +18,19 @@ ServiceBricks is the cornerstone for building a microservices foundation. Visit 
 ServiceBricks provides the core architectural patterns, implementation, standardization and governance for your microservice foundation.
 It exposes a storage platform agnostic model and repository-based API that works the same for SQL and NoSQL database engines.
 
+## Major Features
+
+* Extensive use of generics allowing the compiler to generate most of the required code needed to support new objects.
+* Templated-based, REST API services for quickly exposing standard CRUD methods or new methods you define.
+* Use of [ServiceQuery](https://github.com/holomodular/ServiceQuery) to support standardized, polyglot data querying along with standard CRUD methods.
+* Business Rule engine and use of polymorphic techniques to build business logic once that can be applied to any supported object.
+* Event-based design for customizing business logic for any object.
+* Background processes, tasks and rules to support asynchronous processing.
+* Service Bus engine to support publication and subscription of system data.
+* Supporting most SQL and NoSQL database engines with standard support for the following database engines out of the box: AzureDataTables, CosmosDb, InMemory, MongoDb, MySql, Postgres, Sqlite and SqlServer.
+* All packages published via NuGet to quickly build new services and applications quickly
+
+
 ## Artificial Intelligence Integration
 
 We are currently training AI on how to build new ServiceBricks microservices and are getting great results! More updates coming on this soon!
