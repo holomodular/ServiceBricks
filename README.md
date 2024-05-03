@@ -10,11 +10,12 @@ ServiceBricks is the cornerstone for building a microservices foundation. Visit 
 
 ## Quick Notes from the Author
 
-### Update 4/30/2024
+### Update 5/3/2024
 
-* I am working to get everything uploaded, only security microservice is left to go.
+* Security microservice is almost complete, difficulties moving to new rep structure. Should be in by this weekend.
+* I am creating examples, should be in by this weekend.
 * The new website is currently not working yet but the old one is. Check out http://ServiceBrick.com for the time being.
-* I am creating examples and documentation.
+* Documentation will be on going, I'm looking at templates to use.
 * Start a discussion if you need any help.
 
 ## Overview
