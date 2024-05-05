@@ -85,7 +85,6 @@ namespace ServiceBricks
             try
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _bearerTokenCredentials.AuthorizationUrl);
-                request.Headers.Add(HEADER_CONTENTTYPE, CONTENTTYPE_APPLICATIONJSON);
                 string data = JsonConvert.SerializeObject(_bearerTokenCredentials.AccessTokenRequest);
                 request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
                 var result = base.Send(request);
@@ -124,7 +123,6 @@ namespace ServiceBricks
             try
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _bearerTokenCredentials.AuthorizationUrl);
-                request.Headers.Add(HEADER_CONTENTTYPE, CONTENTTYPE_APPLICATIONJSON);
                 string data = JsonConvert.SerializeObject(_bearerTokenCredentials.AccessTokenRequest);
                 request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
                 var result = await base.SendAsync(request);

@@ -90,6 +90,8 @@ namespace ServiceBricks
                     }
                     else
                     {
+                        resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
+                        _logger.LogWarning($"{result.StatusCode} {request.RequestUri}");
                         if (_apiConfig.ReturnResponseObject)
                         {
                             var content = await result.Content.ReadAsStringAsync();
@@ -99,17 +101,13 @@ namespace ServiceBricks
                             {
                                 resp.Item = JsonConvert.DeserializeObject<TModel>(content);
                             }
-                            return resp;
                         }
-                        else
-                        {
-                            resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
-                            return resp;
-                        }
+                        return resp;
                     }
                 }
                 else
                 {
+                    _logger.LogError("ApiClient SendAsync returned null");
                     resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
                     return resp;
                 }

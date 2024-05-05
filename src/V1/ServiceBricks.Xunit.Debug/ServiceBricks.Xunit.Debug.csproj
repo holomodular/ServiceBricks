@@ -21,19 +21,26 @@
 		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
 		<IsPackable>true</IsPackable>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-		<None Include="docs\readme.md" Pack="True" PackagePath="\" />
-		<EmbeddedResource Include="logo.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</EmbeddedResource>
+	  <Compile Include="..\ServiceBricks.Xunit\ApiClientReturnResponseTest.cs" Link="ApiClientReturnResponseTest.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ApiClientTest.cs" Link="ApiClientTest.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ApiControllerTest.cs" Link="ApiControllerTest.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\Constants.cs" Link="Constants.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ISystemManager.cs" Link="ISystemManager.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ITestManager.cs" Link="ITestManager.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\MappingTest.cs" Link="MappingTest.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ServiceBricksStartup.cs" Link="ServiceBricksStartup.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ServiceBrickTestModule.cs" Link="ServiceBrickTestModule.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\SystemManager.cs" Link="SystemManager.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\TestManager.cs" Link="TestManager.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\TestStartup.cs" Link="TestStartup.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\Usings.cs" Link="Usings.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.0.5" />
+		<ProjectReference Include="..\ServiceBricks.Debug\ServiceBricks.Debug.csproj" />
 	</ItemGroup>
-
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.26" />
