@@ -10,10 +10,10 @@ ServiceBricks is the cornerstone for building a microservices foundation. Visit 
 
 ## Quick Notes from the Author
 
-### Update 5/3/2024
+### Update 5/6/2024
 
-* Security microservice is almost complete, difficulties moving to new rep structure. Should be in by this weekend.
-* I am creating examples, should be in by this weekend.
+* Security microservice is now uploaded!
+* Examples are now uploaded!
 * The new website is currently not working yet but the old one is. Check out http://ServiceBrick.com for the time being.
 * Documentation will be on going, I'm looking at templates to use.
 * Start a discussion if you need any help.
@@ -44,7 +44,7 @@ We are currently training AI on how to build new ServiceBricks microservices and
 
 # Getting Started
 
-To help you get started, we have created the following repository to store all of our examples (Coming soon!)
+To help you get started, we have created the following repository to store all of our examples: NOW AVAILABLE!
 
 [ServiceBricks Examples](https://github.com/holomodular/ServiceBricks-Examples)
 
@@ -52,13 +52,13 @@ To help you get started, we have created the following repository to store all o
 
 We have developed several pre-built microservices to help get you started. View the following repositories for more information:
 
-* [Logging Microservice](https://github.com/holomodular/ServiceBricks-Logging)
-
-This repository is a service-scoped or centralized application and web request logging microservice.
-
 * [Cache Microservice](https://github.com/holomodular/ServiceBricks-Cache)
 
 This repository is a temporary generic data storage microservice.
+
+* [Logging Microservice](https://github.com/holomodular/ServiceBricks-Logging)
+
+This repository is a service-scoped or centralized application and web request logging microservice.
 
 * [Notification Microservice](https://github.com/holomodular/ServiceBricks-Notification)
 
