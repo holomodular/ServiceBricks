@@ -10,13 +10,39 @@ ServiceBricks is the cornerstone for building a microservices foundation. Visit 
 
 ## Quick Notes from the Author
 
-### Update 5/6/2024
+### System Status: Unstable
 
-* Security microservice is now uploaded!
-* Examples are now uploaded!
-* The new website is currently not working yet but the old one is. Check out http://ServiceBrick.com for the time being.
-* Documentation will be on going, I'm looking at templates to use.
+Examples have been uploaded but need some massaging to work. I need about a week to fix the below problems before the examples will be ready. 
+
+* All source code has now been uploaded with all examples! WooHoo!
+
+* All solutions are builing, running unit tests (for InMemory providers) and updating unit test badges for each repo readme. 
+
+* The new website is currently not working yet but the old one is. Check out http://ServiceBrick.com for the time being for documentation only.
+
+* Documentation will be on going, I'm looking at templates to use now.
+
 * Start a discussion if you need any help.
+
+### Current Issues
+
+* Cache Microservice
+  
+SqlServer migrations broken, have to delete tables then re-run again.
+
+* Logging Microservice
+
+SqlServer migrations broken, have to delete tables then re-run again. WebRequest messages automapper errors, don't turn on in config yet.
+
+* Notification Microservice
+
+DomainQueueProcess service throwing errors, not processing notifymessages.
+
+* Security Microservice
+
+Member NuGet package fix for authentication (fixed code in example).
+
+
 
 ## Overview
 
