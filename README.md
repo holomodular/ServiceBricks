@@ -62,6 +62,15 @@ It exposes a storage platform agnostic model and repository-based API that works
 * All packages published via NuGet to quickly build new services and applications quickly.
 * Full Xunit unit test package, ServiceBricks.Xunit, to ensure your objects work correctly in the framework. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
 
+## Completely Open Source
+
+ServiceBricks is completely open source and all components used are MIT licensed with no other external dependencies. ServiceBricks only uses 3 packages:
+
+* [AutoMapper](https://github.com/AutoMapper/AutoMapper)
+* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+* [ServiceQuery](https://github.com/holomodular/ServiceQuery) - Created by us
+
+In a future version, we will abstract the first two libraries so that they can be removed/replaced with additional providers. 
 
 ## Artificial Intelligence Integration
 
