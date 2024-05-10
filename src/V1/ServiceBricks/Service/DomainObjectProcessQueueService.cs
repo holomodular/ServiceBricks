@@ -223,7 +223,9 @@ namespace ServiceBricks
             ServiceQueryRequestBuilder queryBuilder = new ServiceQueryRequestBuilder();
             queryBuilder
                 .IsEqual(nameof(IDpProcessQueue.IsComplete), false.ToString())
+                .And()
                 .IsEqual(nameof(IDpProcessQueue.IsProcessing), true.ToString())
+                .And()
                 .IsLessThanOrEqual(nameof(IDpProcessQueue.ProcessDate), timeoutDate.ToString());
             var respQ = await _repository.QueryAsync(queryBuilder.Build());
             foreach (var item in respQ.Item.List)

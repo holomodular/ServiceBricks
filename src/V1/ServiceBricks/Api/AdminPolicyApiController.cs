@@ -23,9 +23,10 @@ namespace ServiceBricks
 
         [HttpGet]
         [Route("Get")]
+        [Route("Get/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override ActionResult Get([FromQuery] string storageKey)
         {
             return base.Get(storageKey);
@@ -33,9 +34,10 @@ namespace ServiceBricks
 
         [HttpGet]
         [Route("GetAsync")]
+        [Route("GetAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override async Task<ActionResult> GetAsync([FromQuery] string storageKey)
         {
             return await base.GetAsync(storageKey);
@@ -45,7 +47,7 @@ namespace ServiceBricks
         [Route("Update")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override ActionResult Update([FromBody] TDto dto)
         {
             return base.Update(dto);
@@ -55,7 +57,7 @@ namespace ServiceBricks
         [Route("UpdateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override async Task<ActionResult> UpdateAsync([FromBody] TDto dto)
         {
             return await base.UpdateAsync(dto);
@@ -65,7 +67,7 @@ namespace ServiceBricks
         [Route("Create")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override ActionResult Create([FromBody] TDto dto)
         {
             return base.Create(dto);
@@ -75,7 +77,7 @@ namespace ServiceBricks
         [Route("CreateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override async Task<ActionResult> CreateAsync([FromBody] TDto dto)
         {
             return await base.CreateAsync(dto);
@@ -83,9 +85,10 @@ namespace ServiceBricks
 
         [HttpDelete]
         [Route("Delete")]
+        [Route("Delete/{storageKey}")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override ActionResult Delete([FromQuery] string storageKey)
         {
             return base.Delete(storageKey);
@@ -93,9 +96,10 @@ namespace ServiceBricks
 
         [HttpDelete]
         [Route("DeleteAsync")]
+        [Route("DeleteAsync/{storageKey}")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override async Task<ActionResult> DeleteAsync([FromQuery] string storageKey)
         {
             return await base.DeleteAsync(storageKey);
@@ -105,7 +109,7 @@ namespace ServiceBricks
         [Route("Query")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override ActionResult Query([FromBody] ServiceQueryRequest request)
         {
             return base.Query(request);
@@ -115,7 +119,7 @@ namespace ServiceBricks
         [Route("QueryAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.AdminSecurityPolicyName)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
         public override async Task<ActionResult> QueryAsync([FromBody] ServiceQueryRequest request)
         {
             return await base.QueryAsync(request);

@@ -17,16 +17,19 @@ namespace ServiceBricks.Storage.MongoDb
             return val;
         }
 
-        public static string GetMongoDbDatabaseName(this IConfiguration configuration)
+        public static string GetMongoDbDatabase(this IConfiguration configuration)
         {
-            return configuration.GetValue<string>(StorageMongoDbConstants.APPSETTING_DATABASE_NAME);
+            var val = configuration.GetValue<string>(StorageMongoDbConstants.APPSETTING_DATABASE_NAME);
+            if (string.IsNullOrEmpty(val))
+                return StorageMongoDbConstants.DEFAULT_DATABASE_NAME;
+            return val;
         }
 
-        public static string GetMongoDbDatabaseName(this IConfiguration configuration, string configKey)
+        public static string GetMongoDbDatabase(this IConfiguration configuration, string configKey)
         {
             string val = configuration.GetValue<string>(configKey);
             if (string.IsNullOrEmpty(val))
-                return configuration.GetValue<string>(StorageMongoDbConstants.APPSETTING_DATABASE_NAME);
+                return configuration.GetMongoDbDatabase();
             return val;
         }
     }

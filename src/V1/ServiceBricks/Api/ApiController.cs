@@ -28,6 +28,7 @@ namespace ServiceBricks
 
         [HttpGet]
         [Route("Get")]
+        [Route("Get/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual ActionResult Get([FromQuery] string storageKey)
@@ -45,6 +46,7 @@ namespace ServiceBricks
 
         [HttpGet]
         [Route("GetAsync")]
+        [Route("GetAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<ActionResult> GetAsync([FromQuery] string storageKey)
@@ -130,6 +132,7 @@ namespace ServiceBricks
 
         [HttpDelete]
         [Route("Delete")]
+        [Route("Delete/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual ActionResult Delete([FromQuery] string storageKey)
@@ -147,6 +150,7 @@ namespace ServiceBricks
 
         [HttpDelete]
         [Route("DeleteAsync")]
+        [Route("DeleteAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<ActionResult> DeleteAsync([FromQuery] string storageKey)

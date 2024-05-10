@@ -73,10 +73,10 @@ namespace WebApp.Extensions
             services.AddAuthorization(options =>
             {
                 //Add Built-in Security Policies
-                options.AddPolicy(ServiceBricksConstants.AdminSecurityPolicyName, policy =>
+                options.AddPolicy(ServiceBricksConstants.SECURITY_POLICY_ADMIN, policy =>
                     policy.RequireAssertion(context => true));
 
-                options.AddPolicy(ServiceBricksConstants.UserSecurityPolicyName, policy =>
+                options.AddPolicy(ServiceBricksConstants.SECURITY_POLICY_USER, policy =>
                     policy.RequireAssertion(context => true));
             });
 

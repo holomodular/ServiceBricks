@@ -8,7 +8,8 @@
         public const string APPSETTING_CLIENT_APICONFIG = @"ServiceBricks:Client:ApiConfig";
         public const string APPSETTING_APIOPTIONS = @"ServiceBricks:Api";
         public const string APPSETTING_APPLICATIONOPTIONS = @"ServiceBricks:Application";
-        public const string AdminSecurityPolicyName = @"AdminPolicy";
-        public const string UserSecurityPolicyName = @"UserPolicy";
+
+        public const string SECURITY_POLICY_ADMIN = @"ServiceBricksPolicyAdmin";
+        public const string SECURITY_POLICY_USER = @"ServiceBricksPolicyUser";
     }
 }
