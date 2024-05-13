@@ -8,40 +8,17 @@
 
 ServiceBricks is the cornerstone for building a microservices foundation. Visit http://ServiceBricks.com to learn more.
 
-## Quick Notes from the Author 5/7/2024
+## Notes from the Author 5/13/2024
 
-### System Status: Unstable
+### System Status: Semi-Stable
 
-Examples have been uploaded but need some massaging to work. I need about a week to fix the below problems before the examples will be ready. 
+* The latest release v1.0.6 is working well with InMemory providers. There are some issues with the notification microservice using Postgres, Sqlite and SqlServer when processing notifymessages in the background task. Fixes for these will be next week, I'm on vacation! :)
 
-* All source code has now been uploaded with all examples! WooHoo!
+* The new website (ServiceBricks.com) is not currently working. Coming Soon!
 
-* All solutions are builing, running unit tests (for InMemory providers) and updating unit test badges for each repo readme. 
-
-* The new website is currently not working yet but the old one is. Check out http://ServiceBrick.com for the time being for documentation only.
-
-* Documentation will be on going, I'm looking at templates to use now.
+* Documentation will be an on-going process. Coming Soon!
 
 * Start a discussion if you need any help.
-
-### Current Issues
-
-* Cache Microservice
-  
-SqlServer migrations broken, have to delete tables then re-run again.
-
-* Logging Microservice
-
-SqlServer migrations broken, have to delete tables then re-run again. WebRequest messages automapper errors, don't turn on in config yet.
-
-* Notification Microservice
-
-DomainQueueProcess service throwing errors, not processing notifymessages.
-
-* Security Microservice
-
-Member NuGet package fix for authentication (fixed code in example).
-
 
 
 ## Overview
@@ -57,14 +34,14 @@ It exposes a storage platform agnostic model and repository-based API that works
 * Business Rule engine and use of polymorphic techniques to build business logic once that can be applied to any supported object.
 * Domain-driven design and event-based design for customizing business logic for any supported object and method.
 * Background processes, tasks and rules to support asynchronous processing.
-* Service Bus engine to support publication and subscription of system data, supporting Azure ServiceBus (basic) or (standard and premium - topics and subscriptions) out of the box.
-* Supporting most SQL and NoSQL database engines with standard support for the following database engines out of the box: AzureDataTables, CosmosDb, InMemory, MongoDb, MySql, Postgres, Sqlite and SqlServer.
+* Service Bus engine to support broadcasts of system data, supporting InMemory and Azure ServiceBus (basic - queues) or (standard and premium - topics and subscriptions) providers.
+* Supporting SQL and NoSQL database engines with standard support for the following database engines: AzureDataTables, CosmosDb, InMemory, MongoDb, Postgres, Sqlite and SqlServer.
 * All packages published via NuGet to quickly build new services and applications quickly.
-* Full Xunit unit test package, ServiceBricks.Xunit, to ensure your objects work correctly in the framework. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
+* Full Xunit unit test package to ensure your microservices work correctly in the platform. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
 
-## Completely Open Source
+## Open Source
 
-ServiceBricks is completely open source and all components used are MIT licensed with no other external dependencies. ServiceBricks only uses 3 packages:
+ServiceBricks is completely open source and all components used are MIT licensed with no other external dependencies. ServiceBricks only uses three (3) packages:
 
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
@@ -77,11 +54,18 @@ In a future version, we will abstract the first two libraries so that they can b
 We are currently training AI on how to build new ServiceBricks microservices and are getting fantastic results! More updates coming on this soon!
 
 
-# Getting Started
+# Getting Started with Examples
 
-To help you get started, we have created the following repository to store all of our examples: NOW AVAILABLE!
+To help you get started, we have created the following repository to store all of our examples:
 
 [ServiceBricks Examples](https://github.com/holomodular/ServiceBricks-Examples)
+
+This repository provide several examples on how to host and deploy your ServiceBricks foundations. 
+From a single, monolithic web application to several containerized, load-balanced, multiple web applications, it contains the building blocks needed to create your own foundation quickly.
+
+# Documentation
+
+We have created a repository specifically for documentation for ServiceBricks. COMING SOON!
 
 # Official Pre-Built Microservices
 
