@@ -30,7 +30,14 @@
 		<Compile Include="..\TestFiles\StorageEfc\MappingTest.cs" Link="MappingTest.cs" />
 	</ItemGroup>
 	
+
 	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.18" />
+		<ProjectReference Include="..\..\ServiceBricks.Storage.EntityFrameworkCore.Debug\ServiceBricks.Storage.EntityFrameworkCore.Debug.csproj" />
+	  <ProjectReference Include="..\ServiceBricks.XunitNet7\ServiceBricks.XunitNet7.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.18" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 		<PackageReference Include="xunit" Version="2.8.0" />
@@ -42,12 +49,10 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="coverlet.msbuild" Version="6.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.18" />
-		<ProjectReference Include="..\..\ServiceBricks.Storage.EntityFrameworkCore.Debug\ServiceBricks.Storage.EntityFrameworkCore.Debug.csproj" />
-	  <ProjectReference Include="..\ServiceBricks.XunitNet7\ServiceBricks.XunitNet7.csproj" />
-	</ItemGroup>
-
+	
 </Project>

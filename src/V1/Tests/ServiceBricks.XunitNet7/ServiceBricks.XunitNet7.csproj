@@ -15,7 +15,38 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\ServiceBricks.Debug\ServiceBricks.Debug.csproj" />
-		<ProjectReference Include="..\..\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<Compile Include="..\..\ServiceBricks.Xunit\ApiClientReturnResponseTest.cs" Link="ApiClientReturnResponseTest.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\ApiClientTest.cs" Link="ApiClientTest.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\ApiControllerTest.cs" Link="ApiControllerTest.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\Constants.cs" Link="Constants.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\ISystemManager.cs" Link="ISystemManager.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\ITestManager.cs" Link="ITestManager.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\MappingTest.cs" Link="MappingTest.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\ServiceBricksStartup.cs" Link="ServiceBricksStartup.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\ServiceBrickTestModule.cs" Link="ServiceBrickTestModule.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\SystemManager.cs" Link="SystemManager.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\TestManager.cs" Link="TestManager.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\TestStartup.cs" Link="TestStartup.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\Usings.cs" Link="Usings.cs" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.18" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+		<PackageReference Include="xunit" Version="2.8.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="6.0.2">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.msbuild" Version="6.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	
 </Project>
