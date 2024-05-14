@@ -16,15 +16,13 @@ ServiceBricks is the cornerstone for building a microservices foundation. Visit 
 
 * The new website (ServiceBricks.com) is not currently working. Coming Soon!
 
-* Documentation will be an on-going process. Coming Soon!
-
 * Start a discussion if you need any help.
 
 
 ## Overview
 
 ServiceBricks provides the core architectural patterns, implementation, standardization and governance for your microservices foundation.
-It exposes a storage platform agnostic model and repository-based API that works the same for SQL and NoSQL database engines.
+It exposes a storage platform agnostic model and repository-based API that works the same for SQL and NoSQL database engines, allowing you to seamlessly switch storage providers transparently to clients.
 
 ## Major Features
 
@@ -38,16 +36,7 @@ It exposes a storage platform agnostic model and repository-based API that works
 * Supporting SQL and NoSQL database engines with standard support for the following database engines: AzureDataTables, CosmosDb, InMemory, MongoDb, Postgres, Sqlite and SqlServer.
 * All packages published via NuGet to quickly build new services and applications quickly.
 * Full Xunit unit test package to ensure your microservices work correctly in the platform. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
-
-## Open Source
-
-ServiceBricks is completely open source and all components used are MIT licensed with no other external dependencies. ServiceBricks only uses three (3) packages:
-
-* [AutoMapper](https://github.com/AutoMapper/AutoMapper)
-* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-* [ServiceQuery](https://github.com/holomodular/ServiceQuery) - Created by us
-
-In a future version, we will abstract the first two libraries so that they can be removed/replaced with additional providers. 
+* Completely open source containing only three packages (AutoMapper, NewtonSoft.Json, and ServiceQuery) all components used are MIT licensed with no external dependencies.
 
 ## Artificial Intelligence Integration
 
@@ -56,36 +45,29 @@ We are currently training AI on how to build new ServiceBricks microservices and
 
 # Getting Started with Examples
 
-To help you get started, we have created the following repository to store all of our examples:
+To help you get started, we have created the following repository to store all of our examples.
 
-[ServiceBricks Examples](https://github.com/holomodular/ServiceBricks-Examples)
+[ServiceBricks-Examples](https://github.com/holomodular/ServiceBricks-Examples)
 
 This repository provide several examples on how to host and deploy your ServiceBricks foundations. 
-From a single, monolithic web application to several containerized, load-balanced, multiple web applications, it contains the building blocks needed to create your own foundation quickly.
+From hosting a single, monolithic web application, to hosting several containerized web applications, these examples contain the building blocks needed to create your own foundations quickly.
 
 # Documentation
 
-We have created a repository specifically for documentation for ServiceBricks. COMING SOON!
+We have created a repository specifically for documentation for ServiceBricks.
+
+[ServiceBricks-Documentation](https://github.com/holomodular/ServiceBricks-Documentation)
+
+This repository contains all documentation on the ServiceBricks platform, how to use all of its individual components and how to develop your own microservices.
 
 # Official Pre-Built Microservices
 
 We have developed several pre-built microservices to help get you started. View the following repositories for more information:
 
-* [Cache Microservice](https://github.com/holomodular/ServiceBricks-Cache)
-
-This repository is a temporary generic data storage microservice.
-
-* [Logging Microservice](https://github.com/holomodular/ServiceBricks-Logging)
-
-This repository is a service-scoped or centralized application and web request logging microservice.
-
-* [Notification Microservice](https://github.com/holomodular/ServiceBricks-Notification)
-
-This repository is a notification and delivery of emails and SMS messages microservice.
-
-* [Security Microservice](https://github.com/holomodular/ServiceBricks-Security)
-
-This repository is an authentication, authorization and application security microservice supporting JWT token membership for all ServiceBricks microservices.
+* [ServiceBricks-Cache](https://github.com/holomodular/ServiceBricks-Cache): This repository is a temporary generic data storage microservice.
+* [ServiceBricks-Logging](https://github.com/holomodular/ServiceBricks-Logging): This repository is a service-scoped or centralized application and web request logging microservice.
+* [ServiceBricks-Notification](https://github.com/holomodular/ServiceBricks-Notification): This repository is a notification and delivery of emails and SMS messages microservice.
+* [ServiceBricks-Security](https://github.com/holomodular/ServiceBricks-Security): This repository is an authentication, authorization and application security microservice supporting JWT token membership for all ServiceBricks microservices.
 
 # About
 
