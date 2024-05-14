@@ -8,21 +8,12 @@
 
 ServiceBricks is the cornerstone for building a microservices foundation. Visit http://ServiceBricks.com to learn more.
 
-## Notes from the Author 5/13/2024
-
-### System Status: Semi-Stable
-
-* The latest release v1.0.6 is working well with InMemory providers. There are some issues with the notification microservice using Postgres, Sqlite and SqlServer when processing notifymessages in the background task. Fixes for these will be next week, I'm on vacation! :)
-
-* The new website (ServiceBricks.com) is not currently working. Coming Soon!
-
-* Start a discussion if you need any help.
-
-
 ## Overview
 
+ServiceBricks is a powerful microservices platform designed to streamline the development, deployment, and maintenance of distributed systems. By leveraging Domain-Driven Design (DDD), Event-Driven Architecture (EDA), and a range of advanced features, ServiceBricks empowers teams to build robust, scalable, and highly customizable services tailored to their specific business domains.
+
 ServiceBricks provides the core architectural patterns, implementation, standardization and governance for your microservices foundation.
-It exposes a storage platform agnostic model and repository-based API that works the same for SQL and NoSQL database engines, allowing you to seamlessly switch storage providers transparently to clients.
+It exposes a storage platform agnostic model and repository-based API that works the same for relational (SQL) and document (NoSQL) database engines. This allows you to seamlessly switch storage providers transparently, while the microservice still operates and behaves the same way.
 
 ## Major Features
 
@@ -30,12 +21,13 @@ It exposes a storage platform agnostic model and repository-based API that works
 * Templated, repository-based, REST API services for quickly exposing standard CRUD methods or new methods you define.
 * [ServiceQuery](https://github.com/holomodular/ServiceQuery) to support standardized, polyglot data querying for SQL and NoSQL database engines.
 * Business Rule engine and use of polymorphic techniques to build business logic once that can be applied to any supported object.
-* Domain-driven design and event-based design for customizing business logic for any supported object and method.
+* Domain-Driven Design (DDD) and Event-Driven Architecture (EDA) for customizing business logic for any supported object and method.
 * Background processes, tasks and rules to support asynchronous processing.
-* Service Bus engine to support broadcasts of system data, supporting InMemory and Azure ServiceBus (basic - queues) or (standard and premium - topics and subscriptions) providers.
 * Supporting SQL and NoSQL database engines with standard support for the following database engines: AzureDataTables, CosmosDb, InMemory, MongoDb, Postgres, Sqlite and SqlServer.
+* Service Bus engine to support broadcasts of system data, supporting InMemory and Azure Service Bus (basic - queues) or (standard/premium - topics and subscriptions) providers.
+* Use a CLASSIC REST API design returning standard objects with problemdetails errors OR use a MODERN REST API design returning response objects with success dispositions and messages.
 * All packages published via NuGet to quickly build new services and applications quickly.
-* Full Xunit unit test package to ensure your microservices work correctly in the platform. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
+* Comprehensive Xunit test framework to ensure your microservices work correctly in the platform. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
 * Completely open source containing only three packages (AutoMapper, NewtonSoft.Json, and ServiceQuery) all components used are MIT licensed with no external dependencies.
 
 ## Artificial Intelligence Integration
@@ -50,7 +42,7 @@ To help you get started, we have created the following repository to store all o
 [ServiceBricks-Examples](https://github.com/holomodular/ServiceBricks-Examples)
 
 This repository provide several examples on how to host and deploy your ServiceBricks foundations. 
-From hosting a single, monolithic web application, to hosting several containerized web applications, these examples contain the building blocks needed to create your own foundations quickly.
+From hosting a single, monolithic web application, to hosting several containerized web applications, these examples contain the building blocks needed to create and scale your own foundations quickly.
 
 # Documentation
 
@@ -68,6 +60,17 @@ We have developed several pre-built microservices to help get you started. View 
 * [ServiceBricks-Logging](https://github.com/holomodular/ServiceBricks-Logging): This repository is a service-scoped or centralized application and web request logging microservice.
 * [ServiceBricks-Notification](https://github.com/holomodular/ServiceBricks-Notification): This repository is a notification and delivery of emails and SMS messages microservice.
 * [ServiceBricks-Security](https://github.com/holomodular/ServiceBricks-Security): This repository is an authentication, authorization and application security microservice supporting JWT token membership for all ServiceBricks microservices.
+
+# Notes from the Author 5/13/2024
+
+## System Status: Semi-Stable
+
+* The latest release v1.0.6 is working well with InMemory providers. There are some issues with the notification microservice using Postgres, Sqlite and SqlServer when processing notifymessages in the background task. Fixes for these will be next week, I'm on vacation! :)
+
+* The new website (ServiceBricks.com) is not currently working. Coming Soon!
+
+* Start a discussion if you need any help.
+
 
 # About
 
