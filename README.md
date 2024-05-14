@@ -21,11 +21,11 @@ It exposes a storage platform agnostic model and repository-based API that works
 * Templated, repository-based, REST API services for quickly exposing standard CRUD methods or new methods you define.
 * [ServiceQuery](https://github.com/holomodular/ServiceQuery) to support standardized, polyglot data querying for SQL and NoSQL database engines.
 * Business Rule engine and use of polymorphic techniques to build business logic once that can be applied to any supported object.
-* Domain-Driven Design (DDD) and Event-Driven Architecture (EDA) for customizing business logic for any supported object and method.
+* [Domain-Driven Design (DDD)](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/FlowOfData.md) and [Event-Driven Architecture (EDA)](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/EventDrivenArchitecture.md) for customizing business logic for any supported object and method.
 * Background processes, tasks and rules to support asynchronous processing.
 * Supporting SQL and NoSQL database engines with standard support for the following database engines: AzureDataTables, CosmosDb, InMemory, MongoDb, Postgres, Sqlite and SqlServer.
 * Service Bus engine to support broadcasts of system data, supporting InMemory and Azure Service Bus (basic - queues) or (standard/premium - topics and subscriptions) providers.
-* Use a CLASSIC REST API design returning standard objects with problemdetails errors OR use a MODERN REST API design returning response objects with success dispositions and messages.
+* Use the REST API Design of your choice by using [Classic or Modern modes](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/ClassicVsModernRestApi.md), returning either standard objects with problemdetails errors or response objects with success dispositions and messages.
 * All packages published via NuGet to quickly build new services and applications quickly.
 * Comprehensive Xunit test framework to ensure your microservices work correctly in the platform. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
 * Completely open source containing only three packages (AutoMapper, NewtonSoft.Json, and ServiceQuery) all components used are MIT licensed with no external dependencies.
