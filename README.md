@@ -26,7 +26,7 @@ It exposes a storage platform agnostic model and repository-based API that works
 * Supporting SQL and NoSQL database engines with standard support for the following database engines: AzureDataTables, CosmosDb, InMemory, MongoDb, Postgres, Sqlite and SqlServer.
 * Service Bus engine to support broadcasts of system data, supporting InMemory and Azure Service Bus (basic - queues) or (standard/premium - topics and subscriptions) providers.
 * Use the REST API Design of your choice by using [Classic or Modern modes](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/ClassicVsModernRestApi.md), returning either standard objects with problemdetails errors or response objects with success dispositions and messages.
-* All packages published via NuGet to quickly build new services and applications quickly.
+* All libraries published via [NuGet Packages](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/NuGet.md) to quickly build new services and applications quickly.
 * Comprehensive Xunit test framework to ensure your microservices work correctly in the platform. Automatically get over 50% unit test code coverage and over 75% integration test coverage with just a few files and lines of code.
 * Completely open source containing only three packages (AutoMapper, NewtonSoft.Json, and ServiceQuery) all components used are MIT licensed with no external dependencies.
 
