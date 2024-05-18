@@ -9,8 +9,8 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
         public ExampleApiClient(
             ILoggerFactory loggerFactory,
             IHttpClientFactory httpClientFactory,
-            IOptions<ApiConfig> apiConfigOptions)
-            : base(loggerFactory, httpClientFactory, apiConfigOptions.Value)
+            IOptions<ClientApiOptions> clientApiOptions)
+            : base(loggerFactory, httpClientFactory, clientApiOptions.Value)
         {
         }
     }

@@ -16,60 +16,12 @@ namespace WebApp.Extensions
             // Add to module registry
             ModuleRegistry.Instance.RegisterItem(typeof(WebAppModule), new WebAppModule());
 
-            services.AddHttpContextAccessor();
-            services.AddControllers().ConfigureApiBehaviorOptions(setup =>
-            {
-                setup.InvalidModelStateResponseFactory = context =>
-                    {
-                        if (context.HttpContext != null &&
-                        context.HttpContext.Request != null &&
-                        context.HttpContext.Request.Path.HasValue &&
-                        context.HttpContext.Request.Path.Value.StartsWith(@"/api/", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            var apiOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<ApiOptions>>().Value;
-
-                            if (apiOptions.ReturnResponseObject)
-                            {
-                                Response response = new Response();
-                                foreach (var key in context.ModelState.Keys)
-                                {
-                                    foreach (var err in context.ModelState[key].Errors)
-                                    {
-                                        if (!string.IsNullOrEmpty(key))
-                                            response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage, key));
-                                        else
-                                            response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage));
-                                    }
-                                }
-
-                                var objectResult = new ObjectResult(response) { StatusCode = StatusCodes.Status400BadRequest };
-                                return objectResult;
-                            }
-                            else
-                            {
-                                var vpd = new ValidationProblemDetails(context.ModelState);
-                                var objectResult = new ObjectResult(vpd) { StatusCode = StatusCodes.Status400BadRequest };
-                                return objectResult;
-                            }
-                        }
-                        else
-                        {
-                            var vpd = new ValidationProblemDetails(context.ModelState);
-                            var objectResult = new ObjectResult(vpd) { StatusCode = StatusCodes.Status400BadRequest };
-                            return objectResult;
-                        }
-                    };
-            });
+            services.AddControllers();
             services.AddRazorPages();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            services.AddOptions();
             services.AddCors();
-            services.AddLocalization(options =>
-            {
-                options.ResourcesPath = "Resources";
-            });
 
-            // Add Authorization
+            // Add Authorization, disable all security policies
             services.AddAuthorization(options =>
             {
                 //Add Built-in Security Policies
@@ -80,15 +32,7 @@ namespace WebApp.Extensions
                     policy.RequireAssertion(context => true));
             });
 
-            services.AddMvc()
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddDataAnnotationsLocalization();
-
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.Strict;
-            });
+            services.AddMvc();
 
             services.AddCustomSwagger(Configuration);
 

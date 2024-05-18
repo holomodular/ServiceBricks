@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.0.7</Version>
+		<Version>1.0.6</Version>
 		<Description>ServiceBricks is the cornerstone for building a microservices foundation. Visit http://ServiceBricks.com to learn more.</Description>
 		<AssemblyTitle>ServiceBricks.Xunit</AssemblyTitle>
 		<Authors>holomodular</Authors>
@@ -31,12 +31,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.0.7" />
+		<PackageReference Include="ServiceBricks" Version="1.0.6" />
 	</ItemGroup>
 
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.30" />
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.29" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 		<PackageReference Include="xunit" Version="2.8.0" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
@@ -54,7 +54,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.19" />
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.18" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 		<PackageReference Include="xunit" Version="2.8.0" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">

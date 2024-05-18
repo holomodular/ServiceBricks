@@ -8,8 +8,8 @@ namespace ServiceBricks.Client.Xunit
         public ExampleApiClient(
             ILoggerFactory loggerFactory,
             IHttpClientFactory httpClientFactory,
-            ApiConfig apiConfig)
-            : base(loggerFactory, httpClientFactory, apiConfig)
+            ClientApiOptions clientApiOptions)
+            : base(loggerFactory, httpClientFactory, clientApiOptions)
         {
             ApiResource = $"EntityFrameworkCore/Example";
         }

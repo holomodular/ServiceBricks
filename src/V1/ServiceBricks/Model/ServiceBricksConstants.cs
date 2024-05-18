@@ -5,7 +5,7 @@
     /// </summary>
     public class ServiceBricksConstants
     {
-        public const string APPSETTING_CLIENT_APICONFIG = @"ServiceBricks:Client:ApiConfig";
+        public const string APPSETTING_CLIENT_APIOPTIONS = @"ServiceBricks:Client:Api";
         public const string APPSETTING_APIOPTIONS = @"ServiceBricks:Api";
         public const string APPSETTING_APPLICATIONOPTIONS = @"ServiceBricks:Application";
 

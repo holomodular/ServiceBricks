@@ -12,37 +12,37 @@ namespace ServiceBricks
     public class ApiClient<TDto> : BearerTokenClient, IApiClient<TDto>
         where TDto : class, IDataTransferObject
     {
-        protected readonly ApiConfig _apiConfig;
+        protected readonly ClientApiOptions _clientApiOptions;
         protected readonly ILogger<ApiClient<TDto>> _logger;
         protected Type _type = null;
 
         public ApiClient(
             ILoggerFactory loggerFactory,
             IHttpClientFactory httpClientFactory,
-            ApiConfig apiConfig)
-            : base(loggerFactory, httpClientFactory, apiConfig.DisableAuthentication ? null : new BearerTokenCredentials()
+            ClientApiOptions clientApiOptions)
+            : base(loggerFactory, httpClientFactory, clientApiOptions.DisableAuthentication ? null : new BearerTokenCredentials()
             {
                 AccessTokenRequest = new AccessTokenRequest()
                 {
-                    client_id = apiConfig.TokenClient,
-                    client_secret = apiConfig.TokenSecret,
-                    grant_type = apiConfig.TokenType,
-                    response_type = apiConfig.TokenResponseType,
-                    scope = apiConfig.TokenScope,
+                    client_id = clientApiOptions.TokenClient,
+                    client_secret = clientApiOptions.TokenSecret,
+                    grant_type = clientApiOptions.TokenType,
+                    response_type = clientApiOptions.TokenResponseType,
+                    scope = clientApiOptions.TokenScope,
                 },
-                AuthorizationUrl = apiConfig.TokenUrl,
+                AuthorizationUrl = clientApiOptions.TokenUrl,
             })
         {
             _logger = loggerFactory.CreateLogger<ApiClient<TDto>>();
-            _apiConfig = apiConfig ?? new ApiConfig();
+            _clientApiOptions = clientApiOptions ?? new ClientApiOptions();
             _type = typeof(TDto);
-            BaseUrl = _apiConfig.BaseServiceUrl;
+            BaseUrl = _clientApiOptions.BaseServiceUrl;
         }
 
         /// <summary>
         /// This the base url of the API request.
         /// </summary>
-        public string BaseUrl { get; set; }
+        public virtual string BaseUrl { get; set; }
 
         /// <summary>
         /// This is the resource for the API request.
@@ -82,9 +82,7 @@ namespace ServiceBricks
                     if (result.IsSuccessStatusCode)
                     {
                         var content = await result.Content.ReadAsStringAsync();
-                        if (string.IsNullOrEmpty(content))
-                            resp.Item = default(TModel);
-                        else
+                        if (!string.IsNullOrEmpty(content))
                             resp.Item = JsonConvert.DeserializeObject<TModel>(content);
                         return resp;
                     }
@@ -92,15 +90,11 @@ namespace ServiceBricks
                     {
                         resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
                         _logger.LogWarning($"{result.StatusCode} {request.RequestUri}");
-                        if (_apiConfig.ReturnResponseObject)
+                        if (_clientApiOptions.ReturnResponseObject)
                         {
                             var content = await result.Content.ReadAsStringAsync();
-                            if (string.IsNullOrEmpty(content))
-                                resp.Item = default(TModel);
-                            else
-                            {
+                            if (!string.IsNullOrEmpty(content))
                                 resp.Item = JsonConvert.DeserializeObject<TModel>(content);
-                            }
                         }
                         return resp;
                     }
@@ -130,11 +124,14 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Get,
                 $"{BaseUrl}/{ApiResource}/Get?storageKey={storageKey}");
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<TDto>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -153,11 +150,14 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Get,
                 $"{BaseUrl}/{ApiResource}/GetAsync?storageKey={storageKey}");
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<TDto>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -177,13 +177,23 @@ namespace ServiceBricks
                 HttpMethod.Put,
                 $"{BaseUrl}/{ApiResource}/Update");
 
+            if (dto == null)
+            {
+                var errresp = new ResponseItem<TDto>();
+                errresp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(dto)));
+                return errresp;
+            }
+
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<TDto>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -203,13 +213,23 @@ namespace ServiceBricks
                 HttpMethod.Put,
                 $"{BaseUrl}/{ApiResource}/UpdateAsync");
 
+            if (dto == null)
+            {
+                var errresp = new ResponseItem<TDto>();
+                errresp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(dto)));
+                return errresp;
+            }
+
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<TDto>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -229,13 +249,23 @@ namespace ServiceBricks
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/Create");
 
+            if (dto == null)
+            {
+                var errresp = new ResponseItem<TDto>();
+                errresp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(dto)));
+                return errresp;
+            }
+
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<TDto>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -255,13 +285,23 @@ namespace ServiceBricks
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/CreateAsync");
 
+            if (dto == null)
+            {
+                var errresp = new ResponseItem<TDto>();
+                errresp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(dto)));
+                return errresp;
+            }
+
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<TDto>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -280,7 +320,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Delete,
                 $"{BaseUrl}/{ApiResource}/Delete?storageKey={storageKey}");
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 return Execute<Response>(request);
             }
@@ -298,7 +338,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Delete,
                 $"{BaseUrl}/{ApiResource}/DeleteAsync?storageKey={storageKey}");
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 return await ExecuteAsync<Response>(request);
             }
@@ -311,19 +351,29 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public virtual IResponseItem<ServiceQueryResponse<TDto>> Query(ServiceQueryRequest req)
+        public virtual IResponseItem<ServiceQueryResponse<TDto>> Query(ServiceQueryRequest serviceQueryRequest)
         {
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/Query");
 
-            string data = JsonConvert.SerializeObject(req);
+            if (serviceQueryRequest == null)
+            {
+                var errresp = new ResponseItem<ServiceQueryResponse<TDto>>();
+                errresp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(serviceQueryRequest)));
+                return errresp;
+            }
+
+            string data = JsonConvert.SerializeObject(serviceQueryRequest);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<ServiceQueryResponse<TDto>>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<ServiceQueryResponse<TDto>> respEr = new ResponseItem<ServiceQueryResponse<TDto>>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -337,19 +387,29 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public virtual async Task<IResponseItem<ServiceQueryResponse<TDto>>> QueryAsync(ServiceQueryRequest req)
+        public virtual async Task<IResponseItem<ServiceQueryResponse<TDto>>> QueryAsync(ServiceQueryRequest serviceQueryRequest)
         {
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/QueryAsync");
 
-            string data = JsonConvert.SerializeObject(req);
+            if (serviceQueryRequest == null)
+            {
+                var errresp = new ResponseItem<ServiceQueryResponse<TDto>>();
+                errresp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(serviceQueryRequest)));
+                return errresp;
+            }
+
+            string data = JsonConvert.SerializeObject(serviceQueryRequest);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
-            if (_apiConfig.ReturnResponseObject)
+            if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<ServiceQueryResponse<TDto>>>(request);
-                if (resp.Item != null)
-                    return resp.Item;
+                if (resp.Success)
+                {
+                    if (resp.Item != null)
+                        return resp.Item;
+                }
                 ResponseItem<ServiceQueryResponse<TDto>> respEr = new ResponseItem<ServiceQueryResponse<TDto>>();
                 respEr.CopyFrom(resp);
                 return respEr;

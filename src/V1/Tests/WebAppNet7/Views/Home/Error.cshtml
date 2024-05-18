@@ -1,13 +1,12 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-@model WebApp.ViewModel.Home.ErrorViewModel
+﻿@model WebApp.ViewModel.Home.ErrorViewModel
 @{
-    ViewBag.Title = @Localizer.GetString("Error");
+    ViewBag.Title = "Error";
     ViewBag.Description = "Error";
     ViewBag.Keywords = "Error";
 }
-<h1>@Localizer.GetString("Error")</h1>
+<h1>Error</h1>
 <p>
-    @Localizer.GetString("An error happened processing your request.")
+    An error happened processing your request.
 </p>
 <p>
     @if(Model != null)

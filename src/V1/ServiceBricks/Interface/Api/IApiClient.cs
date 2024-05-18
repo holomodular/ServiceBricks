@@ -7,6 +7,7 @@
     public interface IApiClient<TDto> : IApiService<TDto>
         where TDto : class
     {
+        string BaseUrl { get; set; }
         string ApiResource { get; set; }
     }
 }

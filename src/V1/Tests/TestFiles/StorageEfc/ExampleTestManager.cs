@@ -31,7 +31,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
 
         public override IApiClient<ExampleDto> GetClient(IServiceProvider serviceProvider)
         {
-            var options = new OptionsWrapper<ApiConfig>(new ApiConfig() { ReturnResponseObject = false });
+            var options = new OptionsWrapper<ClientApiOptions>(new ClientApiOptions() { ReturnResponseObject = false });
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),
@@ -40,7 +40,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
 
         public override IApiClient<ExampleDto> GetClientReturnResponse(IServiceProvider serviceProvider)
         {
-            var options = new OptionsWrapper<ApiConfig>(new ApiConfig() { ReturnResponseObject = true });
+            var options = new OptionsWrapper<ClientApiOptions>(new ClientApiOptions() { ReturnResponseObject = true });
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),

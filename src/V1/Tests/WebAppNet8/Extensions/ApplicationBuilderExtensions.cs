@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.CookiePolicy;
+using ServiceBricks;
 
 namespace WebApp.Extensions
 {
@@ -12,14 +13,6 @@ namespace WebApp.Extensions
 
         public static IApplicationBuilder StartCustomWebsite(this IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var supportedCultures = new[] { "en-US", "es" };
-            var localizationOptions = new RequestLocalizationOptions()
-                .SetDefaultCulture(supportedCultures[0])
-                .AddSupportedCultures(supportedCultures)
-                .AddSupportedUICultures(supportedCultures);
-            localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
-            app.UseRequestLocalization(localizationOptions);
-
             if (!env.IsDevelopment())
                 app.UseHsts();
 
@@ -32,9 +25,6 @@ namespace WebApp.Extensions
 
             // Register Middleware after UseAuth() so user context is available
             app.RegisterMiddleware();
-
-            app.UseCookiePolicy();
-            app.UseMiddleware<CookiePolicyMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

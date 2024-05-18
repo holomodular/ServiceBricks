@@ -29,9 +29,9 @@ namespace ServiceBricks.Client.Xunit
 
         public override IApiClient<ExampleDto> GetClient(IServiceProvider serviceProvider)
         {
-            var apiconfig = serviceProvider.GetRequiredService<IOptions<ApiConfig>>().Value;
-            apiconfig.ReturnResponseObject = false;
-            var options = new OptionsWrapper<ApiConfig>(apiconfig);
+            var ClientOptions = serviceProvider.GetRequiredService<IOptions<ClientApiOptions>>().Value;
+            ClientOptions.ReturnResponseObject = false;
+            var options = new OptionsWrapper<ClientApiOptions>(ClientOptions);
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),
@@ -40,9 +40,9 @@ namespace ServiceBricks.Client.Xunit
 
         public override IApiClient<ExampleDto> GetClientReturnResponse(IServiceProvider serviceProvider)
         {
-            var apiconfig = serviceProvider.GetRequiredService<IOptions<ApiConfig>>().Value;
-            apiconfig.ReturnResponseObject = true;
-            var options = new OptionsWrapper<ApiConfig>(apiconfig);
+            var ClientOptions = serviceProvider.GetRequiredService<IOptions<ClientApiOptions>>().Value;
+            ClientOptions.ReturnResponseObject = true;
+            var options = new OptionsWrapper<ClientApiOptions>(ClientOptions);
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),

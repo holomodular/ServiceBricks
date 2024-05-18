@@ -29,8 +29,8 @@ namespace ServiceBricks
 
         Task<IResponse> DeleteAsync(string storageKey);
 
-        IResponseItem<ServiceQueryResponse<TDto>> Query(ServiceQueryRequest request);
+        IResponseItem<ServiceQueryResponse<TDto>> Query(ServiceQueryRequest serviceQueryRequest);
 
-        Task<IResponseItem<ServiceQueryResponse<TDto>>> QueryAsync(ServiceQueryRequest request);
+        Task<IResponseItem<ServiceQueryResponse<TDto>>> QueryAsync(ServiceQueryRequest serviceQueryRequest);
     }
 }

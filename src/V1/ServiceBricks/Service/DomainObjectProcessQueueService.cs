@@ -280,5 +280,32 @@ namespace ServiceBricks
         /// <param name="domainObject"></param>
         /// <returns></returns>
         public abstract Task<IResponse> ProcessItemAsync(TDomainObject domainObject);
+
+        public static ServiceQueryRequest GetQueueItemsQuery(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
+        {
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+
+            ServiceQueryRequestBuilder query = new ServiceQueryRequestBuilder();
+            query.IsEqual(nameof(IDpProcessQueue.IsComplete), false.ToString())
+                .And()
+                .IsEqual(nameof(IDpProcessQueue.IsProcessing), false.ToString())
+                .And()
+                .IsLessThanOrEqual(nameof(IDpProcessQueue.FutureProcessDate), now.ToString("o"));
+            if (pickupErrors)
+            {
+                query.And()
+                .IsEqual(nameof(IDpProcessQueue.IsError), true.ToString())
+                .And()
+                .IsLessThanOrEqual(nameof(IDpProcessQueue.ProcessDate), errorPickupCutoffDate.ToString("o"));
+            }
+            else
+            {
+                query.And()
+                .IsEqual(nameof(IDpProcessQueue.IsError), false.ToString());
+            }
+            query.Sort(nameof(IDpProcessQueue.CreateDate), true);
+            query.Paging(1, batchNumberToTake, false);
+            return query.Build();
+        }
     }
 }

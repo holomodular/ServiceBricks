@@ -1,16 +1,15 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-@model WebApp.ViewModel.Home.HomeViewModel
+﻿@model WebApp.ViewModel.Home.HomeViewModel
 @{
-    ViewBag.Title = @Localizer.GetString("Welcome");
+    ViewBag.Title = "Welcome";
     ViewBag.Description = "Welcome";
     ViewBag.Keywords = "Welcome";
 }
-<h1>@Localizer.GetString("Welcome")</h1>
+<h1>Welcome</h1>
 <p>
-    @Localizer.GetString("This is the ServiceBricks Web API Starter Application.")
-    @Localizer.GetString("You can modify this application however you like.") 
-    @Localizer.GetString("Please visit our website at:") <a href="http://ServiceBricks.com" target="_blank">http://ServiceBricks.com</a>.
+    This is the ServiceBricks Web API Starter Application.
+    You can modify this application however you like.
+    Please visit our website at: <a href="http://ServiceBricks.com" target="_blank">http://ServiceBricks.com</a>.
 </p>
 <p>     
-    <a href="/swagger">@Localizer.GetString("View Swagger Page")</a>
+    <a href="/swagger">View Swagger Page</a>
 </p>

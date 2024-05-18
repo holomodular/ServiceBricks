@@ -3,7 +3,7 @@
     /// <summary>
     /// This is REST API configurations.
     /// </summary>
-    public class ApiConfig
+    public class ClientApiOptions
     {
         public string BaseServiceUrl { get; set; }
         public string TokenUrl { get; set; }

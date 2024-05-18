@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 
 namespace ServiceBricks
@@ -23,35 +25,12 @@ namespace ServiceBricks
         {
             // HttpContextAccessor
             services.AddHttpContextAccessor();
+            services.AddOptions();
 
             // Options
             services.Configure<ApplicationOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APPLICATIONOPTIONS));
-            services.Configure<ApiConfig>(configuration.GetSection(ServiceBricksConstants.APPSETTING_CLIENT_APICONFIG));
             services.Configure<ApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APIOPTIONS));
-            services.Configure<ApiBehaviorOptions>(x => x.InvalidModelStateResponseFactory = context =>
-                {
-                    Response response = new Response();
-                    foreach (var key in context.ModelState.Keys)
-                    {
-                        foreach (var err in context.ModelState[key].Errors)
-                        {
-                            if (!string.IsNullOrEmpty(key))
-                                response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage, key));
-                            else
-                                response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage));
-                        }
-                    }
-
-                    var tempVal = new
-                    {
-                        Success = response.Success,
-                        Error = response.Error,
-                        Messages = response.Messages,
-                        StatusCode = context.HttpContext.Response.StatusCode
-                    };
-                    var objectResult = new ObjectResult(tempVal);
-                    return objectResult;
-                });
+            services.Configure<ClientApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS));
 
             // Background task queue for any ordered background processing
             services.AddSingleton<ITaskQueue, TaskQueue>();
@@ -109,6 +88,38 @@ namespace ServiceBricks
 
         public static IServiceCollection AddServiceBricksComplete(this IServiceCollection services)
         {
+            services.Configure<ApiBehaviorOptions>(x => x.InvalidModelStateResponseFactory = context =>
+            {
+                ObjectResult objectResult = null;
+                if (context.HttpContext != null &&
+                    context.HttpContext.Request != null &&
+                    context.HttpContext.Request.Path.HasValue &&
+                    context.HttpContext.Request.Path.Value.StartsWith(@"/api/", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var apiOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<ApiOptions>>().Value;
+
+                    if (apiOptions.ReturnResponseObject)
+                    {
+                        Response response = new Response();
+                        foreach (var key in context.ModelState.Keys)
+                        {
+                            foreach (var err in context.ModelState[key].Errors)
+                            {
+                                if (!string.IsNullOrEmpty(key))
+                                    response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage, key));
+                                else
+                                    response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage));
+                            }
+                        }
+                        objectResult = new ObjectResult(response) { StatusCode = StatusCodes.Status400BadRequest };
+                        return objectResult;
+                    }
+                }
+                var vpd = new ValidationProblemDetails(context.ModelState);
+                objectResult = new ObjectResult(vpd) { StatusCode = StatusCodes.Status400BadRequest };
+                return objectResult;
+            });
+
             List<Assembly> assemblies = new List<Assembly>();
             var modules = ModuleRegistry.Instance.GetModules();
             foreach (var module in modules)

@@ -1,5 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="@System.Threading.Thread.CurrentThread.CurrentCulture.Name">
     <head>
         <meta charset="utf-8">
@@ -28,7 +27,7 @@
         @RenderSection("Head", required: false)
     </head>
     <body class="layout-body">
-        <div class="skipnav"><a href="#maincontent">@Localizer.GetString("Skip to main content.")</a></div>
+        <div class="skipnav"><a href="#maincontent">Skip to main content.</a></div>
         <!-- Layout Header -->
         <partial name="_HeaderPartial" />        
 
@@ -45,7 +44,6 @@
     
         <!-- View Scripts -->
         @RenderSection("Scripts", required: false)
-
-        <partial name="_CookiesConsentPartial" />
+        
     </body>
 </html>
