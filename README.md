@@ -53,14 +53,6 @@ Get started quickly with our pre-built microservices:
 * [ServiceBricks-Notification](https://github.com/holomodular/ServiceBricks-Notification): Notification and delivery of emails and SMS messages.
 * [ServiceBricks-Security](https://github.com/holomodular/ServiceBricks-Security): Authentication, authorization, and application security with JWT bearer token support for multi-application deployments.
 
-## Notes from the Author (5/17/2024)
-
-### System Status: Semi-Stable
-
-* The latest release v1.0.6 is working well with InMemory providers. There are some issues with the notification microservice using Postgres, Sqlite and SqlServer when processing notifymessages in the background task. Fixes will be coming this weekend.
-* The new website (ServiceBricks.com) is not currently working. Coming Soon!
-* Start a discussion if you need any help.
-
 
 ## About
 
