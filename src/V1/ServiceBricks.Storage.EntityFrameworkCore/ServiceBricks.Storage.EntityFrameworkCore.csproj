@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.0.7</Version>
+		<Version>1.0.9</Version>
 		<Description>ServiceBricks is the cornerstone for building a microservices foundation. Visit http://ServiceBricks.com to learn more.</Description>
 		<AssemblyTitle>ServiceBricks.Storage.EntityFrameworkCore</AssemblyTitle>
 		<Authors>holomodular</Authors>
@@ -19,6 +19,7 @@
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
+		<IsPackable>False</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.0.7" />
+		<PackageReference Include="ServiceBricks" Version="1.0.9" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
