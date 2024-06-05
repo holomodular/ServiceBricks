@@ -5,25 +5,25 @@ namespace ServiceBricks
 {
     public interface IApiController<TDto>
     {
-        ActionResult Create([FromBody] TDto dto);
+        ActionResult Create(TDto dto);
 
-        Task<ActionResult> CreateAsync([FromBody] TDto dto);
+        Task<ActionResult> CreateAsync(TDto dto);
 
-        ActionResult Update([FromBody] TDto dto);
+        ActionResult Update(TDto dto);
 
-        Task<ActionResult> UpdateAsync([FromBody] TDto dto);
+        Task<ActionResult> UpdateAsync(TDto dto);
 
-        ActionResult Delete([FromQuery] string storageKey);
+        ActionResult Delete(string storageKey);
 
-        Task<ActionResult> DeleteAsync([FromQuery] string storageKey);
+        Task<ActionResult> DeleteAsync(string storageKey);
 
-        ActionResult Get([FromQuery] string storageKey);
+        ActionResult Get(string storageKey);
 
-        Task<ActionResult> GetAsync([FromQuery] string storageKey);
+        Task<ActionResult> GetAsync(string storageKey);
 
-        ActionResult Query([FromBody] ServiceQueryRequest request);
+        ActionResult Query(ServiceQueryRequest request);
 
-        Task<ActionResult> QueryAsync([FromBody] ServiceQueryRequest request);
+        Task<ActionResult> QueryAsync(ServiceQueryRequest request);
 
         ActionResult GetErrorResponse(IResponse response);
     }

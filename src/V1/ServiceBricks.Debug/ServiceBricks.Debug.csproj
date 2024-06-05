@@ -57,10 +57,6 @@
 	  <Compile Include="..\ServiceBricks\Event\ApiCreateBeforeEvent.cs" Link="ApiCreateBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiDeleteAfterEvent.cs" Link="ApiDeleteAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiDeleteBeforeEvent.cs" Link="ApiDeleteBeforeEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\ApiGetAllAfterEvent.cs" Link="ApiGetAllAfterEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\ApiGetAllBeforeEvent.cs" Link="ApiGetAllBeforeEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\ApiGetAllPagingAfterEvent.cs" Link="ApiGetAllPagingAfterEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\ApiGetAllPagingBeforeEvent.cs" Link="ApiGetAllPagingBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiGetItemAfterEvent.cs" Link="ApiGetItemAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiGetItemBeforeEvent.cs" Link="ApiGetItemBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiQueryAfterEvent.cs" Link="ApiQueryAfterEvent.cs" />
@@ -71,10 +67,6 @@
 	  <Compile Include="..\ServiceBricks\Event\DomainCreateBeforeEvent.cs" Link="DomainCreateBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainDeleteAfterEvent.cs" Link="DomainDeleteAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainDeleteBeforeEvent.cs" Link="DomainDeleteBeforeEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\DomainGetAllAfterEvent.cs" Link="DomainGetAllAfterEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\DomainGetAllBeforeEvent.cs" Link="DomainGetAllBeforeEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\DomainGetAllPagingAfterEvent.cs" Link="DomainGetAllPagingAfterEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\DomainGetAllPagingBeforeEvent.cs" Link="DomainGetAllPagingBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainGetItemAfterEvent.cs" Link="DomainGetItemAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainGetItemBeforeEvent.cs" Link="DomainGetItemBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainQueryAfterEvent.cs" Link="DomainQueryAfterEvent.cs" />

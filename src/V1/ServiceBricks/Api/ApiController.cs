@@ -11,15 +11,15 @@ namespace ServiceBricks
     /// By default, no security policy is added to this base class.
     /// Use AdminPolicyRestApiController instead.
     /// </summary>
-    /// <typeparam name="TDtoObject"></typeparam>
-    public partial class ApiController<TDtoObject> : ControllerBase, IApiController<TDtoObject>
-        where TDtoObject : class
+    /// <typeparam name="TDto"></typeparam>
+    public partial class ApiController<TDto> : ControllerBase, IApiController<TDto>
+        where TDto : class
     {
-        protected readonly IApiService<TDtoObject> _domainObjectService;
+        protected readonly IApiService<TDto> _domainObjectService;
         protected readonly ApiOptions _apiOptions;
 
         public ApiController(
-            IApiService<TDtoObject> domainObjectService,
+            IApiService<TDto> domainObjectService,
             IOptions<ApiOptions> apiOptions)
         {
             _domainObjectService = domainObjectService;
@@ -27,11 +27,11 @@ namespace ServiceBricks
         }
 
         [HttpGet]
-        [Route("Get")]
+        [Route("{storageKey}")]
         [Route("Get/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual ActionResult Get([FromQuery] string storageKey)
+        public virtual ActionResult Get([FromRoute] string storageKey)
         {
             var resp = _domainObjectService.Get(storageKey);
             if (resp.Success)
@@ -45,11 +45,45 @@ namespace ServiceBricks
         }
 
         [HttpGet]
-        [Route("GetAsync")]
+        [Route("")]
+        [Route("Get")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        public virtual ActionResult GetFromQuery([FromQuery] string storageKey)
+        {
+            var resp = _domainObjectService.Get(storageKey);
+            if (resp.Success)
+            {
+                if (_apiOptions.ReturnResponseObject)
+                    return Ok(resp);
+                else
+                    return Ok(resp.Item);
+            }
+            return GetErrorResponse(resp);
+        }
+
+        [HttpGet]
         [Route("GetAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<ActionResult> GetAsync([FromQuery] string storageKey)
+        public virtual async Task<ActionResult> GetAsync([FromRoute] string storageKey)
+        {
+            var resp = await _domainObjectService.GetAsync(storageKey);
+            if (resp.Success)
+            {
+                if (_apiOptions.ReturnResponseObject)
+                    return Ok(resp);
+                else
+                    return Ok(resp.Item);
+            }
+            return GetErrorResponse(resp);
+        }
+
+        [HttpGet]
+        [Route("GetAsync")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<ActionResult> GetFromQueryAsync([FromQuery] string storageKey)
         {
             var resp = await _domainObjectService.GetAsync(storageKey);
             if (resp.Success)
@@ -63,10 +97,11 @@ namespace ServiceBricks
         }
 
         [HttpPut]
+        [Route("")]
         [Route("Update")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual ActionResult Update([FromBody] TDtoObject dto)
+        public virtual ActionResult Update([FromBody] TDto dto)
         {
             var resp = _domainObjectService.Update(dto);
             if (resp.Success)
@@ -83,7 +118,7 @@ namespace ServiceBricks
         [Route("UpdateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<ActionResult> UpdateAsync([FromBody] TDtoObject dto)
+        public virtual async Task<ActionResult> UpdateAsync([FromBody] TDto dto)
         {
             var resp = await _domainObjectService.UpdateAsync(dto);
             if (resp.Success)
@@ -97,10 +132,11 @@ namespace ServiceBricks
         }
 
         [HttpPost]
+        [Route("")]
         [Route("Create")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual ActionResult Create([FromBody] TDtoObject dto)
+        public virtual ActionResult Create([FromBody] TDto dto)
         {
             var resp = _domainObjectService.Create(dto);
             if (resp.Success)
@@ -117,7 +153,7 @@ namespace ServiceBricks
         [Route("CreateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<ActionResult> CreateAsync([FromBody] TDtoObject dto)
+        public virtual async Task<ActionResult> CreateAsync([FromBody] TDto dto)
         {
             var resp = await _domainObjectService.CreateAsync(dto);
             if (resp.Success)
@@ -131,11 +167,11 @@ namespace ServiceBricks
         }
 
         [HttpDelete]
-        [Route("Delete")]
+        [Route("{storageKey}")]
         [Route("Delete/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual ActionResult Delete([FromQuery] string storageKey)
+        public virtual ActionResult Delete([FromRoute] string storageKey)
         {
             var resp = _domainObjectService.Delete(storageKey);
             if (resp.Success)
@@ -149,11 +185,45 @@ namespace ServiceBricks
         }
 
         [HttpDelete]
-        [Route("DeleteAsync")]
+        [Route("")]
+        [Route("Delete")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        public virtual ActionResult DeleteFromQuery([FromQuery] string storageKey)
+        {
+            var resp = _domainObjectService.Delete(storageKey);
+            if (resp.Success)
+            {
+                if (_apiOptions.ReturnResponseObject)
+                    return Ok(resp);
+                else
+                    return Ok(true);
+            }
+            return GetErrorResponse(resp);
+        }
+
+        [HttpDelete]
         [Route("DeleteAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public virtual async Task<ActionResult> DeleteAsync([FromQuery] string storageKey)
+        public virtual async Task<ActionResult> DeleteAsync([FromRoute] string storageKey)
+        {
+            var resp = await _domainObjectService.DeleteAsync(storageKey);
+            if (resp.Success)
+            {
+                if (_apiOptions.ReturnResponseObject)
+                    return Ok(resp);
+                else
+                    return Ok(true);
+            }
+            return GetErrorResponse(resp);
+        }
+
+        [HttpDelete]
+        [Route("DeleteAsync")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        public virtual async Task<ActionResult> DeleteFromQueryAsync([FromQuery] string storageKey)
         {
             var resp = await _domainObjectService.DeleteAsync(storageKey);
             if (resp.Success)

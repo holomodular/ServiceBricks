@@ -115,7 +115,7 @@ namespace ServiceBricks
             {
                 for (int i = 0; i < existing.Count; i++)
                 {
-                    if (existing[i].Equals(val))
+                    if (existing[i].Value.Equals(val))
                     {
                         existing.RemoveAt(i);
                         break;
