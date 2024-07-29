@@ -25,17 +25,17 @@
 		<Compile Include="..\..\ServiceBricks.Xunit\ITestManager.cs" Link="ITestManager.cs" />
 		<Compile Include="..\..\ServiceBricks.Xunit\MappingTest.cs" Link="MappingTest.cs" />
 		<Compile Include="..\..\ServiceBricks.Xunit\ServiceBricksStartup.cs" Link="ServiceBricksStartup.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\ServiceBrickTestModule.cs" Link="ServiceBrickTestModule.cs" />
+		<Compile Include="..\..\ServiceBricks.Xunit\ServiceBricksTestModule.cs" Link="ServiceBricksTestModule.cs" />
 		<Compile Include="..\..\ServiceBricks.Xunit\SystemManager.cs" Link="SystemManager.cs" />
 		<Compile Include="..\..\ServiceBricks.Xunit\TestManager.cs" Link="TestManager.cs" />
 		<Compile Include="..\..\ServiceBricks.Xunit\TestStartup.cs" Link="TestStartup.cs" />
 		<Compile Include="..\..\ServiceBricks.Xunit\Usings.cs" Link="Usings.cs" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.19" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-		<PackageReference Include="xunit" Version="2.8.0" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.20" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+		<PackageReference Include="xunit" Version="2.9.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

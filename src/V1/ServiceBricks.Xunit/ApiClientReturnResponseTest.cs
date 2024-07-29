@@ -77,7 +77,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            await CreateBaseReturnResponseAsync(model);
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -85,7 +88,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            await CreateBaseReturnResponseAsync(model);
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -102,13 +108,19 @@ namespace ServiceBricks.Xunit
             Assert.True(respGetAll.Success);
             existingCount = respGetAll.Item.List.Count;
 
-            await Create_MinDataReturnResponseAsync();
+            var minmodel = TestManager.GetMaximumDataObject();
+            var mindto = await CreateBaseReturnResponseAsync(minmodel);
 
-            await Create_MaxDataReturnResponseAsync();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseReturnResponseAsync(maxmodel);
 
             //Call GetAll again after create
             respGetAll = await client.QueryAsync(GetDefaultServiceQueryRequest());
             Assert.True(respGetAll.Item.List.Count == 2 + existingCount);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(mindto);
+            await DeleteBaseReturnResponseAsync(maxdto);
         }
 
         [Fact]
@@ -138,6 +150,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -167,6 +182,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -193,7 +211,7 @@ namespace ServiceBricks.Xunit
             //Call GetItem
             var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var respGetItem = await client.GetAsync(null);
+            var respGetItem = await client.GetAsync(string.Empty);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             Assert.True(respGetItem.Error);
@@ -222,7 +240,11 @@ namespace ServiceBricks.Xunit
         [Fact]
         public virtual async Task GetAllPaging_MultiReturnResponseAsync()
         {
-            await Create_TwoReturnResponseAsync();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseReturnResponseAsync(maxmodel);
+
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = await CreateBaseReturnResponseAsync(minmodel);
 
             if (SystemManager == null || SystemManager.ServiceProvider == null)
                 throw new ArgumentNullException(nameof(SystemManager));
@@ -297,6 +319,10 @@ namespace ServiceBricks.Xunit
             Assert.True(respPaging.Error == false);
             Assert.True(respPaging.Item.Count == existingCount);
             Assert.True(respPaging.Item.List.Count == 0);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(mindto);
+            await DeleteBaseReturnResponseAsync(maxdto);
         }
 
         [Fact]
@@ -337,6 +363,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseReturnResponseAsync(model);
 
             await UpdateNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -347,6 +376,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseReturnResponseAsync(model);
 
             await UpdateNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         protected virtual async Task UpdateBaseReturnResponseAsync(TDto model)
@@ -375,6 +407,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = await CreateBaseReturnResponseAsync(model);
             await UpdateBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -383,6 +418,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = await CreateBaseReturnResponseAsync(model);
             await UpdateBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         protected virtual async Task DeleteBaseReturnResponseAsync(TDto model)
@@ -465,6 +503,9 @@ namespace ServiceBricks.Xunit
 
             foundObject = TestManager.FindObject(respQueryAll.Item.List, dto);
             Assert.True(foundObject != null);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -488,6 +529,9 @@ namespace ServiceBricks.Xunit
                 var foundObject = TestManager.FindObject(respQuery.Item.List, dto);
                 Assert.True(foundObject != null);
             }
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         #endregion Async
@@ -553,7 +597,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            CreateBaseReturnResponse(model);
+            var dto = CreateBaseReturnResponse(model);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -561,7 +608,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            CreateBaseReturnResponse(model);
+            var dto = CreateBaseReturnResponse(model);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -578,13 +628,21 @@ namespace ServiceBricks.Xunit
             Assert.True(respGetAll.Success);
             existingCount = respGetAll.Item.List.Count;
 
-            Create_MinDataReturnResponse();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = CreateBaseReturnResponse(minmodel);
+
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = CreateBaseReturnResponse(maxmodel);
 
             Create_MaxDataReturnResponse();
 
             //Call GetAll again after create
             respGetAll = client.Query(GetDefaultServiceQueryRequest());
             Assert.True(respGetAll.Item.List.Count == 2 + existingCount);
+
+            // Cleanup
+            DeleteBaseReturnResponse(mindto);
+            DeleteBaseReturnResponse(maxdto);
         }
 
         [Fact]
@@ -614,6 +672,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -643,6 +704,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -669,7 +733,7 @@ namespace ServiceBricks.Xunit
             //Call GetItem
             var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var respGetItem = client.Get(null);
+            var respGetItem = client.Get(string.Empty);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             Assert.True(respGetItem.Error);
@@ -698,7 +762,11 @@ namespace ServiceBricks.Xunit
         [Fact]
         public virtual void GetAllPaging_MultiReturnResponse()
         {
-            Create_TwoReturnResponse();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = CreateBaseReturnResponse(minmodel);
+
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = CreateBaseReturnResponse(maxmodel);
 
             if (SystemManager == null || SystemManager.ServiceProvider == null)
                 throw new ArgumentNullException(nameof(SystemManager));
@@ -773,6 +841,10 @@ namespace ServiceBricks.Xunit
             Assert.True(respPaging.Error == false);
             Assert.True(respPaging.Item.Count == existingCount);
             Assert.True(respPaging.Item.List.Count == 0);
+
+            // Cleanup
+            DeleteBaseReturnResponse(mindto);
+            DeleteBaseReturnResponse(maxdto);
         }
 
         [Fact]
@@ -813,6 +885,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBaseReturnResponse(model);
 
             UpdateNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -823,6 +898,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBaseReturnResponse(model);
 
             UpdateNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         protected virtual void UpdateBaseReturnResponse(TDto model)
@@ -851,6 +929,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = CreateBaseReturnResponse(model);
             UpdateBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -859,6 +940,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = CreateBaseReturnResponse(model);
             UpdateBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         protected virtual void DeleteBaseReturnResponse(TDto model)
@@ -941,6 +1025,9 @@ namespace ServiceBricks.Xunit
 
             foundObject = TestManager.FindObject(respQueryAll.Item.List, dto);
             Assert.True(foundObject != null);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -964,6 +1051,9 @@ namespace ServiceBricks.Xunit
                 var foundObject = TestManager.FindObject(respQuery.Item.List, dto);
                 Assert.True(foundObject != null);
             }
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         #endregion Sync

@@ -38,15 +38,15 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.5" />
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.5" />
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.5" />
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.0" />
 	</ItemGroup>
 	
 </Project>

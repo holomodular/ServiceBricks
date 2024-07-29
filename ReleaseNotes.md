@@ -1,3 +1,16 @@
+# 1.0.11
+- Update all package references to latest version
+- Add cleanup logic to delete objects for unit and integration tests
+
+# 1.0.10
+- Bug fixes
+
+# 1.0.9
+- Automated release testing
+
+# 1.0.8
+- Automated release testing
+
 # 1.0.7
 - Bug fixes for appsettings, ApiClient, cleanup webapps, update nuget packages
 

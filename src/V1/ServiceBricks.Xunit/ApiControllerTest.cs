@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ServiceQuery;
+using System.Reflection;
 
 namespace ServiceBricks.Xunit
 {
@@ -221,7 +222,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            await CreateBaseAsync(model);
+            var dto = await CreateBaseAsync(model);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -229,7 +233,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            await CreateBaseReturnResponseAsync(model);
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -237,7 +244,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            await CreateBaseAsync(model);
+            var dto = await CreateBaseAsync(model);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -245,7 +255,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            await CreateBaseReturnResponseAsync(model);
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -268,9 +281,11 @@ namespace ServiceBricks.Xunit
             else
                 Assert.Fail("");
 
-            await Create_MinDataAsync();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = await CreateBaseAsync(minmodel);
 
-            await Create_MaxDataAsync();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseAsync(maxmodel);
 
             //Call GetAll again after create
             respGetAll = await controller.QueryAsync(GetDefaultServiceQueryRequest());
@@ -286,6 +301,10 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseAsync(mindto);
+            await DeleteBaseAsync(maxdto);
         }
 
         [Fact]
@@ -308,9 +327,11 @@ namespace ServiceBricks.Xunit
             else
                 Assert.Fail("");
 
-            await Create_MinDataReturnResponseAsync();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = await CreateBaseReturnResponseAsync(minmodel);
 
-            await Create_MaxDataReturnResponseAsync();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseReturnResponseAsync(maxmodel);
 
             //Call GetAll again after create
             respGetAll = await controller.QueryAsync(GetDefaultServiceQueryRequest());
@@ -326,6 +347,10 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseAsync(mindto);
+            await DeleteBaseAsync(maxdto);
         }
 
         [Fact]
@@ -371,6 +396,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -416,6 +444,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -461,6 +492,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -506,6 +540,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -610,7 +647,11 @@ namespace ServiceBricks.Xunit
         [Fact]
         public virtual async Task GetAllPaging_MultiAsync()
         {
-            await Create_TwoAsync();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = await CreateBaseAsync(minmodel);
+
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseAsync(maxmodel);
 
             int existingCount = 0;
             //Call GetAll
@@ -729,12 +770,20 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseAsync(mindto);
+            await DeleteBaseAsync(maxdto);
         }
 
         [Fact]
         public virtual async Task GetAllPaging_MultiReturnResponseAsync()
         {
-            await Create_TwoReturnResponseAsync();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = await CreateBaseReturnResponseAsync(minmodel);
+
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseReturnResponseAsync(maxmodel);
 
             int existingCount = 0;
             //Call GetAll
@@ -853,6 +902,10 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(mindto);
+            await DeleteBaseReturnResponseAsync(maxdto);
         }
 
         [Fact]
@@ -941,6 +994,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseAsync(model);
 
             await UpdateNoChangeBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -951,6 +1007,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseReturnResponseAsync(model);
 
             await UpdateNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -961,6 +1020,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseAsync(model);
 
             await UpdateNoChangeBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -971,6 +1033,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseReturnResponseAsync(model);
 
             await UpdateNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         protected virtual async Task UpdateBaseAsync(TDto model)
@@ -1029,6 +1094,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = await CreateBaseAsync(model);
             await UpdateBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -1037,6 +1105,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = await CreateBaseReturnResponseAsync(model);
             await UpdateBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -1045,6 +1116,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = await CreateBaseAsync(model);
             await UpdateBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -1053,6 +1127,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = await CreateBaseReturnResponseAsync(model);
             await UpdateBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         protected virtual async Task DeleteBaseAsync(TDto model)
@@ -1229,6 +1306,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -1306,6 +1386,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         [Fact]
@@ -1336,6 +1419,9 @@ namespace ServiceBricks.Xunit
                 else
                     Assert.Fail("");
             }
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -1366,6 +1452,9 @@ namespace ServiceBricks.Xunit
                 else
                     Assert.Fail("");
             }
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
         }
 
         #endregion Async
@@ -1573,7 +1662,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            CreateBase(model);
+            var dto = CreateBase(model);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -1581,7 +1673,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            CreateBaseReturnResponse(model);
+            var dto = CreateBaseReturnResponse(model);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -1589,7 +1684,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            CreateBase(model);
+            var dto = CreateBase(model);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -1597,7 +1695,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            CreateBaseReturnResponse(model);
+            var dto = CreateBaseReturnResponse(model);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -1620,9 +1721,11 @@ namespace ServiceBricks.Xunit
             else
                 Assert.Fail("");
 
-            Create_MinData();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = CreateBase(minmodel);
 
-            Create_MaxData();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = CreateBase(maxmodel);
 
             //Call GetAll again after create
             respGetAll = controller.Query(GetDefaultServiceQueryRequest());
@@ -1638,6 +1741,10 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBase(mindto);
+            DeleteBase(maxdto);
         }
 
         [Fact]
@@ -1660,9 +1767,11 @@ namespace ServiceBricks.Xunit
             else
                 Assert.Fail("");
 
-            Create_MinDataReturnResponse();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = CreateBaseReturnResponse(minmodel);
 
-            Create_MaxDataReturnResponse();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = CreateBaseReturnResponse(maxmodel);
 
             //Call GetAll again after create
             respGetAll = controller.Query(GetDefaultServiceQueryRequest());
@@ -1678,6 +1787,10 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBaseReturnResponse(mindto);
+            DeleteBaseReturnResponse(maxdto);
         }
 
         [Fact]
@@ -1723,6 +1836,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -1768,6 +1884,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -1813,6 +1932,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -1858,6 +1980,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -1962,7 +2087,11 @@ namespace ServiceBricks.Xunit
         [Fact]
         public virtual void GetAllPaging_Multi()
         {
-            Create_Two();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = CreateBase(minmodel);
+
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = CreateBase(maxmodel);
 
             int existingCount = 0;
             //Call GetAll
@@ -2080,12 +2209,20 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBase(mindto);
+            DeleteBase(maxdto);
         }
 
         [Fact]
         public virtual void GetAllPaging_MultiReturnResponse()
         {
-            Create_TwoReturnResponse();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = CreateBaseReturnResponse(minmodel);
+
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = CreateBaseReturnResponse(maxmodel);
 
             int existingCount = 0;
             //Call GetAll
@@ -2205,6 +2342,10 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBaseReturnResponse(mindto);
+            DeleteBaseReturnResponse(maxdto);
         }
 
         [Fact]
@@ -2293,6 +2434,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBase(model);
 
             UpdateNoChangeBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -2303,6 +2447,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBaseReturnResponse(model);
 
             UpdateNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -2313,6 +2460,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBase(model);
 
             UpdateNoChangeBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -2323,6 +2473,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBaseReturnResponse(model);
 
             UpdateNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         protected virtual void UpdateBase(TDto model)
@@ -2381,6 +2534,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = CreateBase(model);
             UpdateBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -2389,6 +2545,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = CreateBaseReturnResponse(model);
             UpdateBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -2397,6 +2556,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = CreateBase(model);
             UpdateBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -2405,6 +2567,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = CreateBaseReturnResponse(model);
             UpdateBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         protected virtual void DeleteBase(TDto model)
@@ -2581,6 +2746,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -2658,6 +2826,9 @@ namespace ServiceBricks.Xunit
             }
             else
                 Assert.Fail("");
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
 
         [Fact]
@@ -2688,6 +2859,9 @@ namespace ServiceBricks.Xunit
                 else
                     Assert.Fail("");
             }
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -2719,7 +2893,10 @@ namespace ServiceBricks.Xunit
                     Assert.Fail("");
             }
 
-            #endregion Sync
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
         }
+
+        #endregion Sync
     }
 }

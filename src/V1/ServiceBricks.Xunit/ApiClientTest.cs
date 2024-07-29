@@ -77,7 +77,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            await CreateBaseAsync(model);
+            var dto = await CreateBaseAsync(model);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -85,7 +88,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            await CreateBaseAsync(model);
+            var dto = await CreateBaseAsync(model);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -102,13 +108,19 @@ namespace ServiceBricks.Xunit
             Assert.True(respGetAll.Success);
             existingCount = respGetAll.Item.List.Count;
 
-            await Create_MinDataAsync();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = await CreateBaseAsync(minmodel);
 
-            await Create_MaxDataAsync();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseAsync(maxmodel);
 
             //Call GetAll again after create
             respGetAll = await client.QueryAsync(GetDefaultServiceQueryRequest());
             Assert.True(respGetAll.Item.List.Count == 2 + existingCount);
+
+            // Cleanup
+            await DeleteBaseAsync(mindto);
+            await DeleteBaseAsync(maxdto);
         }
 
         [Fact]
@@ -138,6 +150,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -167,6 +182,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -193,7 +211,7 @@ namespace ServiceBricks.Xunit
             //Call GetItem
             var client = TestManager.GetClient(SystemManager.ServiceProvider);
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var respGetItem = await client.GetAsync(null);
+            var respGetItem = await client.GetAsync(string.Empty);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             Assert.True(respGetItem.Error);
@@ -222,7 +240,11 @@ namespace ServiceBricks.Xunit
         [Fact]
         public virtual async Task GetAllPaging_MultiAsync()
         {
-            await Create_TwoAsync();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = await CreateBaseAsync(minmodel);
+
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = await CreateBaseAsync(maxmodel);
 
             if (SystemManager == null || SystemManager.ServiceProvider == null)
                 throw new ArgumentNullException(nameof(SystemManager));
@@ -297,6 +319,10 @@ namespace ServiceBricks.Xunit
             Assert.True(respPaging.Error == false);
             Assert.True(respPaging.Item.Count == existingCount);
             Assert.True(respPaging.Item.List.Count == 0);
+
+            // Cleanup
+            await DeleteBaseAsync(mindto);
+            await DeleteBaseAsync(maxdto);
         }
 
         [Fact]
@@ -337,6 +363,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseAsync(model);
 
             await UpdateNoChangeBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -347,6 +376,9 @@ namespace ServiceBricks.Xunit
             var dto = await CreateBaseAsync(model);
 
             await UpdateNoChangeBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         protected virtual async Task UpdateBaseAsync(TDto model)
@@ -375,6 +407,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = await CreateBaseAsync(model);
             await UpdateBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -383,6 +418,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = await CreateBaseAsync(model);
             await UpdateBaseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         protected virtual async Task DeleteBaseAsync(TDto model)
@@ -465,6 +503,9 @@ namespace ServiceBricks.Xunit
 
             foundObject = TestManager.FindObject(respQueryAll.Item.List, dto);
             Assert.True(foundObject != null);
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         [Fact]
@@ -488,6 +529,9 @@ namespace ServiceBricks.Xunit
                 var foundObject = TestManager.FindObject(respQuery.Item.List, dto);
                 Assert.True(foundObject != null);
             }
+
+            // Cleanup
+            await DeleteBaseAsync(dto);
         }
 
         #endregion Async
@@ -553,7 +597,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMinimumDataObject();
 
-            CreateBase(model);
+            var dto = CreateBase(model);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -561,7 +608,10 @@ namespace ServiceBricks.Xunit
         {
             var model = TestManager.GetMaximumDataObject();
 
-            CreateBase(model);
+            var dto = CreateBase(model);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -578,13 +628,19 @@ namespace ServiceBricks.Xunit
             Assert.True(respGetAll.Success);
             existingCount = respGetAll.Item.List.Count;
 
-            Create_MinData();
+            var minmodel = TestManager.GetMinimumDataObject();
+            var mindto = CreateBase(minmodel);
 
-            Create_MaxData();
+            var maxmodel = TestManager.GetMinimumDataObject();
+            var maxdto = CreateBase(maxmodel);
 
             //Call GetAll again after create
             respGetAll = client.Query(GetDefaultServiceQueryRequest());
             Assert.True(respGetAll.Item.List.Count == 2 + existingCount);
+
+            // Cleanup
+            DeleteBase(mindto);
+            DeleteBase(maxdto);
         }
 
         [Fact]
@@ -614,6 +670,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -643,6 +702,9 @@ namespace ServiceBricks.Xunit
 
             //Validate
             TestManager.ValidateObjects(dto, foundObject, HttpMethod.Get);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -669,7 +731,7 @@ namespace ServiceBricks.Xunit
             //Call GetItem
             var client = TestManager.GetClient(SystemManager.ServiceProvider);
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var respGetItem = client.Get(null);
+            var respGetItem = client.Get(string.Empty);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             Assert.True(respGetItem.Error);
@@ -698,7 +760,11 @@ namespace ServiceBricks.Xunit
         [Fact]
         public virtual void GetAllPaging_Multi()
         {
-            Create_Two();
+            var maxmodel = TestManager.GetMaximumDataObject();
+            var maxdto = CreateBase(maxmodel);
+
+            var minmodel = TestManager.GetMaximumDataObject();
+            var mindto = CreateBase(minmodel);
 
             if (SystemManager == null || SystemManager.ServiceProvider == null)
                 throw new ArgumentNullException(nameof(SystemManager));
@@ -773,6 +839,10 @@ namespace ServiceBricks.Xunit
             Assert.True(respPaging.Error == false);
             Assert.True(respPaging.Item.Count == existingCount);
             Assert.True(respPaging.Item.List.Count == 0);
+
+            // Cleanup
+            DeleteBase(mindto);
+            DeleteBase(maxdto);
         }
 
         [Fact]
@@ -813,6 +883,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBase(model);
 
             UpdateNoChangeBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -823,6 +896,9 @@ namespace ServiceBricks.Xunit
             var dto = CreateBase(model);
 
             UpdateNoChangeBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         protected virtual void UpdateBase(TDto model)
@@ -851,6 +927,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMinimumDataObject();
             var dto = CreateBase(model);
             UpdateBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -859,6 +938,9 @@ namespace ServiceBricks.Xunit
             var model = TestManager.GetMaximumDataObject();
             var dto = CreateBase(model);
             UpdateBase(dto);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         protected virtual void DeleteBase(TDto model)
@@ -941,6 +1023,9 @@ namespace ServiceBricks.Xunit
 
             foundObject = TestManager.FindObject(respQueryAll.Item.List, dto);
             Assert.True(foundObject != null);
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         [Fact]
@@ -964,6 +1049,9 @@ namespace ServiceBricks.Xunit
                 var foundObject = TestManager.FindObject(respQuery.Item.List, dto);
                 Assert.True(foundObject != null);
             }
+
+            // Cleanup
+            DeleteBase(dto);
         }
 
         #endregion Sync
