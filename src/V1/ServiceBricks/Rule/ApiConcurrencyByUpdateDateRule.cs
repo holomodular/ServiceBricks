@@ -6,14 +6,17 @@ namespace ServiceBricks
     /// This is a business rule for domain objects to determine if a concurrency violation has happened.
     /// It uses the API Update event to check values once returned from the database.
     /// </summary>
-    public partial class ApiConcurrencyByUpdateDateRule<TDomainObject, TDto> : BusinessRule
+    public sealed class ApiConcurrencyByUpdateDateRule<TDomainObject, TDto> : BusinessRule
         where TDomainObject : class, IDomainObject<TDomainObject>, IDpUpdateDate
         where TDto : class, IDataTransferObject
     {
+        /// <summary>
+        /// The property name for the rule.
+        /// </summary>
         public const string Key_PropertyName = "ApiConcurrencyByUpdateDateRule_PropertyName";
 
-        protected readonly ILogger _logger;
-        protected readonly IStorageRepository<TDomainObject> _storageRepository;
+        private readonly ILogger _logger;
+        private readonly IStorageRepository<TDomainObject> _storageRepository;
 
         /// <summary>
         /// Constructor.
@@ -50,6 +53,7 @@ namespace ServiceBricks
 
             try
             {
+                // AI: Make sure the context object is the correct type
                 var e = context.Object as ApiUpdateBeforeEvent<TDomainObject, TDto>;
                 if (e == null)
                     return response;

@@ -71,7 +71,7 @@ namespace ServiceBricks
         /// <param name="key"></param>
         /// <param name="data"></param>
         /// <param name="domainRuleContext"></param>
-        public void RegisterItem(TKey key, TValue data, Dictionary<string, object> custom)
+        public virtual void RegisterItem(TKey key, TValue data, Dictionary<string, object> custom)
         {
             System.Collections.Generic.IList<RegistryContext<TValue>> existing;
             if (Cache.TryGetValue(key, out existing))

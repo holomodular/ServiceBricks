@@ -7,14 +7,28 @@ namespace ServiceBricks
     /// <summary>
     /// This is a service client that obtains a bearer token.
     /// </summary>
-    public class BearerTokenClient : ServiceClient
+    public partial class BearerTokenClient : ServiceClient
     {
         private readonly ILogger<BearerTokenClient> _logger;
+
         private BearerTokenCredentials _bearerTokenCredentials;
 
+        /// <summary>
+        /// Constants for authorization.
+        /// </summary>
         public const string HEADER_AUTHORIZATION = "Authorization";
+
+        /// <summary>
+        /// Constants for bearer.
+        /// </summary>
         public const string AUTHORIZATION_BEARER = "Bearer";
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="loggerFactory"></param>
+        /// <param name="httpClientFactory"></param>
+        /// <param name="bearerTokenCredentials"></param>
         public BearerTokenClient(
             ILoggerFactory loggerFactory,
             IHttpClientFactory httpClientFactory,
@@ -25,6 +39,11 @@ namespace ServiceBricks
             _bearerTokenCredentials = bearerTokenCredentials;
         }
 
+        /// <summary>
+        /// Send a request with a bearer token.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public override HttpResponseMessage Send(HttpRequestMessage request)
         {
             if (request == null)
@@ -49,6 +68,11 @@ namespace ServiceBricks
             return base.Send(request);
         }
 
+        /// <summary>
+        /// Send a request with a bearer token.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             if (request == null)
@@ -73,6 +97,10 @@ namespace ServiceBricks
             return await base.SendAsync(request);
         }
 
+        /// <summary>
+        /// Get the access token.
+        /// </summary>
+        /// <returns></returns>
         public virtual IResponseItem<AccessTokenResponse> GetAccessToken()
         {
             var response = new ResponseItem<AccessTokenResponse>();
@@ -111,6 +139,10 @@ namespace ServiceBricks
             }
         }
 
+        /// <summary>
+        /// Get the access token asynchronously.
+        /// </summary>
+        /// <returns></returns>
         public virtual async Task<IResponseItem<AccessTokenResponse>> GetAccessTokenAsync()
         {
             var response = new ResponseItem<AccessTokenResponse>();

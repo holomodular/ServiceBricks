@@ -8,7 +8,7 @@ namespace ServiceBricks
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
     /// <typeparam name="TDtoObject"></typeparam>
-    public class ApiService<TDomainObject, TDtoObject> : IApiService<TDtoObject>
+    public partial class ApiService<TDomainObject, TDtoObject> : IApiService<TDtoObject>
         where TDomainObject : class, IDomainObject<TDomainObject>
         where TDtoObject : class, IDataTransferObject, new()
     {
@@ -16,6 +16,12 @@ namespace ServiceBricks
         protected readonly IMapper _mapper;
         protected readonly IBusinessRuleService _businessRuleService;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="mapper"></param>
+        /// <param name="businessRuleService"></param>
+        /// <param name="repository"></param>
         public ApiService(
             IMapper mapper,
             IBusinessRuleService businessRuleService,
@@ -62,6 +68,7 @@ namespace ServiceBricks
             if (!response.Success)
                 return response;
 
+            // Get from repository
             var respGet = _repository.Get(tempParam);
             response.CopyFrom(respGet);
             if (response.Error)
@@ -107,6 +114,7 @@ namespace ServiceBricks
             if (!response.Success)
                 return response;
 
+            // Get from repository
             var respGet = await _repository.GetAsync(tempParam);
             response.CopyFrom(respGet);
             if (response.Error)
@@ -475,6 +483,7 @@ namespace ServiceBricks
             if (!response.Success)
                 return response;
 
+            // Query
             var result = _repository.Query(request);
             response.CopyFrom(result);
             if (response.Error)
@@ -514,6 +523,7 @@ namespace ServiceBricks
             if (!response.Success)
                 return response;
 
+            // Query
             var result = await _repository.QueryAsync(request);
             response.CopyFrom(result);
             if (response.Error)

@@ -6,12 +6,9 @@ namespace ServiceBricks
     /// This is a business rule for domain objects that have the UpdateDate property.
     /// It ensures that it is populated for create and updates.
     /// </summary>
-    public partial class DomainUpdateDateRule<TDomainObject> : BusinessRule where TDomainObject : IDomainObject<TDomainObject>, IDpUpdateDate
+    public sealed class DomainUpdateDateRule<TDomainObject> : BusinessRule where TDomainObject : IDomainObject<TDomainObject>, IDpUpdateDate
     {
-        /// <summary>
-        /// Internal.
-        /// </summary>
-        protected readonly ILogger _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Constructor.
@@ -48,10 +45,13 @@ namespace ServiceBricks
 
             try
             {
+                // AI: Make sure the context object is the correct type
                 if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
                 {
                     eu.DomainObject.UpdateDate = DateTimeOffset.UtcNow;
                 }
+
+                // AI: Make sure the context object is the correct type
                 if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
                 {
                     ei.DomainObject.UpdateDate = DateTimeOffset.UtcNow;

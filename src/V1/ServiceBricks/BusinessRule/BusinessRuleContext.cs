@@ -3,21 +3,33 @@
     /// <summary>
     /// This provides the information used to process a business rule.
     /// </summary>
-    public class BusinessRuleContext : IBusinessRuleContext
+    public partial class BusinessRuleContext : IBusinessRuleContext
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public BusinessRuleContext()
         {
             Data = new Dictionary<string, object>();
         }
 
-        public BusinessRuleContext(object obj)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="obj"></param>
+        public BusinessRuleContext(object obj) : this()
         {
-            Data = new Dictionary<string, object>();
             Object = obj;
         }
 
-        public object Object { get; set; }
+        /// <summary>
+        /// The object to process.
+        /// </summary>
+        public virtual object Object { get; set; }
 
-        public Dictionary<string, object> Data { get; set; }
+        /// <summary>
+        /// The data to process.
+        /// </summary>
+        public virtual Dictionary<string, object> Data { get; set; }
     }
 }

@@ -7,14 +7,10 @@ namespace ServiceBricks
     /// It ensures that it is populated for create and is always in
     /// UTC offset 0 format, otherwise tries to convert it from the user's timezone.
     /// </summary>
-    public partial class DomainCreateDateRule<TDomainObject> : BusinessRule
+    public sealed class DomainCreateDateRule<TDomainObject> : BusinessRule
         where TDomainObject : IDomainObject<TDomainObject>, IDpCreateDate
     {
-        /// <summary>
-        /// Internal.
-        /// </summary>
-        protected readonly ILogger _logger;
-
+        private readonly ILogger _logger;
         private readonly ITimezoneService _timezoneService;
 
         /// <summary>
@@ -53,12 +49,14 @@ namespace ServiceBricks
 
             try
             {
+                // AI: Make sure the context object is the correct type
                 if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
                 {
                     var item = ei.DomainObject;
                     item.CreateDate = DateTimeOffset.UtcNow;
                 }
 
+                // AI: Make sure the context object is the correct type
                 if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
                 {
                     var item = eu.DomainObject;

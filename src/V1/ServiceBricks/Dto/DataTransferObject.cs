@@ -1,7 +1,13 @@
 ﻿namespace ServiceBricks
 {
-    public class DataTransferObject : IDataTransferObject
+    /// <summary>
+    /// This is a data transfer object.
+    /// </summary>
+    public partial class DataTransferObject : IDataTransferObject
     {
+        /// <summary>
+        /// The storage key.
+        /// </summary>
         public virtual string StorageKey { get; set; }
     }
 }

@@ -1,25 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.0.7</Version>
-		<Description>ServiceBricks is the cornerstone for building a microservices foundation. Visit http://ServiceBricks.com to learn more.</Description>
-		<AssemblyTitle>ServiceBricks</AssemblyTitle>
-		<Authors>holomodular</Authors>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
 		<Nullable>disable</Nullable>
-		<Copyright>Copyright © 2023 HoloModular LLC. All Rights Reserved. Visit http://HoloModular.com to learn more.</Copyright>
-		<PackageProjectUrl>http://ServiceBricks.com</PackageProjectUrl>
-		<PackageIcon>logo.png</PackageIcon>
-		<PackageTags>service;bricks;</PackageTags>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>ServiceBricks.snk</AssemblyOriginatorKeyFile>
-		<PackageReadmeFile>readme.md</PackageReadmeFile>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
-		<IsPackable>False</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,9 +12,9 @@
 	  <Compile Include="..\ServiceBricks\Api\ApiController.cs" Link="ApiController.cs" />
 	  <Compile Include="..\ServiceBricks\Api\ApiService.cs" Link="ApiService.cs" />
 	  <Compile Include="..\ServiceBricks\Api\UserPolicyApiController.cs" Link="UserPolicyApiController.cs" />
-	  <Compile Include="..\ServiceBricks\BackgroundTask\TaskQueue.cs" Link="TaskQueue.cs" />
-	  <Compile Include="..\ServiceBricks\BackgroundTask\TaskQueueHostedService.cs" Link="TaskQueueHostedService.cs" />
-	  <Compile Include="..\ServiceBricks\BackgroundTask\TaskTimerHostedService.cs" Link="TaskTimerHostedService.cs" />
+	  <Compile Include="..\ServiceBricks\Background\TaskQueue.cs" Link="TaskQueue.cs" />
+	  <Compile Include="..\ServiceBricks\Background\TaskQueueHostedService.cs" Link="TaskQueueHostedService.cs" />
+	  <Compile Include="..\ServiceBricks\Background\TaskTimerHostedService.cs" Link="TaskTimerHostedService.cs" />
 	  <Compile Include="..\ServiceBricks\Broadcast\CreateApplicationEmailBroadcast.cs" Link="CreateApplicationEmailBroadcast.cs" />
 	  <Compile Include="..\ServiceBricks\Broadcast\CreateApplicationLogBroadcast.cs" Link="CreateApplicationLogBroadcast.cs" />
 	  <Compile Include="..\ServiceBricks\Broadcast\CreateApplicationSmsBroadcast.cs" Link="CreateApplicationSmsBroadcast.cs" />
@@ -94,12 +78,10 @@
 	  <Compile Include="..\ServiceBricks\Interface\BusinessRule\IBusinessRuleRegistry.cs" Link="IBusinessRuleRegistry.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\BusinessRule\IBusinessRuleService.cs" Link="IBusinessRuleService.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpCreateDate.cs" Link="IDpCreateDate.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpCreateUser.cs" Link="IDpCreateUser.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpIsActive.cs" Link="IDpIsActive.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpName.cs" Link="IDpName.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpProcessQueue.cs" Link="IDpProcessQueue.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpUpdateDate.cs" Link="IDpUpdateDate.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpUpdateUser.cs" Link="IDpUpdateUser.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Domain\IDomainBroadcast.cs" Link="IDomainBroadcast.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Domain\IDomainEvent.cs" Link="IDomainEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Domain\IDomainObject.cs" Link="IDomainObject.cs" />
@@ -151,7 +133,6 @@
 	  <Compile Include="..\ServiceBricks\Model\ServiceBricksModule.cs" Link="ServiceBricksModule.cs" />
 	  <Compile Include="..\ServiceBricks\Model\Startup.cs" Link="Startup.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ValidationResponseResult.cs" Link="ValidationResponseResult.cs" />
-	  <Compile Include="..\ServiceBricks\Model\WebConstants.cs" Link="WebConstants.cs" />
 	  <Compile Include="..\ServiceBricks\RequestResponse\AjaxResponse.cs" Link="AjaxResponse.cs" />
 	  <Compile Include="..\ServiceBricks\RequestResponse\AjaxResponseItem.cs" Link="AjaxResponseItem.cs" />
 	  <Compile Include="..\ServiceBricks\RequestResponse\AjaxResponseList.cs" Link="AjaxResponseList.cs" />

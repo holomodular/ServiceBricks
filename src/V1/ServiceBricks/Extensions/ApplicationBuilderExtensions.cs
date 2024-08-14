@@ -3,12 +3,12 @@
 namespace ServiceBricks
 {
     /// <summary>
-    /// Extensions for the Core Brick.
+    /// Extensions for starting ServiceBricks.
     /// </summary>
     public static partial class ApplicationBuilderExtensions
     {
         /// <summary>
-        /// Start the Core Brick.
+        /// Start ServiceBricks
         /// </summary>
         /// <param name="applicationBuilder"></param>
         /// <returns></returns>

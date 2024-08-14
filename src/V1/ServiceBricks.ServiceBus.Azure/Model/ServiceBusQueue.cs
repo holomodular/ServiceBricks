@@ -7,7 +7,10 @@ using System.Text;
 
 namespace ServiceBricks.ServiceBus.Azure
 {
-    public class ServiceBusQueue : IServiceBus, IAsyncDisposable
+    /// <summary>
+    /// This processes service bus messages using a queue.
+    /// </summary>
+    public partial class ServiceBusQueue : IServiceBus, IAsyncDisposable
     {
         protected readonly ILogger<ServiceBusTopic> _logger;
         protected readonly IServiceBusQueue _serviceBusQueue;
@@ -16,6 +19,14 @@ namespace ServiceBricks.ServiceBus.Azure
         protected readonly IConfiguration _configuration;
         protected readonly List<ServiceBusProcessor> _processors = new List<ServiceBusProcessor>();
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="loggerFactory"></param>
+        /// <param name="serviceBusQueue"></param>
+        /// <param name="domainRuleRegistry"></param>
+        /// <param name="configuration"></param>
+        /// <param name="serviceBusConnection"></param>
         public ServiceBusQueue(
             ILoggerFactory loggerFactory,
             IServiceBusQueue serviceBusQueue,
@@ -30,11 +41,18 @@ namespace ServiceBricks.ServiceBus.Azure
             _serviceBusConnection = serviceBusConnection;
         }
 
+        /// <summary>
+        /// Start the service bus.
+        /// </summary>
         public virtual void Start()
         {
             StartAsync().GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Start the service bus.
+        /// </summary>
+        /// <returns></returns>
         public virtual async Task StartAsync()
         {
             // Get a list of all queues in service bus
@@ -66,6 +84,9 @@ namespace ServiceBricks.ServiceBus.Azure
             }
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         public virtual void Dispose()
         {
             foreach (var processor in _processors)
@@ -73,6 +94,10 @@ namespace ServiceBricks.ServiceBus.Azure
             _processors.Clear();
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
+        /// <returns></returns>
         public virtual async ValueTask DisposeAsync()
         {
             foreach (var processor in _processors)
@@ -80,33 +105,64 @@ namespace ServiceBricks.ServiceBus.Azure
             _processors.Clear();
         }
 
+        /// <summary>
+        /// Subscribe to a message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
         public virtual void Subscribe(Type message, Type handler)
         {
             _domainRuleRegistry.RegisterItem(message, handler);
         }
 
+        /// <summary>
+        /// Subscribe to a message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
+        /// <returns></returns>
         public virtual Task SubscribeAsync(Type message, Type handler)
         {
             Subscribe(message, handler);
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Unsubscribe from a message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
         public virtual void Unsubscribe(Type message, Type handler)
         {
             _domainRuleRegistry.UnRegisterItem(message, handler);
         }
 
+        /// <summary>
+        /// Unsuscribe from a message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
+        /// <returns></returns>
         public virtual Task UnsubscribeAsync(Type message, Type handler)
         {
             Unsubscribe(message, handler);
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Send a message.
+        /// </summary>
+        /// <param name="message"></param>
         public virtual void Send(IDomainBroadcast message)
         {
             SendAsync(message).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Send a message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public virtual async Task SendAsync(IDomainBroadcast message)
         {
             var eventName = message.GetType().FullName;
@@ -124,10 +180,14 @@ namespace ServiceBricks.ServiceBus.Azure
             await sender.SendMessageAsync(msg);
         }
 
+        /// <summary>
+        /// Start the queue processor.
+        /// </summary>
+        /// <param name="queueName"></param>
+        /// <returns></returns>
         protected virtual async Task StartQueueProcessorAsync(string queueName)
         {
-            ServiceBusProcessorOptions options = new ServiceBusProcessorOptions { MaxConcurrentCalls = 10, AutoCompleteMessages = false };
-            var processor = _serviceBusConnection.Client.CreateProcessor(queueName, options);
+            var processor = _serviceBusConnection.Client.CreateProcessor(queueName);
             _processors.Add(processor);
 
             processor.ProcessMessageAsync +=
@@ -147,12 +207,23 @@ namespace ServiceBricks.ServiceBus.Azure
             await processor.StartProcessingAsync();
         }
 
+        /// <summary>
+        /// Error handler.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         protected virtual Task ErrorHandler(ProcessErrorEventArgs args)
         {
             _logger.LogError(args.Exception, $"{args.ErrorSource}");
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Process a broadcast.
+        /// </summary>
+        /// <param name="broadcastName"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         protected virtual async Task<bool> ProcessBroadcastAsync(string broadcastName, string message)
         {
             var processed = false;

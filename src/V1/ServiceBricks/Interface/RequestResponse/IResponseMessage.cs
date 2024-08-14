@@ -3,7 +3,7 @@
     /// <summary>
     /// This is a response message.
     /// </summary>
-    public interface IResponseMessage
+    public partial interface IResponseMessage
     {
         /// <summary>
         /// Severity of the message.

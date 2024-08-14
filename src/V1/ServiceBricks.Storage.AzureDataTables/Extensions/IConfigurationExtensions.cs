@@ -2,13 +2,27 @@
 
 namespace ServiceBricks.Storage.AzureDataTables
 {
-    public static class IConfigurationExtensions
+    /// <summary>
+    /// Configuration extensions.
+    /// </summary>
+    public static partial class IConfigurationExtensions
     {
+        /// <summary>
+        /// Get the Azure Data Tables connection string.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static string GetAzureDataTablesConnectionString(this IConfiguration configuration)
         {
             return configuration.GetValue<string>(StorageAzureDataTablesConstants.APPSETTING_CONNECTION_STRING);
         }
 
+        /// <summary>
+        /// Get the Azure Data Tables connection string.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="configKey"></param>
+        /// <returns></returns>
         public static string GetAzureDataTablesConnectionString(this IConfiguration configuration, string configKey)
         {
             string val = configuration.GetValue<string>(configKey);

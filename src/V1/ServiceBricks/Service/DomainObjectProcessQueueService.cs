@@ -12,6 +12,9 @@ namespace ServiceBricks
     public abstract partial class DomainObjectProcessQueueService<TDomainObject>
         where TDomainObject : class, IDomainObject<TDomainObject>, IDpProcessQueue
     {
+        protected readonly IDomainObjectProcessQueueStorageRepository<TDomainObject> _repository;
+        protected readonly ILogger<DomainObjectProcessQueueService<TDomainObject>> _logger;
+
         /// <summary>
         /// Default Value.
         /// </summary>
@@ -46,16 +49,6 @@ namespace ServiceBricks
         /// Default Value.
         /// </summary>
         public TimeSpan FAILED_RETRY_INTERVAL = TimeSpan.FromMinutes(5);
-
-        /// <summary>
-        /// Internal.
-        /// </summary>
-        protected readonly IDomainObjectProcessQueueStorageRepository<TDomainObject> _repository;
-
-        /// <summary>
-        /// Internal.
-        /// </summary>
-        private readonly ILogger<DomainObjectProcessQueueService<TDomainObject>> _logger;
 
         /// <summary>
         /// Consrtuctor.
@@ -217,7 +210,7 @@ namespace ServiceBricks
             }
         }
 
-        private async Task FixOrphanedRecords()
+        protected async Task FixOrphanedRecords()
         {
             DateTimeOffset timeoutDate = DateTimeOffset.UtcNow.Subtract(OrphanedProcessingTimeout);
             ServiceQueryRequestBuilder queryBuilder = new ServiceQueryRequestBuilder();
@@ -236,7 +229,7 @@ namespace ServiceBricks
             }
         }
 
-        private async Task DoProcessingForItem(TDomainObject item)
+        protected async Task DoProcessingForItem(TDomainObject item)
         {
             item.ProcessDate = DateTimeOffset.UtcNow;
 
@@ -281,7 +274,14 @@ namespace ServiceBricks
         /// <returns></returns>
         public abstract Task<IResponse> ProcessItemAsync(TDomainObject domainObject);
 
-        public static ServiceQueryRequest GetQueueItemsQuery(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
+        /// <summary>
+        /// Get the query to pickup items from the queue.
+        /// </summary>
+        /// <param name="batchNumberToTake"></param>
+        /// <param name="pickupErrors"></param>
+        /// <param name="errorPickupCutoffDate"></param>
+        /// <returns></returns>
+        public virtual ServiceQueryRequest GetQueueItemsQuery(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
 

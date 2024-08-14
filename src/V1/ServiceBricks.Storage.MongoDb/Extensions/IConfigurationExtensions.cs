@@ -2,13 +2,27 @@
 
 namespace ServiceBricks.Storage.MongoDb
 {
-    public static class IConfigurationExtensions
+    /// <summary>
+    /// Extensions for IConfiguration.
+    /// </summary>
+    public static partial class IConfigurationExtensions
     {
+        /// <summary>
+        /// Get the MongoDB connection string.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static string GetMongoDbConnectionString(this IConfiguration configuration)
         {
             return configuration.GetValue<string>(StorageMongoDbConstants.APPSETTING_CONNECTION_STRING);
         }
 
+        /// <summary>
+        /// Get the MongoDB connection string.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="configKey"></param>
+        /// <returns></returns>
         public static string GetMongoDbConnectionString(this IConfiguration configuration, string configKey)
         {
             string val = configuration.GetValue<string>(configKey);
@@ -17,6 +31,11 @@ namespace ServiceBricks.Storage.MongoDb
             return val;
         }
 
+        /// <summary>
+        /// Get the MongoDB database name.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static string GetMongoDbDatabase(this IConfiguration configuration)
         {
             var val = configuration.GetValue<string>(StorageMongoDbConstants.APPSETTING_DATABASE_NAME);
@@ -25,6 +44,12 @@ namespace ServiceBricks.Storage.MongoDb
             return val;
         }
 
+        /// <summary>
+        /// Get the MongoDB database name.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="configKey"></param>
+        /// <returns></returns>
         public static string GetMongoDbDatabase(this IConfiguration configuration, string configKey)
         {
             string val = configuration.GetValue<string>(configKey);

@@ -7,11 +7,11 @@ using System.Text;
 
 namespace ServiceBricks.ServiceBus.Azure
 {
-    public class ServiceBusTopic : IServiceBus, IAsyncDisposable
+    /// <summary>
+    /// This processes service bus messages using topics
+    /// </summary>
+    public partial class ServiceBusTopic : IServiceBus, IAsyncDisposable
     {
-        public const string DEFAULT_TOPIC_NAME = "ServiceBricksTopic";
-        public const string DEFAULT_SUBSCRIPTION_NAME = "ServiceBricksSubscription";
-
         protected readonly ILogger<ServiceBusTopic> _logger;
         protected readonly IServiceBusQueue _serviceBusQueue;
         protected readonly IBusinessRuleRegistry _domainRuleRegistry;
@@ -20,6 +20,24 @@ namespace ServiceBricks.ServiceBus.Azure
 
         protected ServiceBusProcessor _processor;
 
+        /// <summary>
+        /// The default topic name
+        /// </summary>
+        public const string DEFAULT_TOPIC_NAME = "ServiceBricksTopic";
+
+        /// <summary>
+        /// The default subscription name
+        /// </summary>
+        public const string DEFAULT_SUBSCRIPTION_NAME = "ServiceBricksSubscription";
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="loggerFactory"></param>
+        /// <param name="serviceBusQueue"></param>
+        /// <param name="domainRuleRegistry"></param>
+        /// <param name="configuration"></param>
+        /// <param name="serviceBusConnection"></param>
         public ServiceBusTopic(
             ILoggerFactory loggerFactory,
             IServiceBusQueue serviceBusQueue,
@@ -33,31 +51,49 @@ namespace ServiceBricks.ServiceBus.Azure
             _configuration = configuration;
             _serviceBusConnection = serviceBusConnection;
 
+            // Set topic
             var topic = _configuration.GetValue<string>(ServiceBusAzureConstants.APPSETTINGS_TOPIC);
             if (string.IsNullOrEmpty(topic))
                 topic = DEFAULT_TOPIC_NAME;
             Topic = topic;
 
+            // Set subscription
             var subscription = _configuration.GetValue<string>(ServiceBusAzureConstants.APPSETTINGS_SUBSCRIPTION);
             if (string.IsNullOrEmpty(subscription))
                 subscription = DEFAULT_SUBSCRIPTION_NAME;
             Subscription = subscription;
         }
 
+        /// <summary>
+        /// The topic name
+        /// </summary>
         public virtual string Topic { get; set; }
+
+        /// <summary>
+        /// Subscription name
+        /// </summary>
         public virtual string Subscription { get; set; }
 
+        /// <summary>
+        /// Start the service bus
+        /// </summary>
         public virtual void Start()
         {
             StartAsync().GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Start the service bus
+        /// </summary>
+        /// <returns></returns>
         public virtual async Task StartAsync()
         {
             // Create Topic and Subscription
             await CreateTopicSubscriptionAsync();
 
+            // Get a list of all rules in service bus
             var existingRules = await GetRules();
+
             // Find all subscribed events
             var types = _domainRuleRegistry.GetKeys();
             var events = types.Where(x =>
@@ -75,12 +111,17 @@ namespace ServiceBricks.ServiceBus.Azure
             if (existingRules.Where(x => x.Name == RuleProperties.DefaultRuleName).Any())
                 await RemoveDefaultRuleAsync();
 
-            ServiceBusProcessorOptions options = new ServiceBusProcessorOptions { MaxConcurrentCalls = 10, AutoCompleteMessages = false };
-            _processor = _serviceBusConnection.Client.CreateProcessor(Topic, Subscription, options);
+            // Start processor
+            _processor = _serviceBusConnection.Client.CreateProcessor(Topic, Subscription);
             await StartTopicProcessorAsync();
         }
 
-        protected string GetRuleName(Type type)
+        /// <summary>
+        /// Get the rule name
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        protected virtual string GetRuleName(Type type)
         {
             string name = type.FullName;
             if (name.Length > 50)
@@ -91,6 +132,10 @@ namespace ServiceBricks.ServiceBus.Azure
             return name;
         }
 
+        /// <summary>
+        /// Get the list of rules
+        /// </summary>
+        /// <returns></returns>
         protected virtual async Task<List<RuleProperties>> GetRules()
         {
             try
@@ -110,6 +155,11 @@ namespace ServiceBricks.ServiceBus.Azure
             }
         }
 
+        /// <summary>
+        /// Create a rule
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         protected virtual async Task CreateRule(Type message)
         {
             try
@@ -132,6 +182,10 @@ namespace ServiceBricks.ServiceBus.Azure
             }
         }
 
+        /// <summary>
+        /// Create the topic and subscription
+        /// </summary>
+        /// <returns></returns>
         protected virtual async Task CreateTopicSubscriptionAsync()
         {
             try
@@ -150,21 +204,37 @@ namespace ServiceBricks.ServiceBus.Azure
             }
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         public virtual void Dispose()
         {
             _processor?.CloseAsync().GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
+        /// <returns></returns>
         public virtual async ValueTask DisposeAsync()
         {
             await _processor?.CloseAsync();
         }
 
+        /// <summary>
+        /// Send a message
+        /// </summary>
+        /// <param name="message"></param>
         public virtual void Send(IDomainBroadcast message)
         {
             SendAsync(message).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Send a message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public virtual async Task SendAsync(IDomainBroadcast message)
         {
             var eventName = message.GetType().FullName;
@@ -182,22 +252,44 @@ namespace ServiceBricks.ServiceBus.Azure
             await sender.SendMessageAsync(msg);
         }
 
+        /// <summary>
+        /// Subscribe to a message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
         public virtual void Subscribe(Type message, Type handler)
         {
             _domainRuleRegistry.RegisterItem(message, handler);
         }
 
+        /// <summary>
+        /// Subscribe to a message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
+        /// <returns></returns>
         public virtual async Task SubscribeAsync(Type message, Type handler)
         {
             Subscribe(message, handler);
             await Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Unsuscribe from a message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
         public virtual void Unsubscribe(Type message, Type handler)
         {
             UnsubscribeAsync(message, handler).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Unsuscribe from a message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="handler"></param>
+        /// <returns></returns>
         public virtual async Task UnsubscribeAsync(Type message, Type handler)
         {
             _domainRuleRegistry.UnRegisterItem(message, handler);
@@ -217,6 +309,10 @@ namespace ServiceBricks.ServiceBus.Azure
             }
         }
 
+        /// <summary>
+        /// Remove the default rule
+        /// </summary>
+        /// <returns></returns>
         protected virtual async Task RemoveDefaultRuleAsync()
         {
             try
@@ -234,6 +330,10 @@ namespace ServiceBricks.ServiceBus.Azure
             }
         }
 
+        /// <summary>
+        /// Start topic processor
+        /// </summary>
+        /// <returns></returns>
         protected virtual async Task StartTopicProcessorAsync()
         {
             _processor.ProcessMessageAsync +=
@@ -253,12 +353,23 @@ namespace ServiceBricks.ServiceBus.Azure
             await _processor.StartProcessingAsync();
         }
 
+        /// <summary>
+        /// Handle error
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         protected virtual Task ErrorHandler(ProcessErrorEventArgs args)
         {
             _logger.LogError(args.Exception, $"{args.ErrorSource}");
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Process a broadcast
+        /// </summary>
+        /// <param name="broadcastName"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         protected virtual async Task<bool> ProcessBroadcast(string broadcastName, string message)
         {
             var processed = false;

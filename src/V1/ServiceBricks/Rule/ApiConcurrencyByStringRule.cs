@@ -6,15 +6,17 @@ namespace ServiceBricks
     /// This is a business rule for domain objects to determine if a concurrency violation has happened.
     /// It uses the API Update event to check values once returned from the database.
     /// </summary>
-    public partial class ApiConcurrencyByStringRule<TDomainObject, TDto> : BusinessRule
+    public sealed class ApiConcurrencyByStringRule<TDomainObject, TDto> : BusinessRule
         where TDomainObject : class, IDomainObject<TDomainObject>
         where TDto : class, IDataTransferObject
     {
+        private readonly ILogger _logger;
+        private readonly IStorageRepository<TDomainObject> _storageRepository;
+
+        /// <summary>
+        /// The property name to check for concurrency.
+        /// </summary>
         public const string Key_PropertyName = "ApiConcurrencyByStringRule_PropertyName";
-
-        protected readonly ILogger _logger;
-
-        protected readonly IStorageRepository<TDomainObject> _storageRepository;
 
         /// <summary>
         /// Constructor.
@@ -57,13 +59,14 @@ namespace ServiceBricks
 
             try
             {
+                // AI: Make sure the context object is the correct type
                 var e = context.Object as ApiUpdateBeforeEvent<TDomainObject, TDto>;
                 if (e == null)
                     return response;
 
                 var item = e.DomainObject;
 
-                //Get the property name from the custom context
+                // Get the property name from the custom context
                 if (CustomData == null || !CustomData.ContainsKey(Key_PropertyName))
                     throw new Exception("Context missing propertyname");
                 var propName = CustomData[Key_PropertyName];
@@ -71,13 +74,13 @@ namespace ServiceBricks
                     throw new Exception("Context propertyname invalid");
                 string propertyName = propName.ToString();
 
-                //Get old and new values
+                // Get old and new values
                 var existingProp = e.DomainObject.GetType().GetProperty(propertyName).GetValue(e.DomainObject);
                 var existingValue = existingProp.ToString();
                 var newProp = e.DtoObject.GetType().GetProperty(propertyName).GetValue(e.DtoObject);
                 var newValue = newProp.ToString();
 
-                //Concurrency violation check
+                // Concurrency violation check
                 if (newValue != existingValue)
                 {
                     response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE_CONCURRENCY));

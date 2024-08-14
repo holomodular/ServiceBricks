@@ -5,8 +5,15 @@
     /// </summary>
     public partial class ModuleRegistry : Registry<Type, IModule>, IModuleRegistry
     {
+        /// <summary>
+        /// The singelton instance of the module registry.
+        /// </summary>
         public static ModuleRegistry Instance = new ModuleRegistry();
 
+        /// <summary>
+        /// Get a list of all modules.
+        /// </summary>
+        /// <returns></returns>
         public virtual List<IModule> GetModules()
         {
             return this.Cache.Values.ToList();

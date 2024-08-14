@@ -7,16 +7,15 @@ namespace ServiceBricks
     /// It ensures the datetimeoffset or datetimeoffset? property is always in
     /// UTC offset 0 format, otherwise tries to convert it from the user's timezone.
     /// </summary>
-    public partial class DomainDateTimeOffsetRule<TDomainObject> : BusinessRule
+    public sealed class DomainDateTimeOffsetRule<TDomainObject> : BusinessRule
         where TDomainObject : class, IDomainObject<TDomainObject>
     {
-        private const string Key_PropertyName = "DomainDateTimeOffsetRule_PropertyName";
-
         /// <summary>
-        /// Internal.
+        /// The key for the property name.
         /// </summary>
-        protected readonly ILogger _logger;
+        public const string Key_PropertyName = "DomainDateTimeOffsetRule_PropertyName";
 
+        private readonly ILogger _logger;
         private readonly ITimezoneService _timezoneService;
         private readonly IStorageRepository<TDomainObject> _storageRepository;
 
@@ -78,6 +77,7 @@ namespace ServiceBricks
                 if (propNames == null || propNames.Count == 0)
                     throw new Exception("Propertyname list invalid");
 
+                // AI: Make sure the context object is the correct type
                 if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
                 {
                     var item = ei.DomainObject;
@@ -111,6 +111,7 @@ namespace ServiceBricks
                     }
                 }
 
+                // AI: Make sure the context object is the correct type
                 if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
                 {
                     var item = eu.DomainObject;

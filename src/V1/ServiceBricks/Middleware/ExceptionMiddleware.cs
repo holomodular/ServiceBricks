@@ -11,13 +11,16 @@ using System.Net;
 
 namespace ServiceBricks
 {
-    public class ExceptionMiddleware
+    /// <summary>
+    /// A middleware to handle exceptions.
+    /// </summary>
+    public partial class ExceptionMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionMiddleware> _logger;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IMapper _mapper;
-        private readonly ApiOptions _apiOptions;
+        protected readonly RequestDelegate _next;
+        protected readonly ILogger<ExceptionMiddleware> _logger;
+        protected readonly IWebHostEnvironment _webHostEnvironment;
+        protected readonly IMapper _mapper;
+        protected readonly ApiOptions _apiOptions;
 
         public ExceptionMiddleware(
             RequestDelegate next,
@@ -33,7 +36,12 @@ namespace ServiceBricks
             _apiOptions = apiOptions.Value;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext)
+        /// <summary>
+        /// Runtime method
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <returns></returns>
+        public virtual async Task InvokeAsync(HttpContext httpContext)
         {
             try
             {
@@ -45,7 +53,13 @@ namespace ServiceBricks
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        /// <summary>
+        /// Handle exceptions
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
+        protected virtual async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             // Log all exceptions
             _logger.LogError(exception, exception.Message);

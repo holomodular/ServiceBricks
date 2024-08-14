@@ -3,8 +3,19 @@ using Azure.Data.Tables;
 
 namespace ServiceBricks.Storage.AzureDataTables
 {
-    public class StorageKeyResolver : IValueResolver<ITableEntity, DataTransferObject, string>
+    /// <summary>
+    /// Resolve the storage key.
+    /// </summary>
+    public partial class StorageKeyResolver : IValueResolver<ITableEntity, DataTransferObject, string>
     {
+        /// <summary>
+        /// Resolve the storage key.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <param name="sourceMember"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public string Resolve(ITableEntity source, DataTransferObject destination, string sourceMember, ResolutionContext context)
         {
             if (string.IsNullOrEmpty(source.RowKey))

@@ -9,13 +9,19 @@ namespace ServiceBricks
     /// This is a REST-based service client for a domain object based API service.
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
-    public class ApiClient<TDto> : BearerTokenClient, IApiClient<TDto>
+    public partial class ApiClient<TDto> : BearerTokenClient, IApiClient<TDto>
         where TDto : class, IDataTransferObject
     {
         protected readonly ClientApiOptions _clientApiOptions;
         protected readonly ILogger<ApiClient<TDto>> _logger;
         protected Type _type = null;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="loggerFactory"></param>
+        /// <param name="httpClientFactory"></param>
+        /// <param name="clientApiOptions"></param>
         public ApiClient(
             ILoggerFactory loggerFactory,
             IHttpClientFactory httpClientFactory,

@@ -2,8 +2,14 @@
 
 namespace ServiceBricks
 {
-    public class DomainTypeMappingProfile : Profile
+    /// <summary>
+    /// A mapping profile for domain types.
+    /// </summary>
+    public partial class DomainTypeMappingProfile : Profile
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public DomainTypeMappingProfile()
         {
             CreateMap<DomainType, DomainTypeDto>()

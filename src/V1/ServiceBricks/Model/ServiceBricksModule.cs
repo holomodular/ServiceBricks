@@ -2,8 +2,14 @@
 
 namespace ServiceBricks
 {
-    public class ServiceBricksModule : IModule
+    /// <summary>
+    /// The module definition for the Service Bricks module.
+    /// </summary>
+    public partial class ServiceBricksModule : IModule
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public ServiceBricksModule()
         {
             AutomapperAssemblies = new List<Assembly>()
@@ -12,8 +18,19 @@ namespace ServiceBricks
             };
         }
 
+        /// <summary>
+        /// The list of dependent modules.
+        /// </summary>
         public List<IModule> DependentModules { get; }
-        public List<Assembly> ViewAssemblies { get; }
+
+        /// <summary>
+        /// The list of automapper assemblies.
+        /// </summary>
         public List<Assembly> AutomapperAssemblies { get; }
+
+        /// <summary>
+        /// The list of view assemblies.
+        /// </summary>
+        public List<Assembly> ViewAssemblies { get; }
     }
 }

@@ -3,9 +3,9 @@
 namespace ServiceBricks
 {
     /// <summary>
-    /// ModelState extensions for the Core module.
+    /// ModelState extensions for the ServiceBricks module.
     /// </summary>
-    public static class ModelStateExtensions
+    public static partial class ModelStateExtensions
     {
         /// <summary>
         /// Copy messages from a response object to this instance.

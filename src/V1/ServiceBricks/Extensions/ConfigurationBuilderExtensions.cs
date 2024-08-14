@@ -5,10 +5,15 @@ namespace ServiceBricks
     /// <summary>
     /// IConfigurationBuilder extensions for the Core module.
     /// </summary>
-    public static class ConfigurationBuilderExtensions
+    public static partial class ConfigurationBuilderExtensions
     {
         public const string APPSETTINGS_FILENAME = "appsettings.json";
 
+        /// <summary>
+        /// Add appsettings and environment variables.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IConfigurationBuilder AddAppSettingsConfig(this IConfigurationBuilder builder)
         {
             // Set Folder Path

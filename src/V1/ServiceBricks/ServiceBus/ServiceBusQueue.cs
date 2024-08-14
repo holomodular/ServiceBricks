@@ -3,7 +3,7 @@
     /// <summary>
     /// This queues work to be processed in order on a background task.
     /// </summary>
-    public class ServiceBusQueue : TaskQueue, IServiceBusQueue
+    public partial class ServiceBusQueue : TaskQueue, IServiceBusQueue
     {
     }
 }

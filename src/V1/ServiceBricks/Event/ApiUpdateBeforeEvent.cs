@@ -1,21 +1,26 @@
 ﻿namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires Before creating a DTO to a domain object.
+    /// This API event fires before update.
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial class ApiUpdateBeforeEvent<TDomain, TDto> : DomainEvent<TDomain>
         where TDto : IDataTransferObject
     {
-        public ApiUpdateBeforeEvent() : base()
-        { }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="dto"></param>
         public ApiUpdateBeforeEvent(TDomain domain, TDto dto) : base()
         {
             DomainObject = domain;
             DtoObject = dto;
         }
 
-        public TDto DtoObject { get; set; }
+        /// <summary>
+        /// The data transfer object.
+        /// </summary>
+        public virtual TDto DtoObject { get; set; }
     }
 }

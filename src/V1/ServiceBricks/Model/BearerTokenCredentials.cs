@@ -3,10 +3,21 @@
     /// <summary>
     /// This is a bearer token credential.
     /// </summary>
-    public class BearerTokenCredentials
+    public partial class BearerTokenCredentials
     {
-        public string AuthorizationUrl { get; set; }
-        public AccessTokenRequest AccessTokenRequest { get; set; }
-        public AccessTokenResponse AccessTokenResponse { get; set; }
+        /// <summary>
+        /// The url of the authorization.
+        /// </summary>
+        public virtual string AuthorizationUrl { get; set; }
+
+        /// <summary>
+        /// The access token request.
+        /// </summary>
+        public virtual AccessTokenRequest AccessTokenRequest { get; set; }
+
+        /// <summary>
+        /// The access token response.
+        /// </summary>
+        public virtual AccessTokenResponse AccessTokenResponse { get; set; }
     }
 }

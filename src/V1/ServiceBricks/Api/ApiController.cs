@@ -26,6 +26,11 @@ namespace ServiceBricks
             _apiOptions = apiOptions.Value ?? new ApiOptions();
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{storageKey}")]
         [Route("Get/{storageKey}")]
@@ -44,6 +49,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         [Route("Get")]
@@ -62,6 +72,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -79,6 +94,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -96,6 +116,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("")]
         [Route("Update")]
@@ -114,6 +139,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("UpdateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -131,6 +161,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         [Route("Create")]
@@ -149,6 +184,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("CreateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -166,6 +206,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{storageKey}")]
         [Route("Delete/{storageKey}")]
@@ -184,6 +229,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("")]
         [Route("Delete")]
@@ -202,6 +252,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("DeleteAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -219,6 +274,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("DeleteAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -236,6 +296,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Query
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Query")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -253,6 +318,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Query
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("QueryAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -270,6 +340,11 @@ namespace ServiceBricks
             return GetErrorResponse(resp);
         }
 
+        /// <summary>
+        /// Get the error response
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
         [NonAction]
         public virtual ActionResult GetErrorResponse(IResponse response)
         {

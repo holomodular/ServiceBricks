@@ -3,7 +3,7 @@
     /// <summary>
     /// This is a domain process.
     /// </summary>
-    public interface IDomainProcess
+    public partial interface IDomainProcess
     {
     }
 
@@ -11,8 +11,11 @@
     /// This is a domain process.
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
-    public interface IDomainProcess<TDomainObject>
+    public partial interface IDomainProcess<TDomainObject>
     {
+        /// <summary>
+        /// The domain object.
+        /// </summary>
         TDomainObject DomainObject { get; set; }
     }
 }

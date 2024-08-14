@@ -7,9 +7,6 @@
     /// </summary>
     public partial class BusinessException : Exception, IBusinessException
     {
-        /// <summary>
-        /// Internal.
-        /// </summary>
         protected List<IResponseMessage> _messages = new List<IResponseMessage>();
 
         /// <summary>

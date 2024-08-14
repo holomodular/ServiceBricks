@@ -8,10 +8,16 @@ namespace ServiceBricks
     /// </summary>
     public partial class BusinessRuleService : IBusinessRuleService
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger _logger;
-        private readonly IBusinessRuleRegistry _domainRuleRegistry;
+        protected readonly IServiceProvider _serviceProvider;
+        protected readonly ILogger _logger;
+        protected readonly IBusinessRuleRegistry _domainRuleRegistry;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="logFactory"></param>
+        /// <param name="domainRuleRegistry"></param>
         public BusinessRuleService(
             IServiceProvider serviceProvider,
             ILoggerFactory logFactory,

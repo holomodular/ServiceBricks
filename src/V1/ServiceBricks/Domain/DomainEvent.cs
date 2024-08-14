@@ -5,6 +5,9 @@
     /// </summary>
     public partial class DomainEvent : IDomainEvent<object>, IDomainEvent
     {
+        /// <summary>
+        /// The object that is being raised
+        /// </summary>
         public virtual object DomainObject { get; set; }
     }
 
@@ -14,6 +17,9 @@
     /// <typeparam name="TDomainObject"></typeparam>
     public partial class DomainEvent<TDomainObject> : IDomainEvent<TDomainObject>, IDomainEvent
     {
+        /// <summary>
+        /// The object that is being raised
+        /// </summary>
         public virtual TDomainObject DomainObject { get; set; }
     }
 }

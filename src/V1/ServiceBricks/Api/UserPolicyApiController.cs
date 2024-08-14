@@ -11,9 +11,14 @@ namespace ServiceBricks
     /// requiring the user security policy to invoke all methods.
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
-    public class UserPolicyApiController<TDto> : ApiController<TDto>
+    public partial class UserPolicyApiController<TDto> : ApiController<TDto>
         where TDto : class, new()
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="domainObjectService"></param>
+        /// <param name="apiOptions"></param>
         public UserPolicyApiController(
             IApiService<TDto> domainObjectService,
             IOptions<ApiOptions> apiOptions)
@@ -21,6 +26,11 @@ namespace ServiceBricks
         {
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{storageKey}")]
         [Route("Get/{storageKey}")]
@@ -32,6 +42,11 @@ namespace ServiceBricks
             return base.Get(storageKey);
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         [Route("Get")]
@@ -43,6 +58,11 @@ namespace ServiceBricks
             return base.Get(storageKey);
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -53,6 +73,11 @@ namespace ServiceBricks
             return await base.GetAsync(storageKey);
         }
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -63,6 +88,11 @@ namespace ServiceBricks
             return await base.GetAsync(storageKey);
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("")]
         [Route("Update")]
@@ -74,6 +104,11 @@ namespace ServiceBricks
             return base.Update(dto);
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("UpdateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -84,6 +119,11 @@ namespace ServiceBricks
             return await base.UpdateAsync(dto);
         }
 
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         [Route("Create")]
@@ -95,6 +135,11 @@ namespace ServiceBricks
             return base.Create(dto);
         }
 
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("CreateAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -105,6 +150,11 @@ namespace ServiceBricks
             return await base.CreateAsync(dto);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{storageKey}")]
         [Route("Delete/{storageKey}")]
@@ -116,6 +166,11 @@ namespace ServiceBricks
             return base.Delete(storageKey);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("")]
         [Route("Delete")]
@@ -127,6 +182,11 @@ namespace ServiceBricks
             return base.Delete(storageKey);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("DeleteAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -137,6 +197,11 @@ namespace ServiceBricks
             return await base.DeleteAsync(storageKey);
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("DeleteAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -147,6 +212,11 @@ namespace ServiceBricks
             return await base.DeleteAsync(storageKey);
         }
 
+        /// <summary>
+        /// Query
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Query")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -157,6 +227,11 @@ namespace ServiceBricks
             return base.Query(request);
         }
 
+        /// <summary>
+        /// Query
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("QueryAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]

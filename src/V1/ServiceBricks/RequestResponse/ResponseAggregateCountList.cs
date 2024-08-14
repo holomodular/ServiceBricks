@@ -24,11 +24,11 @@
         /// <summary>
         /// The total count of records
         /// </summary>
-        public int? Count { get; set; }
+        public virtual int? Count { get; set; }
 
         /// <summary>
         /// The aggregate value.
         /// </summary>
-        public double? Aggregate { get; set; }
+        public virtual double? Aggregate { get; set; }
     }
 }

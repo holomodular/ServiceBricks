@@ -1,10 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ServiceBricks.Model
+namespace ServiceBricks
 {
-    public class ValidationResponseResult : IActionResult
+    /// <summary>
+    /// A result for validation responses.
+    /// </summary>
+    public partial class ValidationResponseResult : IActionResult
     {
-        public async Task ExecuteResultAsync(ActionContext context)
+        /// <summary>
+        /// Execute the result.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public virtual async Task ExecuteResultAsync(ActionContext context)
         {
             var keys = context.ModelState.Keys;
             var dic = context.ModelState.ToDictionary(

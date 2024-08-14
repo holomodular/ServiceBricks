@@ -5,6 +5,9 @@
     /// </summary>
     public partial class DomainBroadcast : IDomainBroadcast<object>, IDomainBroadcast
     {
+        /// <summary>
+        /// The object that is being broadcasted.
+        /// </summary>
         public virtual object DomainObject { get; set; }
     }
 
@@ -14,6 +17,9 @@
     /// <typeparam name="TDomainObject"></typeparam>
     public partial class DomainBroadcast<TDomainObject> : IDomainBroadcast<TDomainObject>, IDomainBroadcast
     {
+        /// <summary>
+        /// The object that is being broadcasted.
+        /// </summary>
         public virtual TDomainObject DomainObject { get; set; }
     }
 }

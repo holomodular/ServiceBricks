@@ -3,7 +3,7 @@
     /// <summary>
     /// This ensures work detail properties are enforced.
     /// </summary>
-    public interface ITaskDetail
+    public partial interface ITaskDetail
     { }
 
     /// <summary>
@@ -11,7 +11,7 @@
     /// </summary>
     /// <typeparam name="TWorkDetail"></typeparam>
     /// <typeparam name="TWorker"></typeparam>
-    public interface ITaskDetail<TWorkDetail, TWorker> : ITaskDetail
+    public partial interface ITaskDetail<TWorkDetail, TWorker> : ITaskDetail
         where TWorkDetail : ITaskDetail<TWorkDetail, TWorker>
         where TWorker : ITaskWork<TWorkDetail, TWorker>
     {

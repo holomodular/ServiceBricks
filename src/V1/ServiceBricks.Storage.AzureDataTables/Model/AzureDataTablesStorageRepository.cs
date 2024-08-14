@@ -13,9 +13,6 @@ namespace ServiceBricks.Storage.AzureDataTables
     public partial class AzureDataTablesStorageRepository<TDomain> : IStorageRepository<TDomain>
         where TDomain : class, IAzureDataTablesDomainObject<TDomain>, new()
     {
-        /// <summary>
-        /// Internal.
-        /// </summary>
         protected readonly ILogger _logger;
 
         /// <summary>
@@ -29,12 +26,35 @@ namespace ServiceBricks.Storage.AzureDataTables
             _logger = logFactory.CreateLogger<AzureDataTablesStorageRepository<TDomain>>();
         }
 
+        /// <summary>
+        /// The ServiceQueryOptions.
+        /// </summary>
         public virtual ServiceQueryOptions ServiceQueryOptions { get; set; }
+
+        /// <summary>
+        /// The AzureDataTablesOptions.
+        /// </summary>
         public virtual AzureDataTablesOptions AzureDataTablesOptions { get; set; }
+
+        /// <summary>
+        /// The connection string.
+        /// </summary>
         public virtual string ConnectionString { get; set; }
+
+        /// <summary>
+        /// The table name
+        /// </summary>
         public virtual string TableName { get; set; }
+
+        /// <summary>
+        /// Log service query errors.
+        /// </summary>
         public virtual bool LogServiceQueryErrors { get; set; }
 
+        /// <summary>
+        /// Get the storage repository.
+        /// </summary>
+        /// <returns></returns>
         public virtual IStorageRepository<TDomain> GetStorageRepository()
         {
             return this;
@@ -224,6 +244,11 @@ namespace ServiceBricks.Storage.AzureDataTables
             return response;
         }
 
+        /// <summary>
+        /// Query domain objects.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public virtual IResponseItem<ServiceQueryResponse<TDomain>> Query(ServiceQueryRequest request)
         {
             IResponseItem<ServiceQueryResponse<TDomain>> response = new ResponseItem<ServiceQueryResponse<TDomain>>();
@@ -253,6 +278,11 @@ namespace ServiceBricks.Storage.AzureDataTables
             return response;
         }
 
+        /// <summary>
+        /// Query domain objects.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public virtual Task<IResponseItem<ServiceQueryResponse<TDomain>>> QueryAsync(ServiceQueryRequest request)
         {
             return Task.FromResult(Query(request));

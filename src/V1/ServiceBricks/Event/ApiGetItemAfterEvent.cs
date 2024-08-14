@@ -1,16 +1,16 @@
 ﻿namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires AFTER getting a domain object.
+    /// This API event fires after get
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial class ApiGetItemAfterEvent<TDto> : DomainEvent<TDto>
         where TDto : IDataTransferObject
     {
-        public ApiGetItemAfterEvent() : base()
-        {
-        }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="obj"></param>
         public ApiGetItemAfterEvent(TDto obj) : base()
         {
             DomainObject = obj;

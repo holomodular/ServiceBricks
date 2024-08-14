@@ -1,15 +1,15 @@
 ﻿namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires AFTER updating a domain object.
+    /// This domain event fires after update
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
     public partial class DomainUpdateAfterEvent<TDomainObject> : DomainEvent<TDomainObject> where TDomainObject : IDomainObject<TDomainObject>
     {
-        public DomainUpdateAfterEvent() : base()
-        {
-        }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="obj"></param>
         public DomainUpdateAfterEvent(TDomainObject obj) : base()
         {
             DomainObject = obj;

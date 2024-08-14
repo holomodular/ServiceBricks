@@ -3,10 +3,21 @@
     /// <summary>
     /// This is an application Sms data transfer object.
     /// </summary>
-    public class ApplicationSmsDto : DataTransferObject
+    public partial class ApplicationSmsDto : DataTransferObject
     {
-        public DateTimeOffset? FutureProcessDate { get; set; }
+        /// <summary>
+        /// The future process date.
+        /// </summary>
+        public virtual DateTimeOffset? FutureProcessDate { get; set; }
+
+        /// <summary>
+        /// The phone number.
+        /// </summary>
         public virtual string PhoneNumber { get; set; }
+
+        /// <summary>
+        /// The message
+        /// </summary>
         public virtual string Message { get; set; }
     }
 }

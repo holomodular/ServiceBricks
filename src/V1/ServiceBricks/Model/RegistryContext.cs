@@ -4,14 +4,24 @@
     /// This is the value stored for a registry.
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
-    public class RegistryContext<TValue>
+    public partial class RegistryContext<TValue>
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public RegistryContext()
         {
             Custom = new Dictionary<string, object>();
         }
 
-        public Dictionary<string, object> Custom { get; set; }
-        public TValue Value { get; set; }
+        /// <summary>
+        /// The custom data.
+        /// </summary>
+        public virtual Dictionary<string, object> Custom { get; set; }
+
+        /// <summary>
+        /// The value
+        /// </summary>
+        public virtual TValue Value { get; set; }
     }
 }

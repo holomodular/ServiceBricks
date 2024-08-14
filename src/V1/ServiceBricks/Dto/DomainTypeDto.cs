@@ -1,7 +1,13 @@
 ﻿namespace ServiceBricks
 {
-    public class DomainTypeDto : DataTransferObject
+    /// <summary>
+    /// This is a domain type data transfer object.
+    /// </summary>
+    public partial class DomainTypeDto : DataTransferObject
     {
-        public string Name { get; set; }
+        /// <summary>
+        /// The name.
+        /// </summary>
+        public virtual string Name { get; set; }
     }
 }

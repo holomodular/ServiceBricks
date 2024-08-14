@@ -1,15 +1,15 @@
 ﻿namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires BEFORE updating a domain object.
+    /// This domain event fires before update.
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
     public partial class DomainUpdateBeforeEvent<TDomainObject> : DomainEvent<TDomainObject> where TDomainObject : IDomainObject<TDomainObject>
     {
-        public DomainUpdateBeforeEvent() : base()
-        {
-        }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="obj"></param>
         public DomainUpdateBeforeEvent(TDomainObject obj) : base()
         {
             DomainObject = obj;

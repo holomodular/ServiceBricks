@@ -14,9 +14,6 @@ namespace ServiceBricks.Storage.MongoDb
     public partial class MongoDbStorageRepository<TDomain> : IStorageRepository<TDomain>
         where TDomain : class, IMongoDbDomainObject<TDomain>, new()
     {
-        /// <summary>
-        /// Internal.
-        /// </summary>
         protected readonly ILogger _logger;
 
         /// <summary>
@@ -30,11 +27,30 @@ namespace ServiceBricks.Storage.MongoDb
             _logger = logFactory.CreateLogger<MongoDbStorageRepository<TDomain>>();
         }
 
+        /// <summary>
+        /// The connection string to the MongoDb database.
+        /// </summary>
         public virtual string ConnectionString { get; set; }
+
+        /// <summary>
+        /// The name of the database.
+        /// </summary>
         public virtual string DatabaseName { get; set; }
+
+        /// <summary>
+        /// The name of the collection.
+        /// </summary>
         public virtual string CollectionName { get; set; }
+
+        /// <summary>
+        /// Determines if service query errors are logged.
+        /// </summary>
         public virtual bool LogServiceQueryErrors { get; set; }
 
+        /// <summary>
+        /// Get the storage repository.
+        /// </summary>
+        /// <returns></returns>
         public virtual IStorageRepository<TDomain> GetStorageRepository()
         {
             return this;
@@ -232,6 +248,11 @@ namespace ServiceBricks.Storage.MongoDb
             return response;
         }
 
+        /// <summary>
+        /// Query domain objects.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public virtual IResponseItem<ServiceQueryResponse<TDomain>> Query(ServiceQueryRequest request)
         {
             IResponseItem<ServiceQueryResponse<TDomain>> response = new ResponseItem<ServiceQueryResponse<TDomain>>();
@@ -263,6 +284,11 @@ namespace ServiceBricks.Storage.MongoDb
             return response;
         }
 
+        /// <summary>
+        /// Query domain objects.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public virtual Task<IResponseItem<ServiceQueryResponse<TDomain>>> QueryAsync(ServiceQueryRequest request)
         {
             return Task.FromResult(Query(request));

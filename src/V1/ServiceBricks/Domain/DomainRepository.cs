@@ -13,21 +13,16 @@ namespace ServiceBricks
     public partial class DomainRepository<TDomainObject> : IDomainRepository<TDomainObject>
         where TDomainObject : class, IDomainObject<TDomainObject>
     {
-        /// <summary>
-        /// Domain rule processing service.
-        /// </summary>
-        protected IBusinessRuleService _businessRuleService;
+        protected readonly IBusinessRuleService _businessRuleService;
+        protected readonly IStorageRepository<TDomainObject> _storageRepository;
+        protected readonly ILogger _logger;
 
         /// <summary>
-        /// Storage repository for the object.
+        /// Constructor
         /// </summary>
-        protected IStorageRepository<TDomainObject> _storageRepository;
-
-        /// <summary>
-        /// Logger.
-        /// </summary>
-        protected ILogger _logger;
-
+        /// <param name="logFactory"></param>
+        /// <param name="businessRuleService"></param>
+        /// <param name="storageRepository"></param>
         public DomainRepository(
             ILoggerFactory logFactory,
             IBusinessRuleService businessRuleService,
@@ -344,7 +339,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public IResponseItem<ServiceQueryResponse<TDomainObject>> Query(ServiceQueryRequest request)
+        public virtual IResponseItem<ServiceQueryResponse<TDomainObject>> Query(ServiceQueryRequest request)
         {
             var response = new ResponseItem<ServiceQueryResponse<TDomainObject>>();
 
@@ -376,7 +371,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<IResponseItem<ServiceQueryResponse<TDomainObject>>> QueryAsync(ServiceQueryRequest request)
+        public virtual async Task<IResponseItem<ServiceQueryResponse<TDomainObject>>> QueryAsync(ServiceQueryRequest request)
         {
             var response = new ResponseItem<ServiceQueryResponse<TDomainObject>>();
 

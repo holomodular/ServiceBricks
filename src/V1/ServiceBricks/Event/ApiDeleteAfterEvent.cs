@@ -1,21 +1,26 @@
 ﻿namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires After creating and commiting a DTO to a domain object.
+    /// This API event fires after delete.
     /// </summary>
     /// <typeparam name="TDomain"></typeparam>
     public partial class ApiDeleteAfterEvent<TDomain, TDto> : DomainEvent<TDomain>
         where TDomain : IDomainObject<TDomain>
     {
-        public ApiDeleteAfterEvent() : base()
-        { }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="dto"></param>
         public ApiDeleteAfterEvent(TDomain domain, TDto dto) : base()
         {
             DomainObject = domain;
             DtoObject = dto;
         }
 
-        public TDto DtoObject { get; set; }
+        /// <summary>
+        /// The data transfer object.
+        /// </summary>
+        public virtual TDto DtoObject { get; set; }
     }
 }

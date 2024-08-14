@@ -2,13 +2,27 @@
 
 namespace ServiceBricks
 {
-    public static class ConfigurationExtensions
+    /// <summary>
+    /// IConfiguration extensions for the Core module.
+    /// </summary>
+    public static partial class ConfigurationExtensions
     {
+        /// <summary>
+        /// Get the API configuration.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static ClientApiOptions GetApiConfig(this IConfiguration configuration)
         {
             return GetApiConfig(configuration, null);
         }
 
+        /// <summary>
+        /// Get the API configuration.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="configKey"></param>
+        /// <returns></returns>
         public static ClientApiOptions GetApiConfig(this IConfiguration configuration, string configKey)
         {
             IConfigurationSection section = null;

@@ -5,6 +5,9 @@
     /// </summary>
     public partial class DomainProcess : IDomainProcess<object>, IDomainProcess
     {
+        /// <summary>
+        /// The object that is being processed.
+        /// </summary>
         public virtual object DomainObject { get; set; }
     }
 
@@ -14,6 +17,9 @@
     /// <typeparam name="TDomainObject"></typeparam>
     public partial class DomainProcess<TDomainObject> : IDomainProcess<TDomainObject>, IDomainProcess
     {
+        /// <summary>
+        /// The object that is being processed.
+        /// </summary>
         public virtual TDomainObject DomainObject { get; set; }
     }
 }

@@ -6,16 +6,20 @@ namespace ServiceBricks
     /// This is a business rule for domain objects when querying to rename a
     /// property.
     /// </summary>
-    public partial class DomainQueryPropertyRenameRule<TDomainObject> : BusinessRule
+    public sealed class DomainQueryPropertyRenameRule<TDomainObject> : BusinessRule
         where TDomainObject : IDomainObject<TDomainObject>
     {
+        /// <summary>
+        /// The key for the from property name.
+        /// </summary>
         public const string Key_FromPropertyName = "DomainQueryPropertyRenameRule_FromPropertyName";
-        public const string Key_ToPropertyName = "DomainQueryPropertyRenameRule_ToPropertyName";
 
         /// <summary>
-        /// Internal.
+        /// The key for the to property name.
         /// </summary>
-        protected readonly ILogger _logger;
+        public const string Key_ToPropertyName = "DomainQueryPropertyRenameRule_ToPropertyName";
+
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Constructor.
@@ -58,6 +62,7 @@ namespace ServiceBricks
 
             try
             {
+                // AI: Make sure the context object is the correct type
                 if (context.Object is DomainQueryBeforeEvent<TDomainObject> ei)
                 {
                     //Get the property names from the custom context

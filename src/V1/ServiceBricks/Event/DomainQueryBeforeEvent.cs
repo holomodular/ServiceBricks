@@ -3,20 +3,23 @@
 namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires BEFORE returning a IQueryable object.
+    /// This domain event fires before query
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
     public partial class DomainQueryBeforeEvent<TDomainObject> : DomainEvent<TDomainObject> where TDomainObject : IDomainObject<TDomainObject>
     {
-        public DomainQueryBeforeEvent() : base()
-        {
-        }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="request"></param>
         public DomainQueryBeforeEvent(ServiceQueryRequest request) : base()
         {
             ServiceQueryRequest = request;
         }
 
-        public ServiceQueryRequest ServiceQueryRequest { get; set; }
+        /// <summary>
+        /// The service query request
+        /// </summary>
+        public virtual ServiceQueryRequest ServiceQueryRequest { get; set; }
     }
 }

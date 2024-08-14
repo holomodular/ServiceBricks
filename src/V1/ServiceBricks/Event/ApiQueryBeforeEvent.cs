@@ -3,21 +3,24 @@
 namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires BEFORE returning a IQueryable object.
+    /// This API event fires before query.
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial class ApiQueryBeforeEvent<TDto> : DomainEvent<TDto>
         where TDto : IDataTransferObject
     {
-        public ApiQueryBeforeEvent() : base()
-        {
-        }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="request"></param>
         public ApiQueryBeforeEvent(ServiceQueryRequest request) : base()
         {
             ServiceQueryRequest = request;
         }
 
-        public ServiceQueryRequest ServiceQueryRequest { get; set; }
+        /// <summary>
+        /// The service query request.
+        /// </summary>
+        public virtual ServiceQueryRequest ServiceQueryRequest { get; set; }
     }
 }

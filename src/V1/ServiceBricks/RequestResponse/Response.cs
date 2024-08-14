@@ -130,7 +130,7 @@
             return System.Text.Json.JsonSerializer.Serialize(this);
         }
 
-        public string GetMessage(string seperator)
+        public virtual string GetMessage(string seperator)
         {
             if (_messages != null && _messages.Count > 0)
                 return string.Join(seperator, _messages.Select(x => x.ToString()));

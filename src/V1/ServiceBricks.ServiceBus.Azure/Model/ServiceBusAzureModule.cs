@@ -2,20 +2,24 @@
 
 namespace ServiceBricks.ServiceBus.Azure
 {
-    public class ServiceBusAzureModule : IModule
+    /// <summary>
+    /// The module definition for the ServiceBusAzure module.
+    /// </summary>
+    public partial class ServiceBusAzureModule : IModule
     {
-        public ServiceBusAzureModule()
-        {
-            AdminHtml = string.Empty;
-            Name = "Service Bus Azure Brick";
-            Description = @"The Service Bus Azure Brick implements the Azure provider.";
-        }
-
-        public string Name { get; }
-        public string Description { get; }
-        public string AdminHtml { get; }
-        public List<Assembly> AutomapperAssemblies { get; }
-        public List<Assembly> ViewAssemblies { get; }
+        /// <summary>
+        /// The list of dependent modules.
+        /// </summary>
         public List<IModule> DependentModules { get; }
+
+        /// <summary>
+        /// The list of assemblies that contain automapper profiles.
+        /// </summary>
+        public List<Assembly> AutomapperAssemblies { get; }
+
+        /// <summary>
+        /// The list of assemblies that contain views.
+        /// </summary>
+        public List<Assembly> ViewAssemblies { get; }
     }
 }

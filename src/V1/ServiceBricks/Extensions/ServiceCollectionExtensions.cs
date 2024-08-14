@@ -10,16 +10,15 @@ using System.Reflection;
 namespace ServiceBricks
 {
     /// <summary>
-    /// Extensions for the Core Brick.
+    /// Extensions methods to add the ServiceBricks to the IServiceCollection.
     /// </summary>
-    public static class ServiceCollectionExtensions
+    public static partial class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Add the Core Brick.
+        /// Add the ServiceBricks to the IServiceCollection.
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        /// <param name="entryAssembly"></param>
         /// <returns></returns>
         public static IServiceCollection AddServiceBricks(this IServiceCollection services, IConfiguration configuration)
         {
@@ -58,6 +57,12 @@ namespace ServiceBricks
             return services;
         }
 
+        /// <summary>
+        /// Get the ApplicationParts for the ServiceBricks.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<ApplicationPart> GetServiceBricksParts(this IServiceCollection services)
         {
             var provider = services.BuildServiceProvider();
@@ -86,8 +91,14 @@ namespace ServiceBricks
             return list;
         }
 
+        /// <summary>
+        /// Finish adding the ServiceBricks to the IServiceCollection.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddServiceBricksComplete(this IServiceCollection services)
         {
+            // Configure modelstate errors to use response object if needed
             services.Configure<ApiBehaviorOptions>(x => x.InvalidModelStateResponseFactory = context =>
             {
                 ObjectResult objectResult = null;
@@ -120,6 +131,7 @@ namespace ServiceBricks
                 return objectResult;
             });
 
+            // Get the automapper assemblies
             List<Assembly> assemblies = new List<Assembly>();
             var modules = ModuleRegistry.Instance.GetModules();
             foreach (var module in modules)

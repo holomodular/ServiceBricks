@@ -4,15 +4,22 @@ using Microsoft.Extensions.Configuration;
 
 namespace ServiceBricks.ServiceBus.Azure
 {
-    public class ServiceBusConnection : IServiceBusConnection
+    /// <summary>
+    /// The ServiceBusConnection class.
+    /// </summary>
+    public partial class ServiceBusConnection : IServiceBusConnection
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
-        private ServiceBusClient _client;
-        private ServiceBusAdministrationClient _subscriptionClient;
+        protected readonly IConfiguration _configuration;
+        protected readonly string _connectionString;
 
-        private bool _disposed;
+        protected ServiceBusClient _client;
+        protected ServiceBusAdministrationClient _subscriptionClient;
+        protected bool _disposed;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="configuration"></param>
         public ServiceBusConnection(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -21,7 +28,10 @@ namespace ServiceBricks.ServiceBus.Azure
             _client = new ServiceBusClient(_connectionString);
         }
 
-        public ServiceBusClient Client
+        /// <summary>
+        /// The client.
+        /// </summary>
+        public virtual ServiceBusClient Client
         {
             get
             {
@@ -33,20 +43,17 @@ namespace ServiceBricks.ServiceBus.Azure
             }
         }
 
-        public ServiceBusAdministrationClient AdministrationClient =>
+        /// <summary>
+        /// The administration client.
+        /// </summary>
+        public virtual ServiceBusAdministrationClient AdministrationClient =>
             _subscriptionClient;
 
-        public ServiceBusClient CreateModel()
-        {
-            if (_client.IsClosed)
-            {
-                _client = new ServiceBusClient(_connectionString);
-            }
-
-            return _client;
-        }
-
-        public async ValueTask DisposeAsync()
+        /// <summary>
+        /// Dispose the connection.
+        /// </summary>
+        /// <returns></returns>
+        public virtual async ValueTask DisposeAsync()
         {
             if (_disposed) return;
 

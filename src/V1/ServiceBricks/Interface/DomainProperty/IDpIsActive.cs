@@ -3,8 +3,11 @@
     /// <summary>
     /// This property is required for an object.
     /// </summary>
-    public interface IDpIsActive
+    public partial interface IDpIsActive
     {
+        /// <summary>
+        /// This indicates if the object is active.
+        /// </summary>
         bool IsActive { get; set; }
     }
 }

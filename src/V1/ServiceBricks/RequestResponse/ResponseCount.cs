@@ -10,6 +10,9 @@
         /// </summary>
         public ResponseCount() : base() { }
 
+        /// <summary>
+        /// The count.
+        /// </summary>
         public virtual int? Count { get; set; }
     }
 }

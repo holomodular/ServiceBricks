@@ -1,18 +1,21 @@
 ﻿namespace ServiceBricks
 {
     /// <summary>
-    /// This is an event.
+    /// This is an event that is sent over the service bus provider.
     /// </summary>
-    public interface IDomainBroadcast
+    public partial interface IDomainBroadcast
     {
     }
 
     /// <summary>
-    /// This is an event.
+    /// This is an event that is sent over the service bus provider.
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
-    public interface IDomainBroadcast<TDomainObject> : IDomainBroadcast
+    public partial interface IDomainBroadcast<TDomainObject> : IDomainBroadcast
     {
+        /// <summary>
+        /// The domain object.
+        /// </summary>
         TDomainObject DomainObject { get; set; }
     }
 }

@@ -4,27 +4,46 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ServiceBricks.ServiceBus.Azure
 {
     /// <summary>
-    /// IApplicationBuilder extensions for the Service Bus Brick.
+    /// Extension methods to start the ServiceBricks ServiceBus Azure module.
     /// </summary>
     public static partial class ApplicationBuilderExtensions
     {
-        public static bool BrickStarted = false;
+        /// <summary>
+        /// Flag to indicate if the module has been started.
+        /// </summary>
+        public static bool ModuleStarted = false;
 
+        /// <summary>
+        /// Start the ServiceBricks ServiceBus Azure module.
+        /// </summary>
+        /// <param name="applicationBuilder"></param>
+        /// <returns></returns>
         public static IApplicationBuilder StartServiceBricksServiceBusAzureAdvanced(this IApplicationBuilder applicationBuilder)
         {
+            // Get the service bus and start it
             var context = applicationBuilder.ApplicationServices.GetService<IServiceBus>();
             context.Start();
 
-            BrickStarted = true;
+            // Set the module started flag.
+            ModuleStarted = true;
+
             return applicationBuilder;
         }
 
+        /// <summary>
+        /// Start the ServiceBricks ServiceBus Azure module.
+        /// </summary>
+        /// <param name="applicationBuilder"></param>
+        /// <returns></returns>
         public static IApplicationBuilder StartServiceBricksServiceBusAzure(this IApplicationBuilder applicationBuilder)
         {
+            // Get the service bus and start it
             var context = applicationBuilder.ApplicationServices.GetService<IServiceBus>();
             context.Start();
 
-            BrickStarted = true;
+            // Set the module started flag.
+            ModuleStarted = true;
+
             return applicationBuilder;
         }
     }

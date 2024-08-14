@@ -3,7 +3,7 @@
     /// <summary>
     /// This is the base interface that all domain objects inherit from.
     /// </summary>
-    public interface IDomainObject
+    public partial interface IDomainObject
     {
     }
 
@@ -11,7 +11,7 @@
     /// This is the base interface that all domain objects inherit from.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IDomainObject<T> : IDomainObject
+    public partial interface IDomainObject<T> : IDomainObject
     {
     }
 }

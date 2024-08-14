@@ -3,21 +3,24 @@
 namespace ServiceBricks
 {
     /// <summary>
-    /// This event fires AFTER returning a IQueryable object.
+    /// This API event fires after query
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
     public partial class ApiQueryAfterEvent<TDtoObject> : DomainEvent<TDtoObject>
         where TDtoObject : IDataTransferObject
     {
-        public ApiQueryAfterEvent() : base()
-        {
-        }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="response"></param>
         public ApiQueryAfterEvent(ServiceQueryResponse<TDtoObject> response)
         {
             Response = response;
         }
 
+        /// <summary>
+        /// Response
+        /// </summary>
         public virtual ServiceQueryResponse<TDtoObject> Response { get; set; }
     }
 }

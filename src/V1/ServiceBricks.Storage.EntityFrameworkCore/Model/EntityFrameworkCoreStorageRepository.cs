@@ -13,9 +13,6 @@ namespace ServiceBricks.Storage.EntityFrameworkCore
     public partial class EntityFrameworkCoreStorageRepository<TDomain> : IEntityFrameworkCoreStorageRepository<TDomain>
         where TDomain : class, IEntityFrameworkCoreDomainObject<TDomain>, new()
     {
-        /// <summary>
-        /// Internal.
-        /// </summary>
         protected ILogger _logger;
 
         /// <summary>
@@ -28,16 +25,33 @@ namespace ServiceBricks.Storage.EntityFrameworkCore
             _logger = logFactory.CreateLogger<EntityFrameworkCoreStorageRepository<TDomain>>();
         }
 
+        /// <summary>
+        /// The database set.
+        /// </summary>
         public virtual DbSet<TDomain> DbSet { get; set; }
 
+        /// <summary>
+        /// The database context.
+        /// </summary>
         public virtual DbContext Context { get; set; }
+
+        /// <summary>
+        /// Determines if service query errors are logged.
+        /// </summary>
         public virtual bool LogServiceQueryErrors { get; set; }
 
+        /// <summary>
+        /// Get the storage repository.
+        /// </summary>
+        /// <returns></returns>
         public virtual IStorageRepository<TDomain> GetStorageRepository()
         {
             return this;
         }
 
+        /// <summary>
+        /// Detach all entities.
+        /// </summary>
         public void DetachAllEntities()
         {
             var changedEntriesCopy = Context.ChangeTracker.Entries()
