@@ -8,8 +8,7 @@ namespace ServiceBricks
 {
     /// <summary>
     /// This is a REST API controller for a domain object.
-    /// By default, no security policy is added to this base class.
-    /// Use AdminPolicyRestApiController instead.
+    /// By default, no security policy is added to this base class. Use AdminPolicyRestApiController instead.
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial class ApiController<TDto> : ControllerBase, IApiController<TDto>

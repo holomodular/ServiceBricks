@@ -6,7 +6,7 @@ using System.Text;
 namespace ServiceBricks
 {
     /// <summary>
-    /// This is a REST-based service client for a domain object based API service.
+    /// This is a REST API service client for a DTO.
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial class ApiClient<TDto> : BearerTokenClient, IApiClient<TDto>

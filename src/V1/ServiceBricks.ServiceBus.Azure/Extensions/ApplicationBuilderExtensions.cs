@@ -18,7 +18,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// </summary>
         /// <param name="applicationBuilder"></param>
         /// <returns></returns>
-        public static IApplicationBuilder StartServiceBricksServiceBusAzureAdvanced(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder StartServiceBricksServiceBusAzureQueue(this IApplicationBuilder applicationBuilder)
         {
             // Get the service bus and start it
             var context = applicationBuilder.ApplicationServices.GetService<IServiceBus>();
@@ -35,7 +35,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// </summary>
         /// <param name="applicationBuilder"></param>
         /// <returns></returns>
-        public static IApplicationBuilder StartServiceBricksServiceBusAzure(this IApplicationBuilder applicationBuilder)
+        public static IApplicationBuilder StartServiceBricksServiceBusAzureTopic(this IApplicationBuilder applicationBuilder)
         {
             // Get the service bus and start it
             var context = applicationBuilder.ApplicationServices.GetService<IServiceBus>();

@@ -24,9 +24,9 @@ namespace ServiceBricks
         {
             // HttpContextAccessor
             services.AddHttpContextAccessor();
-            services.AddOptions();
 
             // Options
+            services.AddOptions();
             services.Configure<ApplicationOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APPLICATIONOPTIONS));
             services.Configure<ApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APIOPTIONS));
             services.Configure<ClientApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS));

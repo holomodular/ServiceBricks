@@ -7,7 +7,7 @@ using System.Net;
 namespace ServiceBricks
 {
     /// <summary>
-    /// This is a REST-based API controller for a domain object requiring the admin security policy to invoke all methods.
+    /// This is a REST API controller for a DTO requiring the admin security policy to invoke all methods.
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial class AdminPolicyApiController<TDto> : ApiController<TDto>
