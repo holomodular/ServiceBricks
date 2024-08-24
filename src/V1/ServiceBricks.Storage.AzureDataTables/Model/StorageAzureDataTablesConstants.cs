@@ -13,7 +13,12 @@
         /// <summary>
         /// Minimum date for DateTimeOffset.
         /// </summary>
-        public static DateTimeOffset DATETIMEOFFSET_MINDATE = new DateTimeOffset(1900, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        public static DateTimeOffset DATETIMEOFFSET_MINDATE = new DateTimeOffset(1601, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+        /// <summary>
+        /// Minimum date for DateTimeOffset.
+        /// </summary>
+        public static DateTime DATETIME_MINDATE = new DateTime(1601, 1, 1, 0, 0, 0);
 
         /// <summary>
         /// The delimiter for the storage key.

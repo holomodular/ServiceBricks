@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace ServiceBricks
+namespace ServiceBricks.Storage.Postgres
 {
     /// <summary>
     /// This is a business rule for domain objects to determine if a concurrency violation has happened.
     /// It uses the API Update event to check values once returned from the database.
     /// </summary>
-    public sealed class ApiConcurrencyByUpdateDateRule<TDomainObject, TDto> : BusinessRule
+    public sealed class PostgresApiConcurrencyByUpdateDateRule<TDomainObject, TDto> : BusinessRule
         where TDomainObject : class, IDomainObject<TDomainObject>, IDpUpdateDate
         where TDto : class, IDataTransferObject
     {
@@ -17,7 +17,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="loggerFactory"></param>
         /// <param name="storageRepository"></param>
-        public ApiConcurrencyByUpdateDateRule(
+        public PostgresApiConcurrencyByUpdateDateRule(
             ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<ApiConcurrencyByUpdateDateRule<TDomainObject, TDto>>();
@@ -31,17 +31,7 @@ namespace ServiceBricks
         {
             registry.RegisterItem(
                 typeof(ApiUpdateBeforeEvent<TDomainObject, TDto>),
-                typeof(ApiConcurrencyByUpdateDateRule<TDomainObject, TDto>));
-        }
-
-        /// <summary>
-        /// UnRegister a rule for a domain object.
-        /// </summary>
-        public static void UnRegisterRule(IBusinessRuleRegistry registry)
-        {
-            registry.UnRegisterItem(
-                typeof(ApiUpdateBeforeEvent<TDomainObject, TDto>),
-                typeof(ApiConcurrencyByUpdateDateRule<TDomainObject, TDto>));
+                typeof(PostgresApiConcurrencyByUpdateDateRule<TDomainObject, TDto>));
         }
 
         /// <summary>
@@ -68,13 +58,22 @@ namespace ServiceBricks
                 var dtoVal = dtoProp.GetValue(e.DtoObject);
                 if (dtoVal is DateTimeOffset dtoDate)
                 {
-                    //Concurrency violation check
-                    if (e.DomainObject.UpdateDate != dtoDate)
+                    // Postgres special handling
+                    long dtoUtcTicks = dtoDate.UtcTicks;
+                    dtoUtcTicks = ((long)(dtoUtcTicks / 10)) * 10;
+
+                    long domainUtcTicks = e.DomainObject.UpdateDate.UtcTicks;
+                    domainUtcTicks = ((long)(domainUtcTicks / 10)) * 10;
+
+                    //Concurrency violation check for Postgres
+                    if (domainUtcTicks != dtoUtcTicks)
                     {
                         response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE_CONCURRENCY));
                         return response;
                     }
                 }
+                else
+                    throw new Exception($"DTO property is not a datetimeoffset {propertyName}");
             }
             catch (Exception ex)
             {

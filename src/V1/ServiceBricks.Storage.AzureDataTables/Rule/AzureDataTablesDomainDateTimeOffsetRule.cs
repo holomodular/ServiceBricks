@@ -1,19 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace ServiceBricks
+namespace ServiceBricks.Storage.AzureDataTables
 {
     /// <summary>
     /// This is a business rule for domain objects that have a DateTimeOffset property.
     /// It ensures the datetimeoffset or datetimeoffset? property is always in
     /// UTC offset 0 format, otherwise tries to convert it from the user's timezone.
+    /// Additionally, this rule makes sure that the DateTimeOffset property is not less than the minimum date.
     /// </summary>
-    public sealed class DomainDateTimeOffsetRule<TDomainObject> : BusinessRule
+    public sealed class AzureDataTablesDomainDateTimeOffsetRule<TDomainObject> : BusinessRule
         where TDomainObject : class, IDomainObject<TDomainObject>
     {
         /// <summary>
         /// The key for the property name.
         /// </summary>
-        public const string Key_PropertyName = "DomainDateTimeOffsetRule_PropertyName";
+        public const string Key_PropertyName = "AzureDataTablesDomainDateTimeOffsetRule_PropertyName";
 
         private readonly ILogger _logger;
         private readonly ITimezoneService _timezoneService;
@@ -22,11 +23,11 @@ namespace ServiceBricks
         /// Constructor.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        public DomainDateTimeOffsetRule(
+        public AzureDataTablesDomainDateTimeOffsetRule(
             ILoggerFactory loggerFactory,
             ITimezoneService timezoneService)
         {
-            _logger = loggerFactory.CreateLogger<DomainDateTimeOffsetRule<TDomainObject>>();
+            _logger = loggerFactory.CreateLogger<AzureDataTablesDomainDateTimeOffsetRule<TDomainObject>>();
             _timezoneService = timezoneService;
             Priority = PRIORITY_NORMAL;
         }
@@ -44,12 +45,12 @@ namespace ServiceBricks
 
             registry.RegisterItem(
                 typeof(DomainCreateBeforeEvent<TDomainObject>),
-                typeof(DomainDateTimeOffsetRule<TDomainObject>),
+                typeof(AzureDataTablesDomainDateTimeOffsetRule<TDomainObject>),
                 custom);
 
             registry.RegisterItem(
                 typeof(DomainUpdateBeforeEvent<TDomainObject>),
-                typeof(DomainDateTimeOffsetRule<TDomainObject>),
+                typeof(AzureDataTablesDomainDateTimeOffsetRule<TDomainObject>),
                 custom);
         }
 
@@ -61,11 +62,11 @@ namespace ServiceBricks
         {
             registry.UnRegisterItem(
                 typeof(DomainCreateBeforeEvent<TDomainObject>),
-                typeof(DomainDateTimeOffsetRule<TDomainObject>));
+                typeof(AzureDataTablesDomainDateTimeOffsetRule<TDomainObject>));
 
             registry.UnRegisterItem(
                 typeof(DomainUpdateBeforeEvent<TDomainObject>),
-                typeof(DomainDateTimeOffsetRule<TDomainObject>));
+                typeof(AzureDataTablesDomainDateTimeOffsetRule<TDomainObject>));
         }
 
         /// <summary>
@@ -101,10 +102,18 @@ namespace ServiceBricks
                         {
                             if (curProp is DateTimeOffset datetimeoffset)
                             {
+                                // AI: Check to make sure date is within bounds for storage
+                                if (datetimeoffset < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                    item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+
                                 if (datetimeoffset.Offset != TimeSpan.Zero)
                                 {
                                     var newval = _timezoneService.ConvertPostBackToUTC(datetimeoffset);
-                                    item.GetType().GetProperty(propName).SetValue(item, newval);
+
+                                    if (newval < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                        item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+                                    else
+                                        item.GetType().GetProperty(propName).SetValue(item, newval);
                                 }
                             }
                             else if (curProp is DateTimeOffset?)
@@ -112,10 +121,17 @@ namespace ServiceBricks
                                 DateTimeOffset? nullableDateTimeOffset = (DateTimeOffset?)curProp;
                                 if (nullableDateTimeOffset.HasValue)
                                 {
+                                    // AI: Check to make sure date is within bounds for storage
+                                    if (nullableDateTimeOffset.Value < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                        item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+
                                     if (nullableDateTimeOffset.Value.Offset != TimeSpan.Zero)
                                     {
                                         DateTimeOffset? newval = _timezoneService.ConvertPostBackToUTC(nullableDateTimeOffset.Value);
-                                        item.GetType().GetProperty(propName).SetValue(item, newval);
+                                        if (newval.Value < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                            item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+                                        else
+                                            item.GetType().GetProperty(propName).SetValue(item, newval);
                                     }
                                 }
                             }
@@ -135,10 +151,18 @@ namespace ServiceBricks
                         {
                             if (curProp is DateTimeOffset datetimeoffset)
                             {
+                                // AI: Check to make sure date is within bounds for storage
+                                if (datetimeoffset < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                    item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+
                                 if (datetimeoffset.Offset != TimeSpan.Zero)
                                 {
                                     var newval = _timezoneService.ConvertPostBackToUTC(datetimeoffset);
-                                    item.GetType().GetProperty(propName).SetValue(item, newval);
+
+                                    if (newval < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                        item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+                                    else
+                                        item.GetType().GetProperty(propName).SetValue(item, newval);
                                 }
                             }
                             else if (curProp is DateTimeOffset?)
@@ -146,10 +170,17 @@ namespace ServiceBricks
                                 DateTimeOffset? nullableDateTimeOffset = (DateTimeOffset?)curProp;
                                 if (nullableDateTimeOffset.HasValue)
                                 {
+                                    // AI: Check to make sure date is within bounds for storage
+                                    if (nullableDateTimeOffset.Value < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                        item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+
                                     if (nullableDateTimeOffset.Value.Offset != TimeSpan.Zero)
                                     {
                                         DateTimeOffset? newval = _timezoneService.ConvertPostBackToUTC(nullableDateTimeOffset.Value);
-                                        item.GetType().GetProperty(propName).SetValue(item, newval);
+                                        if (newval.Value < StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE)
+                                            item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIMEOFFSET_MINDATE);
+                                        else
+                                            item.GetType().GetProperty(propName).SetValue(item, newval);
                                     }
                                 }
                             }

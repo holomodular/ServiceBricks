@@ -9,7 +9,7 @@ namespace ServiceBricks
     /// <typeparam name="TDomainObject"></typeparam>
     /// <typeparam name="TDtoObject"></typeparam>
     public partial class ApiService<TDomainObject, TDtoObject> : IApiService<TDtoObject>
-        where TDomainObject : class, IDomainObject<TDomainObject>
+        where TDomainObject : class, IDomainObject<TDomainObject>, new()
         where TDtoObject : class, IDataTransferObject, new()
     {
         protected readonly IDomainRepository<TDomainObject> _repository;
@@ -57,12 +57,12 @@ namespace ServiceBricks
                 return response;
             }
 
-            // Map
+            // Map param
             var tempObj = new TDtoObject() { StorageKey = storageKey };
             var tempParam = _mapper.Map<TDtoObject, TDomainObject>(tempObj);
 
             // Process Before
-            ApiGetItemBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiGetItemBeforeEvent<TDomainObject, TDtoObject>(storageKey, tempParam, tempObj);
+            ApiGetBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiGetBeforeEvent<TDomainObject, TDtoObject>(storageKey, tempParam);
             var respRules = _businessRuleService.ExecuteEvent(beforeEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -74,11 +74,11 @@ namespace ServiceBricks
             if (response.Error)
                 return response;
 
-            // Map and return
+            // Map to DTO
             response.Item = _mapper.Map<TDomainObject, TDtoObject>(respGet.Item);
 
             // Process After
-            ApiGetItemAfterEvent<TDtoObject> afterEvent = new ApiGetItemAfterEvent<TDtoObject>(response.Item);
+            ApiGetAfterEvent<TDtoObject> afterEvent = new ApiGetAfterEvent<TDtoObject>(response.Item);
             respRules = _businessRuleService.ExecuteEvent(afterEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -103,12 +103,12 @@ namespace ServiceBricks
                 return response;
             }
 
-            // Map
+            // Map param
             var tempObj = new TDtoObject() { StorageKey = storageKey };
             var tempParam = _mapper.Map<TDtoObject, TDomainObject>(tempObj);
 
             // Process Before
-            ApiGetItemBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiGetItemBeforeEvent<TDomainObject, TDtoObject>(storageKey, tempParam, tempObj);
+            ApiGetBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiGetBeforeEvent<TDomainObject, TDtoObject>(storageKey, tempParam);
             var respRules = await _businessRuleService.ExecuteEventAsync(beforeEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -120,11 +120,11 @@ namespace ServiceBricks
             if (response.Error)
                 return response;
 
-            // Map and return
+            // Map to DTO
             response.Item = _mapper.Map<TDomainObject, TDtoObject>(respGet.Item);
 
             // Process After
-            ApiGetItemAfterEvent<TDtoObject> afterEvent = new ApiGetItemAfterEvent<TDtoObject>(response.Item);
+            ApiGetAfterEvent<TDtoObject> afterEvent = new ApiGetAfterEvent<TDtoObject>(response.Item);
             respRules = await _businessRuleService.ExecuteEventAsync(afterEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -169,13 +169,20 @@ namespace ServiceBricks
                 return response;
             }
 
+            // Process Before
+            ApiUpdateBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiUpdateBeforeEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
+            var respBeforeRules = _businessRuleService.ExecuteEvent(beforeEvent);
+            response.CopyFrom(respBeforeRules);
+            if (!response.Success)
+                return response;
+
             // Map Dto to Domain
             _mapper.Map<TDtoObject, TDomainObject>(dto, respGet.Item);
 
-            // Process Before
-            ApiUpdateBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiUpdateBeforeEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
-            var respRules = _businessRuleService.ExecuteEvent(beforeEvent);
-            response.CopyFrom(respRules);
+            // Process After Map
+            ApiUpdateAfterMapEvent<TDomainObject, TDtoObject> afterMapEvent = new ApiUpdateAfterMapEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
+            var respMapAfterRules = _businessRuleService.ExecuteEvent(afterMapEvent);
+            response.CopyFrom(respMapAfterRules);
             if (!response.Success)
                 return response;
 
@@ -187,8 +194,8 @@ namespace ServiceBricks
 
             // Process After
             ApiUpdateAfterEvent<TDomainObject, TDtoObject> afterCommitEvent = new ApiUpdateAfterEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
-            respRules = _businessRuleService.ExecuteEvent(afterCommitEvent);
-            response.CopyFrom(respRules);
+            var respAfterRules = _businessRuleService.ExecuteEvent(afterCommitEvent);
+            response.CopyFrom(respAfterRules);
             if (!response.Success)
                 return response;
 
@@ -232,13 +239,20 @@ namespace ServiceBricks
                 return response;
             }
 
+            // Process Before
+            ApiUpdateBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiUpdateBeforeEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
+            var respBeforeRules = await _businessRuleService.ExecuteEventAsync(beforeEvent);
+            response.CopyFrom(respBeforeRules);
+            if (!response.Success)
+                return response;
+
             // Map Dto to Domain
             _mapper.Map<TDtoObject, TDomainObject>(dto, respGet.Item);
 
-            // Process Before
-            ApiUpdateBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiUpdateBeforeEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
-            var respRules = await _businessRuleService.ExecuteEventAsync(beforeEvent);
-            response.CopyFrom(respRules);
+            // Process After Map
+            ApiUpdateAfterMapEvent<TDomainObject, TDtoObject> afterMapEvent = new ApiUpdateAfterMapEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
+            var respAfterMapRules = await _businessRuleService.ExecuteEventAsync(afterMapEvent);
+            response.CopyFrom(respAfterMapRules);
             if (!response.Success)
                 return response;
 
@@ -250,8 +264,8 @@ namespace ServiceBricks
 
             // Process After
             ApiUpdateAfterEvent<TDomainObject, TDtoObject> afterCommitEvent = new ApiUpdateAfterEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
-            respRules = await _businessRuleService.ExecuteEventAsync(afterCommitEvent);
-            response.CopyFrom(respRules);
+            var respAfterRules = await _businessRuleService.ExecuteEventAsync(afterCommitEvent);
+            response.CopyFrom(respAfterRules);
             if (!response.Success)
                 return response;
 
@@ -282,13 +296,22 @@ namespace ServiceBricks
             if (!resp.Success)
                 return resp;
 
-            // Map
-            var newItem = _mapper.Map<TDtoObject, TDomainObject>(dto);
+            var newItem = new TDomainObject();
 
             // Process Before
             ApiCreateBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiCreateBeforeEvent<TDomainObject, TDtoObject>(newItem, dto);
             respRules = _businessRuleService.ExecuteEvent(beforeEvent);
             resp.CopyFrom(respRules);
+            if (!resp.Success)
+                return resp;
+
+            // Map
+            newItem = _mapper.Map<TDtoObject, TDomainObject>(dto);
+
+            // Process After Map
+            ApiCreateAfterMapEvent<TDomainObject, TDtoObject> afterMapEvent = new ApiCreateAfterMapEvent<TDomainObject, TDtoObject>(newItem, dto);
+            var respAfterMapRules = _businessRuleService.ExecuteEvent(afterMapEvent);
+            resp.CopyFrom(respAfterMapRules);
             if (!resp.Success)
                 return resp;
 
@@ -333,13 +356,22 @@ namespace ServiceBricks
             if (!resp.Success)
                 return resp;
 
-            // Map
-            var newItem = _mapper.Map<TDtoObject, TDomainObject>(dto);
+            var newItem = new TDomainObject();
 
             // Process Before
             ApiCreateBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiCreateBeforeEvent<TDomainObject, TDtoObject>(newItem, dto);
             respRules = await _businessRuleService.ExecuteEventAsync(beforeEvent);
             resp.CopyFrom(respRules);
+            if (!resp.Success)
+                return resp;
+
+            // Map
+            newItem = _mapper.Map<TDtoObject, TDomainObject>(dto, newItem);
+
+            // Process After Map
+            ApiCreateAfterMapEvent<TDomainObject, TDtoObject> afterMapEvent = new ApiCreateAfterMapEvent<TDomainObject, TDtoObject>(newItem, dto);
+            var respAfterMapRules = await _businessRuleService.ExecuteEventAsync(afterMapEvent);
+            resp.CopyFrom(respAfterMapRules);
             if (!resp.Success)
                 return resp;
 
@@ -394,6 +426,9 @@ namespace ServiceBricks
                 return response;
             }
 
+            // Map to a DTO
+            dto = _mapper.Map<TDomainObject, TDtoObject>(respGet.Item);
+
             // Process Before
             ApiDeleteBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiDeleteBeforeEvent<TDomainObject, TDtoObject>(respGet.Item, dto);
             var respRules = _businessRuleService.ExecuteEvent(beforeEvent);
@@ -446,6 +481,9 @@ namespace ServiceBricks
                 response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_ITEM_NOT_FOUND));
                 return response;
             }
+
+            // Map to a DTO
+            dto = _mapper.Map<TDomainObject, TDtoObject>(respGet.Item);
 
             // Process Before
             ApiDeleteBeforeEvent<TDomainObject, TDtoObject> beforeEvent = new ApiDeleteBeforeEvent<TDomainObject, TDtoObject>(respGet.Item, dto);

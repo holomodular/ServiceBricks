@@ -35,6 +35,20 @@ namespace ServiceBricks
         }
 
         /// <summary>
+        /// UnRegister a rule for a domain object.
+        /// </summary>
+        public static void UnRegisterRule(IBusinessRuleRegistry registry)
+        {
+            registry.UnRegisterItem(
+                typeof(DomainCreateBeforeEvent<TDomainObject>),
+                typeof(DomainUpdateDateRule<TDomainObject>));
+
+            registry.UnRegisterItem(
+                typeof(DomainUpdateBeforeEvent<TDomainObject>),
+                typeof(DomainUpdateDateRule<TDomainObject>));
+        }
+
+        /// <summary>
         /// Execute the business rule.
         /// </summary>
         /// <param name="context"></param>

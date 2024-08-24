@@ -281,7 +281,7 @@ namespace ServiceBricks
         /// <param name="pickupErrors"></param>
         /// <param name="errorPickupCutoffDate"></param>
         /// <returns></returns>
-        public virtual ServiceQueryRequest GetQueueItemsQuery(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
+        public static ServiceQueryRequest GetQueueItemsQuery(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
 

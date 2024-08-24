@@ -52,7 +52,7 @@ namespace ServiceBricks
             IResponseItem<TDomainObject> response = new ResponseItem<TDomainObject>();
 
             // Process Before
-            DomainGetItemBeforeEvent<TDomainObject> beforeEvent = new DomainGetItemBeforeEvent<TDomainObject>(obj);
+            DomainGetBeforeEvent<TDomainObject> beforeEvent = new DomainGetBeforeEvent<TDomainObject>(obj);
             var respRules = _businessRuleService.ExecuteEvent(beforeEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -66,7 +66,7 @@ namespace ServiceBricks
                 return response;
 
             // Process After
-            DomainGetItemAfterEvent<TDomainObject> afterEvent = new DomainGetItemAfterEvent<TDomainObject>(response.Item);
+            DomainGetAfterEvent<TDomainObject> afterEvent = new DomainGetAfterEvent<TDomainObject>(response.Item);
             respRules = _businessRuleService.ExecuteEvent(afterEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -85,7 +85,7 @@ namespace ServiceBricks
             IResponseItem<TDomainObject> response = new ResponseItem<TDomainObject>();
 
             // Process Before
-            DomainGetItemBeforeEvent<TDomainObject> beforeEvent = new DomainGetItemBeforeEvent<TDomainObject>(obj);
+            DomainGetBeforeEvent<TDomainObject> beforeEvent = new DomainGetBeforeEvent<TDomainObject>(obj);
             var respRules = await _businessRuleService.ExecuteEventAsync(beforeEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -99,7 +99,7 @@ namespace ServiceBricks
                 return response;
 
             // Process After
-            DomainGetItemAfterEvent<TDomainObject> afterEvent = new DomainGetItemAfterEvent<TDomainObject>(response.Item);
+            DomainGetAfterEvent<TDomainObject> afterEvent = new DomainGetAfterEvent<TDomainObject>(response.Item);
             respRules = await _businessRuleService.ExecuteEventAsync(afterEvent);
             response.CopyFrom(respRules);
             if (!response.Success)

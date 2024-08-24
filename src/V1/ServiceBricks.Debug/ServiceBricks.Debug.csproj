@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
@@ -38,21 +38,23 @@
 	  <Compile Include="..\ServiceBricks\Dto\DataTransferObject.cs" Link="DataTransferObject.cs" />
 	  <Compile Include="..\ServiceBricks\Dto\DomainTypeDto.cs" Link="DomainTypeDto.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiCreateAfterEvent.cs" Link="ApiCreateAfterEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\ApiCreateAfterMapEvent.cs" Link="ApiCreateAfterMapEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiCreateBeforeEvent.cs" Link="ApiCreateBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiDeleteAfterEvent.cs" Link="ApiDeleteAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiDeleteBeforeEvent.cs" Link="ApiDeleteBeforeEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\ApiGetItemAfterEvent.cs" Link="ApiGetItemAfterEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\ApiGetItemBeforeEvent.cs" Link="ApiGetItemBeforeEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\ApiGetAfterEvent.cs" Link="ApiGetAfterEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\ApiGetBeforeEvent.cs" Link="ApiGetBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiQueryAfterEvent.cs" Link="ApiQueryAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiQueryBeforeEvent.cs" Link="ApiQueryBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiUpdateAfterEvent.cs" Link="ApiUpdateAfterEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\ApiUpdateAfterMapEvent.cs" Link="ApiUpdateAfterMapEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\ApiUpdateBeforeEvent.cs" Link="ApiUpdateBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainCreateAfterEvent.cs" Link="DomainCreateAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainCreateBeforeEvent.cs" Link="DomainCreateBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainDeleteAfterEvent.cs" Link="DomainDeleteAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainDeleteBeforeEvent.cs" Link="DomainDeleteBeforeEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\DomainGetItemAfterEvent.cs" Link="DomainGetItemAfterEvent.cs" />
-	  <Compile Include="..\ServiceBricks\Event\DomainGetItemBeforeEvent.cs" Link="DomainGetItemBeforeEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\DomainGetAfterEvent.cs" Link="DomainGetAfterEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\DomainGetBeforeEvent.cs" Link="DomainGetBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainQueryAfterEvent.cs" Link="DomainQueryAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainQueryBeforeEvent.cs" Link="DomainQueryBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainUpdateAfterEvent.cs" Link="DomainUpdateAfterEvent.cs" />

@@ -353,16 +353,17 @@ namespace ServiceBricks
             if (messages.Count == 0)
                 messages.Add(ResponseMessage.CreateError(LocalizationResource.ERROR_SYSTEM));
 
+            var resp = new Response() { Error = true };
+            foreach (var item in messages)
+                resp.AddMessage(item);
+
             if (_apiOptions.ReturnResponseObject)
             {
-                var resp = new Response() { Error = true };
-                foreach (var item in messages)
-                    resp.AddMessage(item);
                 return BadRequest(resp);
             }
             else
             {
-                string message = string.Join(Environment.NewLine, messages);
+                string message = response.ToString();
                 if (string.IsNullOrEmpty(message))
                     message = LocalizationResource.ERROR_SYSTEM;
 

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.1.0-a</Version>
+		<Version>1.1.0-b</Version>
 		<Description>ServiceBricks - The open source microservices foundation. Visit https://ServiceBricks.com to learn more.</Description>
 		<AssemblyTitle>ServiceBricks.Storage.Postgres</AssemblyTitle>
 		<Authors>holomodular</Authors>
@@ -31,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks.Storage.EntityFrameworkCore" Version="1.1.0-a" />
+		<PackageReference Include="ServiceBricks.Storage.EntityFrameworkCore" Version="1.1.0-b" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
