@@ -29,5 +29,15 @@
         /// Security policy for the user.
         /// </summary>
         public const string SECURITY_POLICY_USER = @"ServiceBricksPolicyUser";
+
+        /// <summary>
+        /// The admin role name.
+        /// </summary>
+        public const string SECURITY_ROLE_ADMIN_NAME = "ADMIN";
+
+        /// <summary>
+        /// The user role name.
+        /// </summary>
+        public const string SECURITY_ROLE_USER_NAME = "USER";
     }
 }

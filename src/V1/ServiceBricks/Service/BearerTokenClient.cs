@@ -11,7 +11,7 @@ namespace ServiceBricks
     {
         private readonly ILogger<BearerTokenClient> _logger;
 
-        private BearerTokenCredentials _bearerTokenCredentials;
+        protected BearerTokenCredentials _bearerTokenCredentials;
 
         /// <summary>
         /// Constants for authorization.

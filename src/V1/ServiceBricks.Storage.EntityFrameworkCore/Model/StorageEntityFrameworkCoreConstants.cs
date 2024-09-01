@@ -11,6 +11,11 @@
         public const string APPSETTING_GENERAL_CONNECTION = "ServiceBricks:Storage:General:ConnectionString";
 
         /// <summary>
+        /// Application setting for the general connection string.
+        /// </summary>
+        public const string APPSETTING_GENERAL_DATABASE = "ServiceBricks:Storage:General:Database";
+
+        /// <summary>
         /// Application setting for the SQL Server connection string.
         /// </summary>
         public const string APPSETTING_SQLSERVER_CONNECTION = "ServiceBricks:Storage:SqlServer:ConnectionString";

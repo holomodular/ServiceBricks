@@ -57,15 +57,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.Storage.Azure
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.XunitNet6", "src\V1\Tests\ServiceBricks.XunitNet6\ServiceBricks.XunitNet6.csproj", "{FF759E2A-E8BE-45DC-8AB1-018C2E21F426}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBricks.Storage.InMemory", "src\V1\ServiceBricks.Storage.InMemory\ServiceBricks.Storage.InMemory.csproj", "{4B6D74CB-0F36-48A1-9CF7-ECED0D8B6C53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.Storage.InMemory", "src\V1\ServiceBricks.Storage.InMemory\ServiceBricks.Storage.InMemory.csproj", "{4B6D74CB-0F36-48A1-9CF7-ECED0D8B6C53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBricks.Storage.Cosmos", "src\V1\ServiceBricks.Storage.Cosmos\ServiceBricks.Storage.Cosmos.csproj", "{332D6DC1-7186-485A-9A19-F85815535174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.Storage.Cosmos", "src\V1\ServiceBricks.Storage.Cosmos\ServiceBricks.Storage.Cosmos.csproj", "{332D6DC1-7186-485A-9A19-F85815535174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBricks.Storage.Postgres", "src\V1\ServiceBricks.Storage.Postgres\ServiceBricks.Storage.Postgres.csproj", "{F82666D7-2A50-4928-B84C-75B9B5646B02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.Storage.Postgres", "src\V1\ServiceBricks.Storage.Postgres\ServiceBricks.Storage.Postgres.csproj", "{F82666D7-2A50-4928-B84C-75B9B5646B02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBricks.Storage.Sqlite", "src\V1\ServiceBricks.Storage.Sqlite\ServiceBricks.Storage.Sqlite.csproj", "{20B6EC6A-A0F6-40DE-AC73-C248B43B739F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.Storage.Sqlite", "src\V1\ServiceBricks.Storage.Sqlite\ServiceBricks.Storage.Sqlite.csproj", "{20B6EC6A-A0F6-40DE-AC73-C248B43B739F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBricks.Storage.SqlServer", "src\V1\ServiceBricks.Storage.SqlServer\ServiceBricks.Storage.SqlServer.csproj", "{B42D62E7-43FA-46A5-A262-6FAA33B4675E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.Storage.SqlServer", "src\V1\ServiceBricks.Storage.SqlServer\ServiceBricks.Storage.SqlServer.csproj", "{B42D62E7-43FA-46A5-A262-6FAA33B4675E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBricks.Xunit.Debug", "src\V1\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj", "{AB2F8E58-D65B-4614-BC7D-5BD9ED5C32C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -185,6 +187,10 @@ Global
 		{B42D62E7-43FA-46A5-A262-6FAA33B4675E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B42D62E7-43FA-46A5-A262-6FAA33B4675E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B42D62E7-43FA-46A5-A262-6FAA33B4675E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB2F8E58-D65B-4614-BC7D-5BD9ED5C32C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB2F8E58-D65B-4614-BC7D-5BD9ED5C32C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB2F8E58-D65B-4614-BC7D-5BD9ED5C32C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB2F8E58-D65B-4614-BC7D-5BD9ED5C32C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

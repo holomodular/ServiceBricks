@@ -3,7 +3,7 @@
     /// <summary>
     /// This allows the exclusion on business rules while processing.
     /// </summary>
-    public partial interface IBusinessRuleExclusion
+    public partial interface IBusinessRuleExclusion : IBusinessRule
     {
         /// <summary>
         /// The excluded business rule keys.

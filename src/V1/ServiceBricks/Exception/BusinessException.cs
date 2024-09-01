@@ -93,7 +93,7 @@
         {
             get
             {
-                return _messages.AsReadOnly();
+                return _messages;
             }
         }
 
@@ -154,7 +154,7 @@
             if (message != null)
                 return;
 
-            if (message.Severity == ResponseSeverity.Error)
+            if (message.Severity == ResponseSeverity.Error || message.Severity == ResponseSeverity.ErrorSystemSensitive)
                 this.Success = false;
 
             if (_messages != null)
@@ -172,7 +172,7 @@
 
             foreach (var message in messages)
             {
-                if (message.Severity == ResponseSeverity.Error)
+                if (message.Severity == ResponseSeverity.Error || message.Severity == ResponseSeverity.ErrorSystemSensitive)
                     this.Success = false;
 
                 if (_messages != null)
@@ -180,7 +180,7 @@
             }
         }
 
-        public string GetMessage(string seperator)
+        public virtual string GetMessage(string seperator)
         {
             if (_messages != null && _messages.Count > 0)
                 return string.Join(seperator, _messages.Select(x => x.ToString()));

@@ -7,7 +7,7 @@ namespace WebApp.Extensions
     {
         private static IApplicationBuilder RegisterMiddleware(this IApplicationBuilder app)
         {
-            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<TrapExceptionResponseMiddleware>();
             return app;
         }
 

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.Design.Serialization;
 using System.Runtime.CompilerServices;
 
 namespace ServiceBricks.Xunit
@@ -29,14 +30,28 @@ namespace ServiceBricks.Xunit
     {
         private static ServiceBricksSystemManager _instance = null;
         private static object _instanceLock = new object();
+        private static Type _currentType = null;
+
+        private ServiceBricksSystemManager()
+        {
+        }
 
         public static ISystemManager GetSystemManager(Type startupType)
         {
             lock (_instanceLock)
             {
                 if (_instance != null)
-                    return new ServiceContextSystemManager(_instance);
+                {
+                    if (startupType == _currentType)
+                        return new ServiceContextSystemManager(_instance);
+                    else
+                    {
+                        _instance.StopSystem();
+                        _instance = null;
+                    }
+                }
 
+                _currentType = startupType;
                 _instance = new ServiceBricksSystemManager();
                 _instance.StartSystem(startupType);
                 return new ServiceContextSystemManager(_instance);

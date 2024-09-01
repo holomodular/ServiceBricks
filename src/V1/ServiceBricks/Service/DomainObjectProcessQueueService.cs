@@ -210,7 +210,7 @@ namespace ServiceBricks
             }
         }
 
-        protected async Task FixOrphanedRecords()
+        protected virtual async Task FixOrphanedRecords()
         {
             DateTimeOffset timeoutDate = DateTimeOffset.UtcNow.Subtract(OrphanedProcessingTimeout);
             ServiceQueryRequestBuilder queryBuilder = new ServiceQueryRequestBuilder();
@@ -229,7 +229,7 @@ namespace ServiceBricks
             }
         }
 
-        protected async Task DoProcessingForItem(TDomainObject item)
+        protected virtual async Task DoProcessingForItem(TDomainObject item)
         {
             item.ProcessDate = DateTimeOffset.UtcNow;
 

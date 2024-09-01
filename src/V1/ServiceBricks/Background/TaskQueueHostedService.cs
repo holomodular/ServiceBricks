@@ -13,8 +13,8 @@ namespace ServiceBricks
         protected readonly ILogger<TaskQueueHostedService> _logger;
         protected readonly ITaskQueue _backgroundTaskQueue;
 
-        protected CancellationTokenSource _shutdown;
         protected Task _backgroundTask = null;
+        protected int _shutdownRequested = 0;
 
         /// <summary>
         /// Constructor
@@ -39,8 +39,11 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual Task StartAsync(CancellationToken cancellationToken)
         {
-            _shutdown = new CancellationTokenSource();
-            _backgroundTask = Task.Run(this.BackgroundProcess);
+            Interlocked.Exchange(ref _shutdownRequested, 0);
+            _backgroundTask = Task.Run(async () =>
+            {
+                await BackgroundProcessAsync(cancellationToken);
+            });
             return Task.CompletedTask;
         }
 
@@ -51,22 +54,21 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual Task StopAsync(CancellationToken cancellationToken)
         {
-            _shutdown?.Cancel();
-            return Task.WhenAny(_backgroundTask, Task.Delay(Timeout.Infinite, cancellationToken));
+            Interlocked.Exchange(ref _shutdownRequested, 1);
+            return Task.CompletedTask;
         }
 
         /// <summary>
         /// The background process that dequeues work and processes it.
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task BackgroundProcess()
+        protected virtual async Task BackgroundProcessAsync(CancellationToken cancellationToken)
         {
-            while (!_shutdown.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested && _shutdownRequested == 0)
             {
-                var workDetail = await _backgroundTaskQueue.DequeueAsync(_shutdown.Token);
-
                 try
                 {
+                    var workDetail = await _backgroundTaskQueue.DequeueAsync(cancellationToken);
                     using (var scope = _serviceProvider.CreateScope())
                     {
                         var workerType = workDetail
@@ -78,7 +80,7 @@ namespace ServiceBricks
 
                         var worker = scope.ServiceProvider.GetRequiredService(workerType);
                         var task = (Task)workerType.GetMethod("DoWork")
-                            .Invoke(worker, new object[] { workDetail, _shutdown.Token });
+                            .Invoke(worker, new object[] { workDetail, cancellationToken });
                         await task;
                     }
                 }

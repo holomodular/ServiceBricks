@@ -1,6 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
@@ -14,9 +13,8 @@ namespace ServiceBricks.ServiceBus.Azure
     {
         protected readonly ILogger<ServiceBusTopic> _logger;
         protected readonly IServiceBusQueue _serviceBusQueue;
-        protected readonly IBusinessRuleRegistry _domainRuleRegistry;
+        protected readonly IBusinessRuleRegistry _businessRuleRegistry;
         protected readonly IServiceBusConnection _serviceBusConnection;
-        protected readonly IConfiguration _configuration;
         protected readonly List<ServiceBusProcessor> _processors = new List<ServiceBusProcessor>();
 
         /// <summary>
@@ -24,20 +22,18 @@ namespace ServiceBricks.ServiceBus.Azure
         /// </summary>
         /// <param name="loggerFactory"></param>
         /// <param name="serviceBusQueue"></param>
-        /// <param name="domainRuleRegistry"></param>
+        /// <param name="businessRuleRegistry"></param>
         /// <param name="configuration"></param>
         /// <param name="serviceBusConnection"></param>
         public ServiceBusQueue(
             ILoggerFactory loggerFactory,
             IServiceBusQueue serviceBusQueue,
-            IBusinessRuleRegistry domainRuleRegistry,
-            IConfiguration configuration,
+            IBusinessRuleRegistry businessRuleRegistry,
             IServiceBusConnection serviceBusConnection)
         {
             _logger = loggerFactory.CreateLogger<ServiceBusTopic>();
             _serviceBusQueue = serviceBusQueue;
-            _domainRuleRegistry = domainRuleRegistry;
-            _configuration = configuration;
+            _businessRuleRegistry = businessRuleRegistry;
             _serviceBusConnection = serviceBusConnection;
         }
 
@@ -62,7 +58,7 @@ namespace ServiceBricks.ServiceBus.Azure
                 existingQueues.AddRange(page.Values);
 
             // Find all subscribed events
-            var types = _domainRuleRegistry.GetKeys();
+            var types = _businessRuleRegistry.GetKeys();
             var events = types.Where(x =>
                 x.IsAssignableTo(typeof(IDomainBroadcast)) && x.IsClass).ToList();
             foreach (var e in events)
@@ -112,7 +108,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <param name="handler"></param>
         public virtual void Subscribe(Type message, Type handler)
         {
-            _domainRuleRegistry.RegisterItem(message, handler);
+            _businessRuleRegistry.RegisterItem(message, handler);
         }
 
         /// <summary>
@@ -134,7 +130,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <param name="handler"></param>
         public virtual void Unsubscribe(Type message, Type handler)
         {
-            _domainRuleRegistry.UnRegisterItem(message, handler);
+            _businessRuleRegistry.UnRegisterItem(message, handler);
         }
 
         /// <summary>
@@ -229,7 +225,7 @@ namespace ServiceBricks.ServiceBus.Azure
             var processed = false;
 
             // If subscribed to, a reference will be found
-            var type = _domainRuleRegistry.GetKeys().Where(x => x.FullName == broadcastName).FirstOrDefault();
+            var type = _businessRuleRegistry.GetKeys().Where(x => x.FullName == broadcastName).FirstOrDefault();
             if (type != null)
             {
                 var domainBroadcast = (IDomainBroadcast)JsonConvert.DeserializeObject(message, type);

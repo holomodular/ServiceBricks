@@ -21,11 +21,11 @@
 	  <Compile Include="..\ServiceBricks\Broadcast\CreatedBroadcast.cs" Link="CreatedBroadcast.cs" />
 	  <Compile Include="..\ServiceBricks\Broadcast\DeletedBroadcast.cs" Link="DeletedBroadcast.cs" />
 	  <Compile Include="..\ServiceBricks\Broadcast\UpdatedBroadcast.cs" Link="UpdatedBroadcast.cs" />
-	  <Compile Include="..\ServiceBricks\BusinessRule\BusinessRule.cs" Link="BusinessRule.cs" />
-	  <Compile Include="..\ServiceBricks\BusinessRule\BusinessRuleContext.cs" Link="BusinessRuleContext.cs" />
-	  <Compile Include="..\ServiceBricks\BusinessRule\BusinessRuleExclusion.cs" Link="BusinessRuleExclusion.cs" />
-	  <Compile Include="..\ServiceBricks\BusinessRule\BusinessRuleRegistry.cs" Link="BusinessRuleRegistry.cs" />
-	  <Compile Include="..\ServiceBricks\BusinessRule\BusinessRuleService.cs" Link="BusinessRuleService.cs" />
+	  <Compile Include="..\ServiceBricks\Business\BusinessRule.cs" Link="BusinessRule.cs" />
+	  <Compile Include="..\ServiceBricks\Business\BusinessRuleContext.cs" Link="BusinessRuleContext.cs" />
+	  <Compile Include="..\ServiceBricks\Business\BusinessRuleExclusion.cs" Link="BusinessRuleExclusion.cs" />
+	  <Compile Include="..\ServiceBricks\Business\BusinessRuleRegistry.cs" Link="BusinessRuleRegistry.cs" />
+	  <Compile Include="..\ServiceBricks\Business\BusinessRuleService.cs" Link="BusinessRuleService.cs" />
 	  <Compile Include="..\ServiceBricks\Domain\DomainBroadcast.cs" Link="DomainBroadcast.cs" />
 	  <Compile Include="..\ServiceBricks\Domain\DomainEvent.cs" Link="DomainEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Domain\DomainObject.cs" Link="DomainObject.cs" />
@@ -60,13 +60,13 @@
 	  <Compile Include="..\ServiceBricks\Event\DomainUpdateAfterEvent.cs" Link="DomainUpdateAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainUpdateBeforeEvent.cs" Link="DomainUpdateBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Exception\BusinessException.cs" Link="BusinessException.cs" />
-	  <Compile Include="..\ServiceBricks\Extensions\ApplicationBuilderExtensions.cs" Link="ApplicationBuilderExtensions.cs" />
-	  <Compile Include="..\ServiceBricks\Extensions\ConfigurationBuilderExtensions.cs" Link="ConfigurationBuilderExtensions.cs" />
-	  <Compile Include="..\ServiceBricks\Extensions\ConfigurationExtensions.cs" Link="ConfigurationExtensions.cs" />
-	  <Compile Include="..\ServiceBricks\Extensions\HttpContextAccessorExtensions.cs" Link="HttpContextAccessorExtensions.cs" />
-	  <Compile Include="..\ServiceBricks\Extensions\HttpContextExtensions.cs" Link="HttpContextExtensions.cs" />
-	  <Compile Include="..\ServiceBricks\Extensions\ModelStateExtensions.cs" Link="ModelStateExtensions.cs" />
-	  <Compile Include="..\ServiceBricks\Extensions\ServiceCollectionExtensions.cs" Link="ServiceCollectionExtensions.cs" />
+	  <Compile Include="..\ServiceBricks\Extension\ApplicationBuilderExtensions.cs" Link="ApplicationBuilderExtensions.cs" />
+	  <Compile Include="..\ServiceBricks\Extension\ConfigurationBuilderExtensions.cs" Link="ConfigurationBuilderExtensions.cs" />
+	  <Compile Include="..\ServiceBricks\Extension\ConfigurationExtensions.cs" Link="ConfigurationExtensions.cs" />
+	  <Compile Include="..\ServiceBricks\Extension\HttpContextAccessorExtensions.cs" Link="HttpContextAccessorExtensions.cs" />
+	  <Compile Include="..\ServiceBricks\Extension\HttpContextExtensions.cs" Link="HttpContextExtensions.cs" />
+	  <Compile Include="..\ServiceBricks\Extension\ModelStateExtensions.cs" Link="ModelStateExtensions.cs" />
+	  <Compile Include="..\ServiceBricks\Extension\ServiceCollectionExtensions.cs" Link="ServiceCollectionExtensions.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Api\IApiClient.cs" Link="IApiClient.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Api\IApiController.cs" Link="IApiController.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Api\IApiService.cs" Link="IApiService.cs" />
@@ -99,19 +99,19 @@
 	  <Compile Include="..\ServiceBricks\Interface\Repository\IDomainRepository.cs" Link="IDomainRepository.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Repository\IRepository.cs" Link="IRepository.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Repository\IStorageRepository.cs" Link="IStorageRepository.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IAjaxResponse.cs" Link="IAjaxResponse.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IItem.cs" Link="IItem.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IList.cs" Link="IList.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IPaging.cs" Link="IPaging.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IRequest.cs" Link="IRequest.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IRequestItem.cs" Link="IRequestItem.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IRequestList.cs" Link="IRequestList.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IResponse.cs" Link="IResponse.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IResponseAggregateCountList.cs" Link="IResponseAggregateCountList.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IResponseCount.cs" Link="IResponseCount.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IResponseItem.cs" Link="IResponseItem.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IResponseList.cs" Link="IResponseList.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\RequestResponse\IResponseMessage.cs" Link="IResponseMessage.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IAjaxResponse.cs" Link="IAjaxResponse.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IItem.cs" Link="IItem.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IListOfItems.cs" Link="IListOfItems.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IPaging.cs" Link="IPaging.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Request\IRequest.cs" Link="IRequest.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Request\IRequestItem.cs" Link="IRequestItem.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Request\IRequestList.cs" Link="IRequestList.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IResponse.cs" Link="IResponse.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IResponseAggregateCountList.cs" Link="IResponseAggregateCountList.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IResponseCount.cs" Link="IResponseCount.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IResponseItem.cs" Link="IResponseItem.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IResponseList.cs" Link="IResponseList.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Response\IResponseMessage.cs" Link="IResponseMessage.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\ServiceBus\IServiceBus.cs" Link="IServiceBus.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\ServiceBus\IServiceBusQueue.cs" Link="IServiceBusQueue.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\ServiceBus\IServiceBusRule.cs" Link="IServiceBusRule.cs" />
@@ -119,7 +119,8 @@
 	  <Compile Include="..\ServiceBricks\Interface\Service\ITimezoneService.cs" Link="ITimezoneService.cs" />
 	  <Compile Include="..\ServiceBricks\Mapping\DomainObjectMappingProfile.cs" Link="DomainObjectMappingProfile.cs" />
 	  <Compile Include="..\ServiceBricks\Mapping\DomainTypeMappingProfile.cs" Link="DomainTypeMappingProfile.cs" />
-	  <Compile Include="..\ServiceBricks\Middleware\ExceptionMiddleware.cs" Link="ExceptionMiddleware.cs" />
+	  <Compile Include="..\ServiceBricks\Middleware\TrapExceptionResponseMiddleware.cs" Link="TrapExceptionResponseMiddleware.cs" />
+	  <Compile Include="..\ServiceBricks\Middleware\PropogateExceptionResponseMiddleware.cs" Link="PropogateExceptionResponseMiddleware.cs" />
 	  <Compile Include="..\ServiceBricks\Model\AccessTokenRequest.cs" Link="AccessTokenRequest.cs" />
 	  <Compile Include="..\ServiceBricks\Model\AccessTokenResponse.cs" Link="AccessTokenResponse.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ApiOptions.cs" Link="ApiOptions.cs" />
@@ -130,25 +131,24 @@
 	  <Compile Include="..\ServiceBricks\Model\ModuleRegistry.cs" Link="ModuleRegistry.cs" />
 	  <Compile Include="..\ServiceBricks\Model\Registry.cs" Link="Registry.cs" />
 	  <Compile Include="..\ServiceBricks\Model\RegistryContext.cs" Link="RegistryContext.cs" />
-	  <Compile Include="..\ServiceBricks\Model\RegistryList.cs" Link="RegistryList.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ServiceBricksConstants.cs" Link="ServiceBricksConstants.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ServiceBricksModule.cs" Link="ServiceBricksModule.cs" />
 	  <Compile Include="..\ServiceBricks\Model\Startup.cs" Link="Startup.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ValidationResponseResult.cs" Link="ValidationResponseResult.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\AjaxResponse.cs" Link="AjaxResponse.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\AjaxResponseItem.cs" Link="AjaxResponseItem.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\AjaxResponseList.cs" Link="AjaxResponseList.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\Paging.cs" Link="Paging.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\Request.cs" Link="Request.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\RequestItem.cs" Link="RequestItem.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\RequestList.cs" Link="RequestList.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\Response.cs" Link="Response.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\ResponseAggregateCountList.cs" Link="ResponseAggregateCountList.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\ResponseCount.cs" Link="ResponseCount.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\ResponseItem.cs" Link="ResponseItem.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\ResponseList.cs" Link="ResponseList.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\ResponseMessage.cs" Link="ResponseMessage.cs" />
-	  <Compile Include="..\ServiceBricks\RequestResponse\ResponseSeverity.cs" Link="ResponseSeverity.cs" />
+	  <Compile Include="..\ServiceBricks\Response\AjaxResponse.cs" Link="AjaxResponse.cs" />
+	  <Compile Include="..\ServiceBricks\Response\AjaxResponseItem.cs" Link="AjaxResponseItem.cs" />
+	  <Compile Include="..\ServiceBricks\Response\AjaxResponseList.cs" Link="AjaxResponseList.cs" />
+	  <Compile Include="..\ServiceBricks\Response\Paging.cs" Link="Paging.cs" />
+	  <Compile Include="..\ServiceBricks\Request\Request.cs" Link="Request.cs" />
+	  <Compile Include="..\ServiceBricks\Request\RequestItem.cs" Link="RequestItem.cs" />
+	  <Compile Include="..\ServiceBricks\Request\RequestList.cs" Link="RequestList.cs" />
+	  <Compile Include="..\ServiceBricks\Response\Response.cs" Link="Response.cs" />
+	  <Compile Include="..\ServiceBricks\Response\ResponseAggregateCountList.cs" Link="ResponseAggregateCountList.cs" />
+	  <Compile Include="..\ServiceBricks\Response\ResponseCount.cs" Link="ResponseCount.cs" />
+	  <Compile Include="..\ServiceBricks\Response\ResponseItem.cs" Link="ResponseItem.cs" />
+	  <Compile Include="..\ServiceBricks\Response\ResponseList.cs" Link="ResponseList.cs" />
+	  <Compile Include="..\ServiceBricks\Response\ResponseMessage.cs" Link="ResponseMessage.cs" />
+	  <Compile Include="..\ServiceBricks\Response\ResponseSeverity.cs" Link="ResponseSeverity.cs" />
 	  <Compile Include="..\ServiceBricks\Rule\ApiConcurrencyByStringRule.cs" Link="ApiConcurrencyByStringRule.cs" />
 	  <Compile Include="..\ServiceBricks\Rule\ApiConcurrencyByUpdateDateRule.cs" Link="ApiConcurrencyByUpdateDateRule.cs" />
 	  <Compile Include="..\ServiceBricks\Rule\ApiCreatedBroadcastRule.cs" Link="ApiCreatedBroadcastRule.cs" />

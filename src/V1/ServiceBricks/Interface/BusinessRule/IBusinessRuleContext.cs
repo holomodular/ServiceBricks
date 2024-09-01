@@ -13,6 +13,11 @@
         /// <summary>
         /// The custom data.
         /// </summary>
-        Dictionary<string, object> Data { get; set; }
+        Dictionary<string, object> CustomData { get; set; }
+
+        /// <summary>
+        /// The cancellation token.
+        /// </summary>
+        CancellationToken? CancellationToken { get; set; }
     }
 }

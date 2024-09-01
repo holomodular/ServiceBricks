@@ -11,7 +11,6 @@ namespace ServiceBricks
         where TDto : class, IDataTransferObject
     {
         private readonly ILogger _logger;
-        private readonly IStorageRepository<TDomainObject> _storageRepository;
 
         /// <summary>
         /// The property name to check for concurrency.
@@ -22,13 +21,10 @@ namespace ServiceBricks
         /// Constructor.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        /// <param name="storageRepository"></param>
         public ApiConcurrencyByStringRule(
-            ILoggerFactory loggerFactory,
-            IStorageRepository<TDomainObject> storageRepository)
+            ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<ApiConcurrencyByStringRule<TDomainObject, TDto>>();
-            _storageRepository = storageRepository;
             Priority = PRIORITY_HIGH;
         }
 

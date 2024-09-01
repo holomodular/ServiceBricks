@@ -18,12 +18,11 @@ namespace ServiceBricks.Storage.AzureDataTables
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="logFactory"></param>
-        /// <param name="businessRuleService"></param>
+        /// <param name="loggerFactory"></param>
         public AzureDataTablesStorageRepository(
-            ILoggerFactory logFactory)
+            ILoggerFactory loggerFactory)
         {
-            _logger = logFactory.CreateLogger<AzureDataTablesStorageRepository<TDomain>>();
+            _logger = loggerFactory.CreateLogger<AzureDataTablesStorageRepository<TDomain>>();
         }
 
         /// <summary>

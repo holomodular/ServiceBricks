@@ -4,16 +4,22 @@
     /// This API event fires after get
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
-    public partial class ApiGetAfterEvent<TDto> : DomainEvent<TDto>
+    public partial class ApiGetAfterEvent<TDomain, TDto> : DomainEvent<TDomain>
         where TDto : IDataTransferObject
     {
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="obj"></param>
-        public ApiGetAfterEvent(TDto obj) : base()
+        public ApiGetAfterEvent(TDomain domain, TDto dto) : base()
         {
-            DomainObject = obj;
+            DomainObject = domain;
+            Dto = dto;
         }
+
+        /// <summary>
+        /// The data transfer object.
+        /// </summary>
+        public virtual TDto Dto { get; set; }
     }
 }

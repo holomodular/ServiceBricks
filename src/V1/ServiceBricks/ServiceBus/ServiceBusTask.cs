@@ -53,7 +53,8 @@ namespace ServiceBricks
             {
                 var handler = new ServiceBusRuleRegistration<TBroadcast>(detail.Message);
                 BusinessRuleContext context = new BusinessRuleContext(handler);
-                var resp = await _businessRuleService.ExecuteRulesAsync(context);
+                context.CancellationToken = cancellationToken;
+                await _businessRuleService.ExecuteRulesAsync(context);
             }
         }
     }

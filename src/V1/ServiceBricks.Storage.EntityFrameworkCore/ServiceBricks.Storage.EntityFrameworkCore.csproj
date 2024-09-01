@@ -1,10 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.1.0-b</Version>
-		<Description>ServiceBricks - The open source microservices foundation. Visit https://ServiceBricks.com to learn more.</Description>
+		<Version>1.1.0-c</Version>
+		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
+		<PackageId>ServiceBricks.Storage.EntityFrameworkCore</PackageId>
+		<Title>ServiceBricks.Storage.EntityFrameworkCore</Title>
 		<AssemblyTitle>ServiceBricks.Storage.EntityFrameworkCore</AssemblyTitle>
 		<Authors>holomodular</Authors>
+		<Company>HoloModular LLC</Company>
+		<Product>ServiceBricks</Product>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
 		<Nullable>disable</Nullable>
 		<Copyright>Copyright © 2024 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
@@ -13,25 +17,23 @@
 		<PackageTags>service;bricks;storage;entityframeworkcore;efc</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>ServiceBricks.Storage.EntityFrameworkCore.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>Resource\ServiceBricks.Storage.EntityFrameworkCore.snk</AssemblyOriginatorKeyFile>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
-		<IsPackable>False</IsPackable>
+		<IsPackable>True</IsPackable>
 	</PropertyGroup>
-
 	<ItemGroup>
-		<None Include="docs\readme.md" Pack="True" PackagePath="\" />
-		<EmbeddedResource Include="logo.png">
+		<None Include="Resource\readme.md" Pack="True" PackagePath="\" />
+		<None Include="Resource\logo.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
-		</EmbeddedResource>
+		</None>
 	</ItemGroup>
-
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.1.0-b" />
+		<PackageReference Include="ServiceBricks" Version="1.1.0-c" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">

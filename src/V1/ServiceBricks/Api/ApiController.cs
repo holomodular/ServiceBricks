@@ -347,31 +347,29 @@ namespace ServiceBricks
         [NonAction]
         public virtual ActionResult GetErrorResponse(IResponse response)
         {
+            // Create filtered list of messages (Don't expose sensitive system errors)
             List<IResponseMessage> messages = response.Messages.ToList();
             if (!_apiOptions.ExposeSystemErrors)
                 messages = messages.Where(x => x.Severity != ResponseSeverity.ErrorSystemSensitive).ToList();
             if (messages.Count == 0)
                 messages.Add(ResponseMessage.CreateError(LocalizationResource.ERROR_SYSTEM));
 
-            var resp = new Response() { Error = true };
+            // Create new error response
+            var respError = new Response() { Error = true };
             foreach (var item in messages)
-                resp.AddMessage(item);
+                respError.AddMessage(item);
 
+            // Return response
             if (_apiOptions.ReturnResponseObject)
-            {
-                return BadRequest(resp);
-            }
+                return BadRequest(respError);
             else
             {
-                string message = response.ToString();
-                if (string.IsNullOrEmpty(message))
-                    message = LocalizationResource.ERROR_SYSTEM;
-
+                string detail = string.Join(Environment.NewLine, messages.Select(x => x.Message));
                 var details = new ProblemDetails()
                 {
                     Title = LocalizationResource.ERROR_SYSTEM,
                     Status = (int)HttpStatusCode.BadRequest,
-                    Detail = message
+                    Detail = detail
                 };
                 return BadRequest(details);
             }

@@ -23,8 +23,8 @@
         /// <summary>
         /// Sets custom data for the rule.
         /// </summary>
-        /// <param name="data"></param>
-        void SetCustomData(Dictionary<string, object> data);
+        /// <param name="customData"></param>
+        void SetCustomData(Dictionary<string, object> customData);
 
         /// <summary>
         /// Executes the rule.

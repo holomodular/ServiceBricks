@@ -34,10 +34,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public static string GetIPAddress(HttpContext httpContext)
         {
-            var ipAddress = httpContext?.Connection?.RemoteIpAddress?.ToString();
-            if (!string.IsNullOrEmpty(ipAddress) && ipAddress == "::1")
-                ipAddress = "127.0.0.1";
-            return ipAddress;
+            return httpContext?.Connection?.RemoteIpAddress?.ToString();
         }
     }
 }

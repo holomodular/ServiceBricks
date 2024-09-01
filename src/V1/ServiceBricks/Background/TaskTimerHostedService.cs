@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace ServiceBricks
 {
@@ -9,17 +10,17 @@ namespace ServiceBricks
     /// </summary>
     /// <typeparam name="TWorkDetail"></typeparam>
     /// <typeparam name="TWorker"></typeparam>
-    public abstract partial class TaskTimerHostedService<TWorkDetail, TWorker> : IHostedService, ITaskTimerHostedService<TWorkDetail, TWorker>
+    public abstract partial class TaskTimerHostedService<TWorkDetail, TWorker> : IHostedService, ITaskTimerHostedService<TWorkDetail, TWorker>, IDisposable
         where TWorker : ITaskWork<TWorkDetail, TWorker>
         where TWorkDetail : ITaskDetail<TWorkDetail, TWorker>
     {
         protected readonly IServiceProvider _serviceProvider;
         protected readonly ILogger _logger = null;
 
-        protected CancellationTokenSource _shutdown;
         protected Timer _timer;
         protected Task _backgroundTask = null;
-        protected bool _isCurrentlyRunning = false;
+        protected CancellationToken _cancellationToken;
+        protected int _isCurrentlyRunning = 0;
 
         /// <summary>
         /// Constructor
@@ -43,10 +44,10 @@ namespace ServiceBricks
         }
 
         /// <summary>
-        /// Indicates if the timer is currently running.
+        /// Indicates if a timer process is currently running.
         /// </summary>
         public virtual bool IsCurrentlyRunning
-        { get { return _isCurrentlyRunning; } }
+        { get { return _isCurrentlyRunning == 1; } }
 
         /// <summary>
         /// The interval at which the timer ticks.
@@ -76,7 +77,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual Task StartAsync(CancellationToken cancellationToken)
         {
-            _shutdown = new CancellationTokenSource();
+            _cancellationToken = cancellationToken;
             _timer = new Timer(TimerProcessing, null, TimerDueTime, TimerTickInterval);
             return Task.CompletedTask;
         }
@@ -89,14 +90,7 @@ namespace ServiceBricks
         public virtual Task StopAsync(CancellationToken cancellationToken)
         {
             _timer?.Change(Timeout.Infinite, 0);
-            _shutdown?.Cancel();
-            var taskList = new List<Task>()
-            {
-                Task.Delay(Timeout.Infinite,cancellationToken)
-            };
-            if (_backgroundTask != null)
-                taskList.Add(_backgroundTask);
-            return Task.WhenAny(taskList);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -106,18 +100,27 @@ namespace ServiceBricks
         protected virtual void TimerProcessing(object state)
         {
             if (TimerTickShouldProcessRun())
-                Task.Run(async () => await BackgroundProcess());
+            {
+                // Start the background task
+                Task.Run(async () =>
+                {
+                    await BackgroundProcess(_cancellationToken);
+                });
+            }
         }
 
         /// <summary>
         /// The background process that dequeues work and processes it.
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task BackgroundProcess()
+        protected virtual async Task BackgroundProcess(CancellationToken cancellationToken)
         {
+            // Mark the task as running
+            Interlocked.Exchange(ref _isCurrentlyRunning, 1);
+
+            // Create a scope for the worker
             try
             {
-                _isCurrentlyRunning = true;
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var workerType = TaskDetail
@@ -129,7 +132,7 @@ namespace ServiceBricks
 
                     var worker = scope.ServiceProvider.GetRequiredService(workerType);
                     var task = (Task)workerType.GetMethod("DoWork")
-                        .Invoke(worker, new object[] { TaskDetail, _shutdown.Token });
+                        .Invoke(worker, new object[] { TaskDetail, cancellationToken });
                     await task;
                 }
             }
@@ -137,10 +140,9 @@ namespace ServiceBricks
             {
                 _logger.LogCritical(ex, ex.Message);
             }
-            finally
-            {
-                _isCurrentlyRunning = false;
-            }
+
+            // Mark the task as not running
+            Interlocked.Exchange(ref _isCurrentlyRunning, 0);
         }
     }
 }

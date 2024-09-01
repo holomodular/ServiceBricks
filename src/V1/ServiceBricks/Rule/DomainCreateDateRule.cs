@@ -17,7 +17,9 @@ namespace ServiceBricks
         /// Constructor.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        public DomainCreateDateRule(ILoggerFactory loggerFactory, ITimezoneService timezoneService)
+        public DomainCreateDateRule(
+            ILoggerFactory loggerFactory,
+            ITimezoneService timezoneService)
         {
             _logger = loggerFactory.CreateLogger<DomainCreateDateRule<TDomainObject>>();
             _timezoneService = timezoneService;

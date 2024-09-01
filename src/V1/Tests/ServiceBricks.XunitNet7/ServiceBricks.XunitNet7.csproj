@@ -10,30 +10,23 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\TestFiles\ExampleDto.cs" Link="ExampleDto.cs" />		
+		<Compile Include="..\TestFiles\ApiServiceTests.cs" Link="ApiServiceTests.cs" />
+		<Compile Include="..\TestFiles\BusinessRuleTests.cs" Link="BusinessRuleTests.cs" />
+		<Compile Include="..\TestFiles\DomainRepositoryTests.cs" Link="DomainRepositoryTests.cs" />
+		<Compile Include="..\TestFiles\ExampleDto.cs" Link="ExampleDto.cs" />
+		<Compile Include="..\TestFiles\ExampleMappingProfile.cs" Link="ExampleMappingProfile.cs" />
+		<Compile Include="..\TestFiles\MappingTests.cs" Link="MappingTests.cs" />
+		<Compile Include="..\TestFiles\TestModule.cs" Link="TestModule.cs" />
+		<Compile Include="..\TestFiles\TestStartup.cs" Link="TestStartup.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\ServiceBricks.Debug\ServiceBricks.Debug.csproj" />
+		<ProjectReference Include="..\..\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="..\..\ServiceBricks.Xunit\ApiClientReturnResponseTest.cs" Link="ApiClientReturnResponseTest.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\ApiClientTest.cs" Link="ApiClientTest.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\ApiControllerTest.cs" Link="ApiControllerTest.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\Constants.cs" Link="Constants.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\ISystemManager.cs" Link="ISystemManager.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\ITestManager.cs" Link="ITestManager.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\MappingTest.cs" Link="MappingTest.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\ServiceBricksStartup.cs" Link="ServiceBricksStartup.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\ServiceBricksTestModule.cs" Link="ServiceBricksTestModule.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\SystemManager.cs" Link="SystemManager.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\TestManager.cs" Link="TestManager.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\TestStartup.cs" Link="TestStartup.cs" />
-		<Compile Include="..\..\ServiceBricks.Xunit\Usings.cs" Link="Usings.cs" />
-	</ItemGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.20" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
 		<PackageReference Include="xunit" Version="2.9.0" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

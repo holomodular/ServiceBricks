@@ -78,12 +78,9 @@ namespace ServiceBricks
             response.Item = _mapper.Map<TDomainObject, TDtoObject>(respGet.Item);
 
             // Process After
-            ApiGetAfterEvent<TDtoObject> afterEvent = new ApiGetAfterEvent<TDtoObject>(response.Item);
+            ApiGetAfterEvent<TDomainObject, TDtoObject> afterEvent = new ApiGetAfterEvent<TDomainObject, TDtoObject>(respGet.Item, response.Item);
             respRules = _businessRuleService.ExecuteEvent(afterEvent);
             response.CopyFrom(respRules);
-            if (!response.Success)
-                return response;
-
             return response;
         }
 
@@ -124,12 +121,9 @@ namespace ServiceBricks
             response.Item = _mapper.Map<TDomainObject, TDtoObject>(respGet.Item);
 
             // Process After
-            ApiGetAfterEvent<TDtoObject> afterEvent = new ApiGetAfterEvent<TDtoObject>(response.Item);
+            ApiGetAfterEvent<TDomainObject, TDtoObject> afterEvent = new ApiGetAfterEvent<TDomainObject, TDtoObject>(respGet.Item, response.Item);
             respRules = await _businessRuleService.ExecuteEventAsync(afterEvent);
             response.CopyFrom(respRules);
-            if (!response.Success)
-                return response;
-
             return response;
         }
 
@@ -527,12 +521,12 @@ namespace ServiceBricks
             if (response.Error)
                 return response;
 
-            if (result.Item != null && result.Item.List != null)
+            response.Item = new ServiceQueryResponse<TDtoObject>();
+            if (result.Item != null)
             {
-                response.Item = new ServiceQueryResponse<TDtoObject>();
                 response.Item.Aggregate = result.Item.Aggregate;
                 response.Item.Count = result.Item.Count;
-                response.Item.List = _mapper.Map<List<TDomainObject>, List<TDtoObject>>(result.Item.List);
+                response.Item.List = _mapper.Map<List<TDomainObject>, List<TDtoObject>>(result.Item.List ?? new List<TDomainObject>());
             }
 
             // Process After
@@ -567,12 +561,12 @@ namespace ServiceBricks
             if (response.Error)
                 return response;
 
-            if (result.Item != null && result.Item.List != null)
+            response.Item = new ServiceQueryResponse<TDtoObject>();
+            if (result.Item != null)
             {
-                response.Item = new ServiceQueryResponse<TDtoObject>();
                 response.Item.Aggregate = result.Item.Aggregate;
                 response.Item.Count = result.Item.Count;
-                response.Item.List = _mapper.Map<List<TDomainObject>, List<TDtoObject>>(result.Item.List);
+                response.Item.List = _mapper.Map<List<TDomainObject>, List<TDtoObject>>(result.Item.List ?? new List<TDomainObject>());
             }
 
             // Process After

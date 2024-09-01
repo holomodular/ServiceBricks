@@ -22,11 +22,16 @@ namespace ServiceBricks.Xunit
         public override void AddBricks(IServiceCollection services)
         {
             base.AddBricks(services);
+
+            services.AddServiceBricks(Configuration);
+            services.AddServiceBricksComplete();
         }
 
         public override void StartBricks(IApplicationBuilder app)
         {
             base.StartBricks(app);
+
+            app.StartServiceBricks();
         }
     }
 }

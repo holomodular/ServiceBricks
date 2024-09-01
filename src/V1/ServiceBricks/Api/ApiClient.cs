@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ServiceQuery;
 using System.Text;
@@ -25,7 +26,7 @@ namespace ServiceBricks
         public ApiClient(
             ILoggerFactory loggerFactory,
             IHttpClientFactory httpClientFactory,
-            ClientApiOptions clientApiOptions)
+            ClientApiOptions clientApiOptions) // Don't use IOptions here so that it can be changed in derived classes
             : base(loggerFactory, httpClientFactory, clientApiOptions.DisableAuthentication ? null : new BearerTokenCredentials()
             {
                 AccessTokenRequest = new AccessTokenRequest()
@@ -40,7 +41,7 @@ namespace ServiceBricks
             })
         {
             _logger = loggerFactory.CreateLogger<ApiClient<TDto>>();
-            _clientApiOptions = clientApiOptions ?? new ClientApiOptions();
+            _clientApiOptions = clientApiOptions;
             _type = typeof(TDto);
             BaseUrl = _clientApiOptions.BaseServiceUrl;
         }
@@ -63,7 +64,71 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual IResponseItem<TModel> Execute<TModel>(HttpRequestMessage request)
         {
-            return ExecuteAsync<TModel>(request).GetAwaiter().GetResult();
+            // Validation
+            var resp = new ResponseItem<TModel>();
+            if (request == null)
+            {
+                resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(request)));
+                return resp;
+            }
+
+            try
+            {
+                // Send and get response
+                var result = Send(request);
+                if (result == null)
+                {
+                    _logger.LogError("ApiClient SendAsync returned null");
+                    resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
+                    return resp;
+                }
+
+                // Get content
+                string content = null;
+                if (result.Content != null)
+                {
+                    using (var stream = result.Content.ReadAsStream())
+                    using (StreamReader reader = new StreamReader(stream))
+                        content = reader.ReadToEnd();
+                }
+
+                // Check response status
+                if (result.IsSuccessStatusCode)
+                {
+                    // Deserialize content to ITEM in the format of TModel
+                    if (!string.IsNullOrEmpty(content))
+                        resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                }
+                else
+                {
+                    // Mark message as error
+                    resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
+
+                    // Check response format
+                    if (_clientApiOptions.ReturnResponseObject)
+                    {
+                        if (!string.IsNullOrEmpty(content))
+                            resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var pd = JsonConvert.DeserializeObject<ProblemDetails>(content);
+                            if (pd != null)
+                                resp.AddMessage(ResponseMessage.CreateError(pd.Title + ":" + pd.Detail));
+                        }
+                        catch { } // Other API use possible that don't use ProblemDetails
+                    }
+                }
+                return resp;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_REST_CLIENT));
+                return resp;
+            }
         }
 
         /// <summary>
@@ -74,41 +139,59 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual async Task<IResponseItem<TModel>> ExecuteAsync<TModel>(HttpRequestMessage request)
         {
+            // Validation
             var resp = new ResponseItem<TModel>();
             if (request == null)
             {
                 resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, nameof(request)));
                 return resp;
             }
+
             try
             {
+                // Send and get response
                 var result = await SendAsync(request);
-                if (result != null)
-                {
-                    if (result.IsSuccessStatusCode)
-                    {
-                        var content = await result.Content.ReadAsStringAsync();
-                        if (!string.IsNullOrEmpty(content))
-                            resp.Item = JsonConvert.DeserializeObject<TModel>(content);
-                        return resp;
-                    }
-                    else
-                    {
-                        resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
-                        _logger.LogWarning($"{result.StatusCode} {request.RequestUri}");
-                        if (_clientApiOptions.ReturnResponseObject)
-                        {
-                            var content = await result.Content.ReadAsStringAsync();
-                            if (!string.IsNullOrEmpty(content))
-                                resp.Item = JsonConvert.DeserializeObject<TModel>(content);
-                        }
-                        return resp;
-                    }
-                }
-                else
+                if (result == null)
                 {
                     _logger.LogError("ApiClient SendAsync returned null");
                     resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
+                    return resp;
+                }
+
+                // Get content
+                string content = null;
+                if (result.Content != null)
+                    content = await result.Content.ReadAsStringAsync();
+
+                // Check response status
+                if (result.IsSuccessStatusCode)
+                {
+                    // Deserialize content to ITEM in the format of TModel
+                    if (!string.IsNullOrEmpty(content))
+                        resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                    return resp;
+                }
+                else
+                {
+                    // Mark message as error
+                    resp.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));
+
+                    // Check response format
+                    if (_clientApiOptions.ReturnResponseObject)
+                    {
+                        if (!string.IsNullOrEmpty(content))
+                            resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            var pd = JsonConvert.DeserializeObject<ProblemDetails>(content);
+                            if (pd != null)
+                                resp.AddMessage(ResponseMessage.CreateError(pd.Title + ":" + pd.Detail));
+                        }
+                        catch { } // Other API use possible that don't use ProblemDetails
+                    }
                     return resp;
                 }
             }
@@ -127,17 +210,18 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual IResponseItem<TDto> Get(string storageKey)
         {
+            // Create request
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Get,
                 $"{BaseUrl}/{ApiResource}/Get?storageKey={storageKey}");
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<TDto>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -153,17 +237,18 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual async Task<IResponseItem<TDto>> GetAsync(string storageKey)
         {
+            // Create request
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Get,
                 $"{BaseUrl}/{ApiResource}/GetAsync?storageKey={storageKey}");
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<TDto>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -179,10 +264,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual IResponseItem<TDto> Update(TDto dto)
         {
-            HttpRequestMessage request = new HttpRequestMessage(
-                HttpMethod.Put,
-                $"{BaseUrl}/{ApiResource}/Update");
-
+            // Validation
             if (dto == null)
             {
                 var errresp = new ResponseItem<TDto>();
@@ -190,16 +272,20 @@ namespace ServiceBricks
                 return errresp;
             }
 
+            // Create request
+            HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Put,
+                $"{BaseUrl}/{ApiResource}/Update");
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<TDto>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -215,10 +301,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual async Task<IResponseItem<TDto>> UpdateAsync(TDto dto)
         {
-            HttpRequestMessage request = new HttpRequestMessage(
-                HttpMethod.Put,
-                $"{BaseUrl}/{ApiResource}/UpdateAsync");
-
+            // Validation
             if (dto == null)
             {
                 var errresp = new ResponseItem<TDto>();
@@ -226,16 +309,20 @@ namespace ServiceBricks
                 return errresp;
             }
 
+            // Create request
+            HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Put,
+                $"{BaseUrl}/{ApiResource}/UpdateAsync");
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<TDto>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -251,10 +338,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual IResponseItem<TDto> Create(TDto dto)
         {
-            HttpRequestMessage request = new HttpRequestMessage(
-                HttpMethod.Post,
-                $"{BaseUrl}/{ApiResource}/Create");
-
+            // Validation
             if (dto == null)
             {
                 var errresp = new ResponseItem<TDto>();
@@ -262,16 +346,20 @@ namespace ServiceBricks
                 return errresp;
             }
 
+            // Create request
+            HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"{BaseUrl}/{ApiResource}/Create");
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<TDto>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -287,10 +375,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual async Task<IResponseItem<TDto>> CreateAsync(TDto dto)
         {
-            HttpRequestMessage request = new HttpRequestMessage(
-                HttpMethod.Post,
-                $"{BaseUrl}/{ApiResource}/CreateAsync");
-
+            // Validation
             if (dto == null)
             {
                 var errresp = new ResponseItem<TDto>();
@@ -298,16 +383,20 @@ namespace ServiceBricks
                 return errresp;
             }
 
+            // Create request
+            HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"{BaseUrl}/{ApiResource}/CreateAsync");
             string data = JsonConvert.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<TDto>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<TDto> respEr = new ResponseItem<TDto>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -323,9 +412,12 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual IResponse Delete(string storageKey)
         {
+            // Create request
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Delete,
                 $"{BaseUrl}/{ApiResource}/Delete?storageKey={storageKey}");
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 return Execute<Response>(request);
@@ -341,9 +433,12 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual async Task<IResponse> DeleteAsync(string storageKey)
         {
+            // Create request
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Delete,
                 $"{BaseUrl}/{ApiResource}/DeleteAsync?storageKey={storageKey}");
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 return await ExecuteAsync<Response>(request);
@@ -359,10 +454,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual IResponseItem<ServiceQueryResponse<TDto>> Query(ServiceQueryRequest serviceQueryRequest)
         {
-            HttpRequestMessage request = new HttpRequestMessage(
-                HttpMethod.Post,
-                $"{BaseUrl}/{ApiResource}/Query");
-
+            // Validation
             if (serviceQueryRequest == null)
             {
                 var errresp = new ResponseItem<ServiceQueryResponse<TDto>>();
@@ -370,16 +462,20 @@ namespace ServiceBricks
                 return errresp;
             }
 
+            // Create request
+            HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"{BaseUrl}/{ApiResource}/Query");
             string data = JsonConvert.SerializeObject(serviceQueryRequest);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = Execute<ResponseItem<ServiceQueryResponse<TDto>>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<ServiceQueryResponse<TDto>> respEr = new ResponseItem<ServiceQueryResponse<TDto>>();
                 respEr.CopyFrom(resp);
                 return respEr;
@@ -395,10 +491,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual async Task<IResponseItem<ServiceQueryResponse<TDto>>> QueryAsync(ServiceQueryRequest serviceQueryRequest)
         {
-            HttpRequestMessage request = new HttpRequestMessage(
-                HttpMethod.Post,
-                $"{BaseUrl}/{ApiResource}/QueryAsync");
-
+            // Validation
             if (serviceQueryRequest == null)
             {
                 var errresp = new ResponseItem<ServiceQueryResponse<TDto>>();
@@ -406,16 +499,20 @@ namespace ServiceBricks
                 return errresp;
             }
 
+            // Create request
+            HttpRequestMessage request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"{BaseUrl}/{ApiResource}/QueryAsync");
             string data = JsonConvert.SerializeObject(serviceQueryRequest);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
+
+            // Execute request
             if (_clientApiOptions.ReturnResponseObject)
             {
                 var resp = await ExecuteAsync<ResponseItem<ServiceQueryResponse<TDto>>>(request);
-                if (resp.Success)
-                {
-                    if (resp.Item != null)
-                        return resp.Item;
-                }
+                if (resp.Item != null)
+                    return resp.Item;
+
                 ResponseItem<ServiceQueryResponse<TDto>> respEr = new ResponseItem<ServiceQueryResponse<TDto>>();
                 respEr.CopyFrom(resp);
                 return respEr;

@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Extensions\ApplicationBuilderExtensions.cs" Link="ApplicationBuilderExtensions.cs" />
-	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Extensions\ServiceCollectionExtensions.cs" Link="ServiceCollectionExtensions.cs" />
+	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Extension\ApplicationBuilderExtensions.cs" Link="ApplicationBuilderExtensions.cs" />
+	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Extension\ServiceCollectionExtensions.cs" Link="ServiceCollectionExtensions.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Interface\IServiceBusConnection.cs" Link="IServiceBusConnection.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Model\ServiceBusAzureConstants.cs" Link="ServiceBusAzureConstants.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Model\ServiceBusAzureModule.cs" Link="ServiceBusAzureModule.cs" />

@@ -35,7 +35,7 @@ namespace ServiceBricks.Client.Xunit
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                options.Value);
+                options);
         }
 
         public override IApiClient<ExampleDto> GetClientReturnResponse(IServiceProvider serviceProvider)
@@ -46,7 +46,7 @@ namespace ServiceBricks.Client.Xunit
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                options.Value);
+                options);
         }
 
         public override IApiService<ExampleDto> GetService(IServiceProvider serviceProvider)

@@ -16,7 +16,6 @@ namespace ServiceBricks
         /// Constructor.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        /// <param name="storageRepository"></param>
         public ApiConcurrencyByUpdateDateRule(
             ILoggerFactory loggerFactory)
         {

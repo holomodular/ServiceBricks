@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        System.Collections.Generic.IList<RegistryContext<TValue>> GetRegistryList(TKey key);
+        IList<RegistryContext<TValue>> GetRegistryList(TKey key);
 
         /// <summary>
         /// Register an item.
@@ -33,7 +33,7 @@
         /// Unregister all items.
         /// </summary>
         /// <param name="key"></param>
-        void UnRegisterItem(TKey key);
+        void UnRegister(TKey key);
 
         /// <summary>
         /// Unregister a single item.

@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Extensions\IConfigurationExtensions.cs" Link="IConfigurationExtensions.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Extension\IConfigurationExtensions.cs" Link="IConfigurationExtensions.cs" />
 	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Interface\IAzureDataTablesDomainObject.cs" Link="IAzureDataTablesDomainObject.cs" />
 	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Interface\IAzureDataTablesStorageRepository.cs" Link="IAzureDataTablesStorageRepository.cs" />
 	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\AzureDataTablesDomainObject.cs" Link="AzureDataTablesDomainObject.cs" />
@@ -16,6 +16,8 @@
 	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\RowKeyResolver.cs" Link="RowKeyResolver.cs" />
 	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\StorageAzureDataTablesConstants.cs" Link="StorageAzureDataTablesConstants.cs" />
 	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Model\StorageKeyResolver.cs" Link="StorageKeyResolver.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Rule\AzureDataTablesDomainDateTimeOffsetRule.cs" Link="AzureDataTablesDomainDateTimeOffsetRule.cs" />
+	  <Compile Include="..\ServiceBricks.Storage.AzureDataTables\Rule\AzureDataTablesDomainDateTimeRule.cs" Link="AzureDataTablesDomainDateTimeRule.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

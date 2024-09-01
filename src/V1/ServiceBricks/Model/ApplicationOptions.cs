@@ -10,18 +10,12 @@
         /// </summary>
         public ApplicationOptions()
         {
-            Name = "Service Bricks";
-            Url = "https://localhost:7000";
+            Name = "ServiceBricks";
         }
 
         /// <summary>
         /// The application name
         /// </summary>
         public virtual string Name { get; set; }
-
-        /// <summary>
-        /// The url of the application.
-        /// </summary>
-        public virtual string Url { get; set; }
     }
 }

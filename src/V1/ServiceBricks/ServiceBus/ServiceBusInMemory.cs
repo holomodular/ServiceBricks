@@ -6,19 +6,19 @@
     public partial class ServiceBusInMemory : IServiceBus
     {
         protected readonly IServiceBusQueue _serviceBusQueue;
-        protected readonly IBusinessRuleRegistry _domainRuleRegistry;
+        protected readonly IBusinessRuleRegistry _businessRuleRegistry;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="serviceBusQueue"></param>
-        /// <param name="domainRuleRegistry"></param>
+        /// <param name="businessRuleRegistry"></param>
         public ServiceBusInMemory(
             IServiceBusQueue serviceBusQueue,
-            IBusinessRuleRegistry domainRuleRegistry)
+            IBusinessRuleRegistry businessRuleRegistry)
         {
             _serviceBusQueue = serviceBusQueue;
-            _domainRuleRegistry = domainRuleRegistry;
+            _businessRuleRegistry = businessRuleRegistry;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@
         /// <param name="handler"></param>
         public virtual void Subscribe(Type message, Type handler)
         {
-            _domainRuleRegistry.RegisterItem(message, handler);
+            _businessRuleRegistry.RegisterItem(message, handler);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@
         /// <param name="handler"></param>
         public virtual void Unsubscribe(Type message, Type handler)
         {
-            _domainRuleRegistry.UnRegisterItem(message, handler);
+            _businessRuleRegistry.UnRegisterItem(message, handler);
         }
 
         /// <summary>
