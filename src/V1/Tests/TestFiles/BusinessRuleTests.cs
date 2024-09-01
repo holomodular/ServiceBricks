@@ -353,7 +353,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -381,7 +381,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -407,7 +407,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -435,7 +435,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -461,7 +461,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -489,7 +489,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -515,7 +515,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             DateTimeOffset later = now.AddSeconds(1);
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
@@ -544,7 +544,7 @@ namespace ServiceBricks.Xunit
             ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             DateTimeOffset later = now.AddSeconds(1);
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(
@@ -701,7 +701,7 @@ namespace ServiceBricks.Xunit
             ExampleCreatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiCreateAfterEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -743,7 +743,7 @@ namespace ServiceBricks.Xunit
             ExampleCreatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiCreateAfterEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -782,7 +782,7 @@ namespace ServiceBricks.Xunit
             ExampleUpdatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateAfterEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -824,7 +824,7 @@ namespace ServiceBricks.Xunit
             ExampleUpdatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiUpdateAfterEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -863,7 +863,7 @@ namespace ServiceBricks.Xunit
             ExampleDeletedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiDeleteAfterEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -905,7 +905,7 @@ namespace ServiceBricks.Xunit
             ExampleDeletedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ApiDeleteAfterEvent<ExampleDomain, ExampleDto>(
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
@@ -943,7 +943,7 @@ namespace ServiceBricks.Xunit
             DomainCreateDateRule<ExampleDomain>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -987,7 +987,7 @@ namespace ServiceBricks.Xunit
             DomainCreateDateRule<ExampleDomain>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1029,7 +1029,7 @@ namespace ServiceBricks.Xunit
             DomainCreateUpdateDateRule<ExampleDomain>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1078,7 +1078,7 @@ namespace ServiceBricks.Xunit
             DomainCreateUpdateDateRule<ExampleDomain>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1125,7 +1125,7 @@ namespace ServiceBricks.Xunit
             DomainUpdateDateRule<ExampleDomain>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1170,7 +1170,7 @@ namespace ServiceBricks.Xunit
             DomainUpdateDateRule<ExampleDomain>.RegisterRule(registry);
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1213,7 +1213,7 @@ namespace ServiceBricks.Xunit
             DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry, nameof(ExampleDomain.ExampleDate));
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now, ExampleDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1259,7 +1259,7 @@ namespace ServiceBricks.Xunit
             DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry, nameof(ExampleDomain.ExampleDate));
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now, ExampleDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1303,7 +1303,7 @@ namespace ServiceBricks.Xunit
             DomainQueryPropertyRenameRule<ExampleDomain>.RegisterRule(registry, "TestName", "NewName");
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now, ExampleDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
@@ -1336,7 +1336,7 @@ namespace ServiceBricks.Xunit
             DomainQueryPropertyRenameRule<ExampleDomain>.RegisterRule(registry, "TestName", "NewName");
 
             // Create context
-            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now, ExampleDate = now };
             BusinessRuleContext context = new BusinessRuleContext();
 
