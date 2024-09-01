@@ -959,7 +959,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.CreateDate > now); // Always sets a new value on create
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.CreateDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
 
@@ -1003,7 +1003,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.CreateDate > now); // Always sets a new value on create
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.CreateDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
 
@@ -1047,7 +1047,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.CreateDate = now;
             domain.UpdateDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
@@ -1096,7 +1096,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.CreateDate = now;
             domain.UpdateDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
@@ -1141,7 +1141,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.CreateDate = now;
             domain.UpdateDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
@@ -1186,7 +1186,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.CreateDate = now;
             domain.UpdateDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
@@ -1230,7 +1230,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.ExampleDate.Offset == TimeSpan.Zero);
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.ExampleDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
 
@@ -1276,7 +1276,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.ExampleDate.Offset == TimeSpan.Zero);
 
             // Do Update
-            now = DateTimeOffset.Now;
+            now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
             domain.ExampleDate = now;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
 
