@@ -21,9 +21,10 @@ namespace ServiceBricks.Xunit
 
         public override void AddBricks(IServiceCollection services)
         {
+            services.AddServiceBricks(Configuration);
+
             base.AddBricks(services);
 
-            services.AddServiceBricks(Configuration);
             services.AddServiceBricksComplete();
         }
 

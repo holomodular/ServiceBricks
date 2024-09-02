@@ -95,11 +95,10 @@
 	  <Compile Include="..\ServiceBricks\Interface\Model\IModuleRegistry.cs" Link="IModuleRegistry.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Model\IRegistry.cs" Link="IRegistry.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Model\IRegistryList.cs" Link="IRegistryList.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\Repository\IDomainObjectProcessQueueStorageRepository.cs" Link="IDomainObjectProcessQueueStorageRepository.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Repository\IDomainProcessQueueStorageRepository.cs" Link="IDomainProcessQueueStorageRepository.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Repository\IDomainRepository.cs" Link="IDomainRepository.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Repository\IRepository.cs" Link="IRepository.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\Repository\IStorageRepository.cs" Link="IStorageRepository.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\Response\IAjaxResponse.cs" Link="IAjaxResponse.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Repository\IStorageRepository.cs" Link="IStorageRepository.cs" />	  
 	  <Compile Include="..\ServiceBricks\Interface\Response\IItem.cs" Link="IItem.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Response\IListOfItems.cs" Link="IListOfItems.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Response\IPaging.cs" Link="IPaging.cs" />
@@ -135,9 +134,6 @@
 	  <Compile Include="..\ServiceBricks\Model\ServiceBricksModule.cs" Link="ServiceBricksModule.cs" />
 	  <Compile Include="..\ServiceBricks\Model\Startup.cs" Link="Startup.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ValidationResponseResult.cs" Link="ValidationResponseResult.cs" />
-	  <Compile Include="..\ServiceBricks\Response\AjaxResponse.cs" Link="AjaxResponse.cs" />
-	  <Compile Include="..\ServiceBricks\Response\AjaxResponseItem.cs" Link="AjaxResponseItem.cs" />
-	  <Compile Include="..\ServiceBricks\Response\AjaxResponseList.cs" Link="AjaxResponseList.cs" />
 	  <Compile Include="..\ServiceBricks\Response\Paging.cs" Link="Paging.cs" />
 	  <Compile Include="..\ServiceBricks\Request\Request.cs" Link="Request.cs" />
 	  <Compile Include="..\ServiceBricks\Request\RequestItem.cs" Link="RequestItem.cs" />
@@ -168,7 +164,7 @@
 	  <Compile Include="..\ServiceBricks\ServiceBus\ServiceBusTaskWorker.cs" Link="ServiceBusTaskWorker.cs" />
 	  <Compile Include="..\ServiceBricks\Service\BearerTokenClient.cs" Link="BearerTokenClient.cs" />
 	  <Compile Include="..\ServiceBricks\Service\ServiceClient.cs" Link="ServiceClient.cs" />
-	  <Compile Include="..\ServiceBricks\Service\DomainObjectProcessQueueService.cs" Link="DomainObjectProcessQueueService.cs" />
+	  <Compile Include="..\ServiceBricks\Service\DomainProcessQueueService.cs" Link="DomainProcessQueueService.cs" />
 	  <Compile Include="..\ServiceBricks\Service\IpAddressService.cs" Link="IpAddressService.cs" />
 	  <Compile Include="..\ServiceBricks\Service\TimezoneService.cs" Link="TimezoneService.cs" />
 	</ItemGroup>

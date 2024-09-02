@@ -4,7 +4,7 @@
     /// This is a storage repository that gets records in a queue fashion from a table.
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
-    public partial interface IDomainObjectProcessQueueStorageRepository<TDomainObject> : IStorageRepository<TDomainObject>
+    public partial interface IDomainProcessQueueStorageRepository<TDomainObject> : IStorageRepository<TDomainObject>
         where TDomainObject : class, IDomainObject<TDomainObject>
     {
         /// <summary>

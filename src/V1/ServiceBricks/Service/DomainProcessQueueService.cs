@@ -9,11 +9,11 @@ namespace ServiceBricks
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public abstract partial class DomainObjectProcessQueueService<TDomainObject>
+    public abstract partial class DomainProcessQueueService<TDomainObject>
         where TDomainObject : class, IDomainObject<TDomainObject>, IDpProcessQueue
     {
-        protected readonly IDomainObjectProcessQueueStorageRepository<TDomainObject> _repository;
-        protected readonly ILogger<DomainObjectProcessQueueService<TDomainObject>> _logger;
+        protected readonly IDomainProcessQueueStorageRepository<TDomainObject> _repository;
+        protected readonly ILogger<DomainProcessQueueService<TDomainObject>> _logger;
 
         /// <summary>
         /// Default Value.
@@ -55,11 +55,11 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="loggerFactory"></param>
         /// <param name="repository"></param>
-        public DomainObjectProcessQueueService(
+        public DomainProcessQueueService(
             ILoggerFactory loggerFactory,
-            IDomainObjectProcessQueueStorageRepository<TDomainObject> repository)
+            IDomainProcessQueueStorageRepository<TDomainObject> repository)
         {
-            _logger = loggerFactory.CreateLogger<DomainObjectProcessQueueService<TDomainObject>>();
+            _logger = loggerFactory.CreateLogger<DomainProcessQueueService<TDomainObject>>();
             _repository = repository;
             NumberToBatchProcess = BATCH_NUMBER_TO_PROCESS;
             AllowErrorContinueProcessing = CONTINUE_PROCESSING_ON_ERROR;

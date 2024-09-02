@@ -10,9 +10,14 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="..\TestFiles\ApiClientReturnResponseTests.cs" Link="ApiClientReturnResponseTests.cs" />
+		<Compile Include="..\TestFiles\ApiClientTests.cs" Link="ApiClientTests.cs" />
+		<Compile Include="..\TestFiles\ApiControllerTests.cs" Link="ApiControllerTests.cs" />
 		<Compile Include="..\TestFiles\ApiServiceTests.cs" Link="ApiServiceTests.cs" />
 		<Compile Include="..\TestFiles\BusinessRuleTests.cs" Link="BusinessRuleTests.cs" />
-		<Compile Include="..\TestFiles\DomainRepositoryTests.cs" Link="DomainRepositoryTests.cs" />		
+		<Compile Include="..\TestFiles\DomainQueueProcessTests.cs" Link="DomainQueueProcessTests.cs" />
+		<Compile Include="..\TestFiles\DomainRepositoryTests.cs" Link="DomainRepositoryTests.cs" />
+		<Compile Include="..\TestFiles\ObjectTests.cs" Link="ObjectTests.cs" />		
 		<Compile Include="..\TestFiles\ExampleDto.cs" Link="ExampleDto.cs" />		
 		<Compile Include="..\TestFiles\ExampleMappingProfile.cs" Link="ExampleMappingProfile.cs" />
 		<Compile Include="..\TestFiles\MappingTests.cs" Link="MappingTests.cs" />
