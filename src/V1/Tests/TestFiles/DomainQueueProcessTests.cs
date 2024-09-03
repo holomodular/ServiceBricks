@@ -14,40 +14,7 @@ namespace ServiceBricks.Xunit
 
         public DomainQueueProcessTests()
         {
-            SystemManager = ServiceBricksSystemManager.GetSystemManager(typeof(DomainQueueProcessStartup));
-        }
-
-        public class DomainQueueProcessStartup : ServiceBricks.Startup
-        {
-            public DomainQueueProcessStartup(IConfiguration configuration) : base(configuration)
-            {
-            }
-
-            public virtual void ConfigureDevelopmentServices(IServiceCollection services)
-            {
-                base.CustomConfigureServices(services);
-                services.AddSingleton(Configuration);
-
-                // TEST STUFF
-                services.AddServiceBricks(Configuration);
-
-                // Register test module
-                ModuleRegistry.Instance.RegisterItem(typeof(TestModule), new TestModule());
-
-                // Remove all background tasks/timers for unit testing
-
-                // Register TestManagers
-
-                services.AddServiceBricksComplete();
-            }
-
-            public virtual void Configure(IApplicationBuilder app)
-            {
-                base.CustomConfigure(app);
-
-                // TEST STUFF
-                app.StartServiceBricks();
-            }
+            SystemManager = ServiceBricksSystemManager.GetSystemManager(typeof(ServiceBricksStartup));
         }
 
         public class ExampleProcessQueueApiService : ApiService<ExampleProcessQueueDomain, ExampleDto>
@@ -221,6 +188,19 @@ namespace ServiceBricks.Xunit
             Assert.True(storageRepository.GetQueueItemsCalled);
             Assert.True(storageRepository.CallMeOnceError);
             Assert.True(storageRepository.CallMeOnceSuccess);
+        }
+
+        [Fact]
+        public virtual Task GetQueueItemsSuccess()
+        {
+            var query = DomainProcessQueueService<ExampleProcessQueueDomain>.GetQueueItemsQuery(1, false, DateTimeOffset.Now);
+
+            // Assert
+            Assert.True(query != null);
+            Assert.True(query.Filters != null);
+            Assert.True(query.Filters.Count > 0);
+
+            return Task.CompletedTask;
         }
     }
 }

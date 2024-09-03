@@ -9,26 +9,29 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\TestFiles\ExampleExtensions.cs" Link="ExampleExtensions.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\EntityFrameworkCoreStartup.cs" Link="EntityFrameworkCoreStartup.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleApiClient.cs" Link="ExampleApiClient.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleApiController.cs" Link="ExampleApiController.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleApiControllerTest.cs" Link="ExampleApiControllerTest.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleApiService.cs" Link="ExampleApiService.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleDomain.cs" Link="ExampleDomain.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleDtoRule.cs" Link="ExampleDtoRule.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleInMemoryContext.cs" Link="ExampleInMemoryContext.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleMappingProfile.cs" Link="ExampleMappingProfile.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleModule.cs" Link="ExampleModule.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleQueryRule.cs" Link="ExampleQueryRule.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleStorageRepository.cs" Link="ExampleStorageRepository.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\ExampleTestManager.cs" Link="ExampleTestManager.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\IExampleApiClient.cs" Link="IExampleApiClient.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\IExampleApiController.cs" Link="IExampleApiController.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\IExampleApiService.cs" Link="IExampleApiService.cs" />
-    <Compile Include="..\TestFiles\StorageEfc\MappingTest.cs" Link="MappingTest.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\TestFiles\ExampleExtensions.cs" Link="ExampleExtensions.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\BaseTests.cs" Link="BaseTests.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\EntityFrameworkCoreStartup.cs" Link="EntityFrameworkCoreStartup.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiClient.cs" Link="ExampleApiClient.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiController.cs" Link="ExampleApiController.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiControllerTest.cs" Link="ExampleApiControllerTest.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiService.cs" Link="ExampleApiService.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleDomain.cs" Link="ExampleDomain.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleDtoRule.cs" Link="ExampleDtoRule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleInMemoryContext.cs" Link="ExampleInMemoryContext.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleMappingProfile.cs" Link="ExampleMappingProfile.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleModule.cs" Link="ExampleModule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleQueryRule.cs" Link="ExampleQueryRule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleStorageRepository.cs" Link="ExampleStorageRepository.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleStorageTests.cs" Link="ExampleStorageTests.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleTestManager.cs" Link="ExampleTestManager.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\IExampleApiClient.cs" Link="IExampleApiClient.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\IExampleApiController.cs" Link="IExampleApiController.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\IExampleApiService.cs" Link="IExampleApiService.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\MappingTest.cs" Link="MappingTest.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\StubApiClientTests.cs" Link="StubApiClientTests.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />

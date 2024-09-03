@@ -3,6 +3,7 @@ using ServiceBricks.Xunit;
 
 namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
 {
+    [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
     public class MappingTest
     {
         public virtual ISystemManager SystemManager { get; set; }

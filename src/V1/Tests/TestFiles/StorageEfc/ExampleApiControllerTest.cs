@@ -3,6 +3,7 @@ using ServiceBricks.Xunit;
 
 namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
 {
+    [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
     public class ExampleApiControllerTest : ApiControllerTest<ExampleDto>
     {
         public ExampleApiControllerTest()

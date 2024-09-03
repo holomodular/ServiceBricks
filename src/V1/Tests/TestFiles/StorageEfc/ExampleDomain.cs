@@ -10,6 +10,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
         public DateTimeOffset CreateDate { get; set; }
         public DateTimeOffset UpdateDate { get; set; }
         public DateTimeOffset ExampleDate { get; set; }
+        public DateTimeOffset? ExampleNullableDate { get; set; }
 
         public override Expression<Func<ExampleDomain, bool>> DomainGetItemFilter(ExampleDomain obj)
         {

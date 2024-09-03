@@ -151,7 +151,7 @@
         /// <param name="message"></param>
         public virtual void AddMessage(IResponseMessage message)
         {
-            if (message != null)
+            if (message == null)
                 return;
 
             if (message.Severity == ResponseSeverity.Error || message.Severity == ResponseSeverity.ErrorSystemSensitive)

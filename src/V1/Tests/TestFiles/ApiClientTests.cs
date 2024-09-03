@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using ServiceQuery;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,6 +35,14 @@ namespace ServiceBricks.Xunit
 
         public class CustomHttpClientHandler : HttpClientHandler
         {
+            private IApiController<ExampleDto> _service;
+
+            public CustomHttpClientHandler(
+                IApiController<ExampleDto> service)
+            {
+                _service = service;
+            }
+
             public bool GetAccessTokenCalled { get; set; }
             public bool SendCalled { get; set; }
             public bool CreateCalled { get; set; }
@@ -45,28 +55,91 @@ namespace ServiceBricks.Xunit
             {
                 SendCalled = true;
 
+                string url = request.RequestUri.ToString();
+                string content = string.Empty;
+                if (request.Content != null)
+                    content = request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
                 if (request.Method == HttpMethod.Get)
                 {
                     GetCalled = true;
+                    if (_service != null && url.Contains("?storageKey=", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var storageKey = url.Substring(url.IndexOf("?storageKey=", StringComparison.InvariantCultureIgnoreCase) + 12);
+                        var resp = _service.Get(storageKey);
+                        return GetClientResponse(resp);
+                    }
                 }
                 else if (request.Method == HttpMethod.Put)
                 {
                     UpdateCalled = true;
+
+                    if (_service != null)
+                    {
+                        var dto = JsonConvert.DeserializeObject<ExampleDto>(content);
+                        var resp = _service.Update(dto);
+                        return GetClientResponse(resp);
+                    }
                 }
                 else if (request.Method == HttpMethod.Delete)
                 {
                     DeleteCalled = true;
+                    if (_service != null && url.Contains("?storageKey=", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var storageKey = url.Substring(url.IndexOf("?storageKey=", StringComparison.InvariantCultureIgnoreCase) + 12);
+                        var resp = _service.Delete(storageKey);
+                        return GetClientResponse(resp);
+                    }
                 }
                 else if (request.Method == HttpMethod.Post)
                 {
-                    if (request.RequestUri.PathAndQuery.Contains("query", StringComparison.InvariantCultureIgnoreCase))
+                    if (url.Contains("query", StringComparison.InvariantCultureIgnoreCase))
+                    {
                         QueryCalled = true;
-                    if (request.RequestUri.PathAndQuery.Contains("create", StringComparison.InvariantCultureIgnoreCase))
+                        if (_service != null)
+                        {
+                            var dto = JsonConvert.DeserializeObject<ServiceQueryRequest>(content);
+                            var resp = _service.Query(dto);
+                            return GetClientResponse(resp);
+                        }
+                    }
+                    if (url.Contains("create", StringComparison.InvariantCultureIgnoreCase))
+                    {
                         CreateCalled = true;
-                    else if (request.RequestUri.PathAndQuery.Contains("token", StringComparison.InvariantCultureIgnoreCase))
+                        if (_service != null)
+                        {
+                            var dto = JsonConvert.DeserializeObject<ExampleDto>(content);
+                            var resp = _service.Create(dto);
+                            return GetClientResponse(resp);
+                        }
+                    }
+                    else if (url.Contains("token", StringComparison.InvariantCultureIgnoreCase))
+                    {
                         GetAccessTokenCalled = true;
+
+                        AccessTokenResponse resp = new AccessTokenResponse();
+                        resp.access_token = Guid.NewGuid().ToString();
+                        return GetClientResponse(resp);
+                    }
                 }
                 return new HttpResponseMessage();
+            }
+
+            public HttpResponseMessage GetClientResponse(object response)
+            {
+                Microsoft.AspNetCore.Mvc.ObjectResult or = response as Microsoft.AspNetCore.Mvc.ObjectResult;
+                if (or != null)
+                {
+                    return new HttpResponseMessage()
+                    {
+                        Content = new StringContent(JsonConvert.SerializeObject(or.Value)),
+                        StatusCode = or.StatusCode.Value == 200 ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.BadRequest
+                    };
+                }
+                return new HttpResponseMessage()
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(response))
+                };
             }
 
             public bool GetAccessTokenAsyncCalled { get; set; }
@@ -77,32 +150,78 @@ namespace ServiceBricks.Xunit
             public bool DeleteAsyncCalled { get; set; }
             public bool QueryAsyncCalled { get; set; }
 
-            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
                 SendAsyncCalled = true;
+
+                string url = request.RequestUri.ToString();
+                string content = string.Empty;
+                if (request.Content != null)
+                    content = request.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
                 if (request.Method == HttpMethod.Get)
                 {
                     GetAsyncCalled = true;
+                    if (_service != null && url.Contains("?storageKey=", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var storageKey = url.Substring(url.IndexOf("?storageKey=", StringComparison.InvariantCultureIgnoreCase) + 12);
+                        var resp = _service.Get(storageKey);
+                        return GetClientResponse(resp);
+                    }
                 }
                 else if (request.Method == HttpMethod.Put)
                 {
                     UpdateAsyncCalled = true;
+
+                    if (_service != null)
+                    {
+                        var dto = JsonConvert.DeserializeObject<ExampleDto>(content);
+                        var resp = _service.Update(dto);
+                        return GetClientResponse(resp);
+                    }
                 }
                 else if (request.Method == HttpMethod.Delete)
                 {
                     DeleteAsyncCalled = true;
+                    if (_service != null && url.Contains("?storageKey=", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var storageKey = url.Substring(url.IndexOf("?storageKey=", StringComparison.InvariantCultureIgnoreCase) + 12);
+                        var resp = _service.Delete(storageKey);
+                        return GetClientResponse(resp);
+                    }
                 }
                 else if (request.Method == HttpMethod.Post)
                 {
-                    if (request.RequestUri.PathAndQuery.Contains("query", StringComparison.InvariantCultureIgnoreCase))
+                    if (url.Contains("query", StringComparison.InvariantCultureIgnoreCase))
+                    {
                         QueryAsyncCalled = true;
-                    else if (request.RequestUri.PathAndQuery.Contains("create", StringComparison.InvariantCultureIgnoreCase))
+                        if (_service != null)
+                        {
+                            var dto = JsonConvert.DeserializeObject<ServiceQueryRequest>(content);
+                            var resp = _service.Query(dto);
+                            return GetClientResponse(resp);
+                        }
+                    }
+                    if (url.Contains("create", StringComparison.InvariantCultureIgnoreCase))
+                    {
                         CreateAsyncCalled = true;
-                    else if (request.RequestUri.PathAndQuery.Contains("token", StringComparison.InvariantCultureIgnoreCase))
+                        if (_service != null)
+                        {
+                            var dto = JsonConvert.DeserializeObject<ExampleDto>(content);
+                            var resp = _service.Create(dto);
+                            return GetClientResponse(resp);
+                        }
+                    }
+                    else if (url.Contains("token", StringComparison.InvariantCultureIgnoreCase))
+                    {
                         GetAccessTokenAsyncCalled = true;
+
+                        AccessTokenResponse resp = new AccessTokenResponse();
+                        resp.access_token = Guid.NewGuid().ToString();
+                        return GetClientResponse(resp);
+                    }
                 }
-                return Task.FromResult(new HttpResponseMessage());
+                return new HttpResponseMessage();
             }
         }
 
@@ -132,7 +251,7 @@ namespace ServiceBricks.Xunit
                 ReturnResponseObject = false,
                 TokenUrl = "https://localhost:7000/api/v1.0/token",
             };
-            var handler = new CustomHttpClientHandler();
+            var handler = new CustomHttpClientHandler(null);
             var handlerFactory = new ExampleHttpClientFactory(handler);
             var client = new ExampleApiClient(
                 loggerFactory,
@@ -191,7 +310,7 @@ namespace ServiceBricks.Xunit
                 ReturnResponseObject = false,
                 TokenUrl = "https://localhost:7000/api/v1.0/token",
             };
-            var handler = new CustomHttpClientHandler();
+            var handler = new CustomHttpClientHandler(null);
             var handlerFactory = new ExampleHttpClientFactory(handler);
             var client = new ExampleApiClient(
                 loggerFactory,
@@ -248,7 +367,7 @@ namespace ServiceBricks.Xunit
                 ReturnResponseObject = false,
                 TokenUrl = "https://localhost:7000/api/v1.0/token",
             };
-            var handler = new CustomHttpClientHandler();
+            var handler = new CustomHttpClientHandler(null);
             var handlerFactory = new ExampleHttpClientFactory(handler);
             var client = new ExampleApiClient(
                 loggerFactory,
@@ -264,7 +383,6 @@ namespace ServiceBricks.Xunit
             Assert.True(handler.GetAccessTokenCalled);
             handler.SendCalled = false;
             handler.CreateCalled = false;
-            handler.GetAccessTokenCalled = false;
 
             // Create
             Assert.True(!handler.CreateCalled);
@@ -272,7 +390,6 @@ namespace ServiceBricks.Xunit
             Assert.True(handler.CreateCalled);
             Assert.True(handler.GetAccessTokenCalled);
             handler.CreateCalled = false;
-            handler.GetAccessTokenCalled = false;
 
             // Update
             Assert.True(!handler.UpdateCalled);
@@ -280,7 +397,6 @@ namespace ServiceBricks.Xunit
             Assert.True(handler.UpdateCalled);
             Assert.True(handler.GetAccessTokenCalled);
             handler.UpdateCalled = false;
-            handler.GetAccessTokenCalled = false;
 
             // Delete
             Assert.True(!handler.DeleteCalled);
@@ -288,7 +404,6 @@ namespace ServiceBricks.Xunit
             Assert.True(handler.SendCalled);
             Assert.True(handler.GetAccessTokenCalled);
             handler.DeleteCalled = false;
-            handler.GetAccessTokenCalled = false;
 
             // Query
             Assert.True(!handler.QueryCalled);
@@ -296,7 +411,6 @@ namespace ServiceBricks.Xunit
             Assert.True(handler.SendCalled);
             Assert.True(handler.GetAccessTokenCalled);
             handler.QueryCalled = false;
-            handler.GetAccessTokenCalled = false;
 
             return Task.CompletedTask;
         }
@@ -312,7 +426,7 @@ namespace ServiceBricks.Xunit
                 ReturnResponseObject = false,
                 TokenUrl = "https://localhost:7000/api/v1.0/token",
             };
-            var handler = new CustomHttpClientHandler();
+            var handler = new CustomHttpClientHandler(null);
             var handlerFactory = new ExampleHttpClientFactory(handler);
             var client = new ExampleApiClient(
                 loggerFactory,

@@ -222,5 +222,44 @@ namespace ServiceBricks.Xunit
 
             return Task.CompletedTask;
         }
+
+        [Fact]
+        public virtual async Task DomainCallEventsSuccessAsync()
+        {
+            var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            var storageRepository = new ExampleStorageRepository();
+            var domainRepo = new DomainRepository<ExampleDomain>(
+                SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
+                businessRuleService,
+                storageRepository);
+            var domain = new ExampleDomain();
+
+            // Create
+            Assert.True(!storageRepository.CreateAsyncCalled);
+            await domainRepo.CreateAsync(domain);
+            Assert.True(storageRepository.CreateAsyncCalled);
+
+            // Update
+            Assert.True(!storageRepository.UpdateAsyncCalled);
+            await domainRepo.UpdateAsync(domain);
+            Assert.True(storageRepository.UpdateAsyncCalled);
+
+            // Delete
+            Assert.True(!storageRepository.DeleteAsyncCalled);
+            await domainRepo.DeleteAsync(domain);
+            Assert.True(storageRepository.DeleteAsyncCalled);
+
+            // Get
+            Assert.True(!storageRepository.GetAsyncCalled);
+            await domainRepo.GetAsync(domain);
+            Assert.True(storageRepository.GetAsyncCalled);
+
+            // Query
+            Assert.True(!storageRepository.QueryAsyncCalled);
+            await domainRepo.QueryAsync(new ServiceQueryRequest());
+            Assert.True(storageRepository.QueryAsyncCalled);
+        }
     }
 }

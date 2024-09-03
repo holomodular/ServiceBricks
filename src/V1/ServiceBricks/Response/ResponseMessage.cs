@@ -113,7 +113,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public static IResponseMessage CreateInfo(string message)
         {
-            return CreateInfo(message);
+            return CreateInfo(message, null);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public static IResponseMessage CreateWarning(string message)
         {
-            return CreateError(message, null);
+            return CreateWarning(message, null);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace ServiceBricks
         /// <param name="message"></param>
         /// <param name="fields"></param>
         /// <returns></returns>
-        public static IResponseMessage CreateWarning(string message, System.Collections.Generic.IList<string> fields)
+        public static IResponseMessage CreateWarning(string message, IList<string> fields)
         {
             ResponseMessage item = new ResponseMessage();
             if (fields != null)
@@ -206,7 +206,7 @@ namespace ServiceBricks
         /// <param name="message"></param>
         /// <param name="fields"></param>
         /// <returns></returns>
-        public static IResponseMessage CreateError(string message, System.Collections.Generic.IList<string> fields)
+        public static IResponseMessage CreateError(string message, IList<string> fields)
         {
             ResponseMessage item = new ResponseMessage();
             if (fields != null)
@@ -247,10 +247,6 @@ namespace ServiceBricks
             item.Severity = ResponseSeverity.ErrorSystemSensitive;
             messages.Add(item);
 
-            item = new ResponseMessage();
-            item.Message = LocalizationResource.ERROR_SYSTEM;
-            item.Severity = ResponseSeverity.Error;
-            messages.Add(item);
             return messages;
         }
 
@@ -260,21 +256,22 @@ namespace ServiceBricks
         /// <param name="message"></param>
         /// <param name="fields"></param>
         /// <returns></returns>
-        public static List<IResponseMessage> CreateError(Exception ex, string message, System.Collections.Generic.IList<string> fields = null)
+        public static List<IResponseMessage> CreateError(Exception ex, string message, IList<string> fields = null)
         {
             List<IResponseMessage> messages = new List<IResponseMessage>();
 
             ResponseMessage item = new ResponseMessage();
+            item.Message = message;
+            if (fields != null)
+                item.Fields = fields;
+            item.Severity = ResponseSeverity.Error;
+            messages.Add(item);
+
+            item = new ResponseMessage();
             item.Message = ex.Message + " " + ex.ToString();
             item.Severity = ResponseSeverity.ErrorSystemSensitive;
             messages.Add(item);
 
-            item = new ResponseMessage();
-            if (fields != null)
-                item.Fields = fields;
-            item.Message = message;
-            item.Severity = ResponseSeverity.Error;
-            messages.Add(item);
             return messages;
         }
     }

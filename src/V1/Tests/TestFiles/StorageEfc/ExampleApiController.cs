@@ -7,7 +7,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
     [ApiController]
     [Route("api/v{version:apiVersion}/EntityFrameworkCore/Example")]
     [Produces("application/json")]
-    public class ExampleApiController : ApiController<ExampleDto>, IExampleApiController
+    public class ExampleApiController : ApiController<ExampleDto>, IExampleApiController, IApiController<ExampleDto>
     {
         public ExampleApiController(
             IApiService<ExampleDto> apiService,

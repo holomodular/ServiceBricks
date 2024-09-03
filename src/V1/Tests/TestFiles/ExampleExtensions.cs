@@ -13,12 +13,6 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Model
     /// </summary>
     public static class ServiceCollectionExtensions
     {
-        /// <summary>
-        /// Add the Logging Brick.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
         public static IServiceCollection AddServiceBricksExampleInMemory(this IServiceCollection services, IConfiguration configuration)
         {
             // Add to module registry

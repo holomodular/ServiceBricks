@@ -102,9 +102,6 @@
 	  <Compile Include="..\ServiceBricks\Interface\Response\IItem.cs" Link="IItem.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Response\IListOfItems.cs" Link="IListOfItems.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Response\IPaging.cs" Link="IPaging.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\Request\IRequest.cs" Link="IRequest.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\Request\IRequestItem.cs" Link="IRequestItem.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\Request\IRequestList.cs" Link="IRequestList.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Response\IResponse.cs" Link="IResponse.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Response\IResponseAggregateCountList.cs" Link="IResponseAggregateCountList.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Response\IResponseCount.cs" Link="IResponseCount.cs" />
@@ -135,9 +132,6 @@
 	  <Compile Include="..\ServiceBricks\Model\Startup.cs" Link="Startup.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ValidationResponseResult.cs" Link="ValidationResponseResult.cs" />
 	  <Compile Include="..\ServiceBricks\Response\Paging.cs" Link="Paging.cs" />
-	  <Compile Include="..\ServiceBricks\Request\Request.cs" Link="Request.cs" />
-	  <Compile Include="..\ServiceBricks\Request\RequestItem.cs" Link="RequestItem.cs" />
-	  <Compile Include="..\ServiceBricks\Request\RequestList.cs" Link="RequestList.cs" />
 	  <Compile Include="..\ServiceBricks\Response\Response.cs" Link="Response.cs" />
 	  <Compile Include="..\ServiceBricks\Response\ResponseAggregateCountList.cs" Link="ResponseAggregateCountList.cs" />
 	  <Compile Include="..\ServiceBricks\Response\ResponseCount.cs" Link="ResponseCount.cs" />

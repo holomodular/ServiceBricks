@@ -484,5 +484,58 @@ namespace ServiceBricks.Xunit
             await controller.QueryAsync(new ServiceQueryRequest());
             Assert.True(storageRepository.QueryAsyncCalled);
         }
+
+        [Fact]
+        public virtual Task BaseApiControllerSuccess()
+        {
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            var storageRepository = new ExampleStorageRepository();
+            var domainRepo = new DomainRepository<ExampleDomain>(
+                SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
+                businessRuleService,
+                storageRepository);
+            var apiservice = new ExampleApiService(
+                SystemManager.ServiceProvider.GetRequiredService<IMapper>(),
+                businessRuleService,
+                domainRepo);
+            var options = new OptionsWrapper<ApiOptions>(new ApiOptions() { });
+            var controller = new ExampleController(
+                apiservice,
+                options);
+            var dto = new ExampleDto() { StorageKey = "1" };
+
+            // Get
+            Assert.True(!storageRepository.GetCalled);
+            controller.Get(dto.StorageKey);
+            Assert.True(storageRepository.GetCalled);
+            storageRepository.GetCalled = false;
+
+            // Create
+            Assert.True(!storageRepository.CreateCalled);
+            controller.Create(dto);
+            Assert.True(storageRepository.CreateCalled);
+
+            // Update
+            Assert.True(!storageRepository.UpdateCalled);
+            controller.Update(dto);
+            Assert.True(storageRepository.UpdateCalled);
+            Assert.True(storageRepository.GetCalled);
+            storageRepository.GetCalled = false;
+
+            // Delete
+            Assert.True(!storageRepository.DeleteCalled);
+            controller.Delete(dto.StorageKey);
+            Assert.True(storageRepository.DeleteCalled);
+            Assert.True(storageRepository.GetCalled);
+            storageRepository.GetCalled = false;
+
+            // Query
+            Assert.True(!storageRepository.QueryCalled);
+            controller.Query(new ServiceQueryRequest());
+            Assert.True(storageRepository.QueryCalled);
+
+            return Task.CompletedTask;
+        }
     }
 }

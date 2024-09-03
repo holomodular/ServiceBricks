@@ -48,6 +48,8 @@ namespace ServiceBricks.Xunit
                     {
                         _instance.StopSystem();
                         _instance = null;
+                        BusinessRuleRegistry.Instance = new BusinessRuleRegistry();
+                        ModuleRegistry.Instance = new ModuleRegistry();
                     }
                 }
 

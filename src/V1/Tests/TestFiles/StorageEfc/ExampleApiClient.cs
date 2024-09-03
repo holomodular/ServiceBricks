@@ -12,6 +12,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             IOptions<ClientApiOptions> clientApiOptions)
             : base(loggerFactory, httpClientFactory, clientApiOptions.Value)
         {
+            ApiResource = $"EntityFrameworkCore/Example";
         }
     }
 }

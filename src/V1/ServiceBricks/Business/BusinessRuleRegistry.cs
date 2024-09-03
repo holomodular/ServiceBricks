@@ -13,7 +13,7 @@ namespace ServiceBricks
         protected static Dictionary<Type, IList<RegistryContext<Type>>> _cache =
             new Dictionary<Type, IList<RegistryContext<Type>>>();
 
-        internal BusinessRuleRegistry()
+        public BusinessRuleRegistry()
         {
             _lock = new ReaderWriterLock();
             _cache = new Dictionary<Type, IList<RegistryContext<Type>>>();

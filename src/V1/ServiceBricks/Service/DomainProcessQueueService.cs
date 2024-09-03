@@ -137,18 +137,6 @@ namespace ServiceBricks
                             respItems = await _repository.GetQueueItemsAsync(NumberToBatchProcess, false, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
                     }
 
-                    //Cancellation requested, make sure records are marked appropriately
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        foreach (var item in respItems.List)
-                        {
-                            item.IsProcessing = false;
-                            item.ProcessDate = DateTimeOffset.UtcNow;
-                            await _repository.UpdateAsync(item);
-                        }
-                        return;
-                    }
-
                     if (!respItems.Success)
                         return;
 
