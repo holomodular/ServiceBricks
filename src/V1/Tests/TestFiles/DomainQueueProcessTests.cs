@@ -128,7 +128,40 @@ namespace ServiceBricks.Xunit
                 {
                     if (!CallMeOnceError)
                     {
-                        response.List.Add(new ExampleProcessQueueDomain());
+                        response.List.Add(
+                            new ExampleProcessQueueDomain()
+                            {
+                                IsError = true,
+                                ProcessDate = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromHours(1))
+                            });
+                        response.List.Add(
+                            new ExampleProcessQueueDomain()
+                            {
+                                IsError = true,
+                                ProcessDate = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromHours(1)),
+                                RetryCount = DomainProcessQueueService<ExampleProcessQueueDomain>.RETRY_NUMBER - 2
+                            });
+                        response.List.Add(
+                            new ExampleProcessQueueDomain()
+                            {
+                                IsError = true,
+                                ProcessDate = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromHours(1)),
+                                RetryCount = DomainProcessQueueService<ExampleProcessQueueDomain>.RETRY_NUMBER - 1
+                            });
+                        response.List.Add(
+                            new ExampleProcessQueueDomain()
+                            {
+                                IsError = true,
+                                ProcessDate = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromHours(1)),
+                                RetryCount = DomainProcessQueueService<ExampleProcessQueueDomain>.RETRY_NUMBER
+                            });
+                        response.List.Add(
+                            new ExampleProcessQueueDomain()
+                            {
+                                IsError = true,
+                                ProcessDate = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromHours(1)),
+                                RetryCount = DomainProcessQueueService<ExampleProcessQueueDomain>.RETRY_NUMBER + 1
+                            });
                         CallMeOnceError = true;
                     }
                 }

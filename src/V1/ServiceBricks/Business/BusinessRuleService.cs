@@ -111,7 +111,7 @@ namespace ServiceBricks
 
                 //Find all Domain rule types for this object type
                 Type itemType = context.Object.GetType();
-                System.Collections.Generic.IList<RegistryContext<Type>> registry = _domainRuleRegistry.GetRegistryList(itemType);
+                IList<RegistryContext<Type>> registry = _domainRuleRegistry.GetRegistryList(itemType);
                 if (registry == null || registry.Count == 0)
                 {
                     if (additionalRules == null || additionalRules.Count == 0)
@@ -167,7 +167,7 @@ namespace ServiceBricks
                     return response;
                 }
 
-                //Process each rule (or ruleset)
+                //Process each rule
                 foreach (IBusinessRule rule in orderedRules)
                 {
                     //Skip disabled Domain rules by context and exlusion
@@ -210,7 +210,7 @@ namespace ServiceBricks
 
                 //Find all Domain rule types for this object type
                 Type itemType = context.Object.GetType();
-                System.Collections.Generic.IList<RegistryContext<Type>> registry = _domainRuleRegistry.GetRegistryList(itemType);
+                IList<RegistryContext<Type>> registry = _domainRuleRegistry.GetRegistryList(itemType);
                 if (registry == null || registry.Count == 0)
                 {
                     if (additionalRules == null || additionalRules.Count == 0)
@@ -259,7 +259,7 @@ namespace ServiceBricks
                 //Order rules by priority
                 var orderedRules = rules.OrderBy(x => x.Priority);
 
-                //Process each rule (or ruleset)
+                //Process each rule
                 foreach (IBusinessRule rule in orderedRules)
                 {
                     //Skip disabled Domain rules by context and exlusion

@@ -19,7 +19,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
         }
 
         [Fact]
-        public virtual async Task ApplicationEmailSuccess()
+        public virtual async Task GetStorageRepositorySuccess()
         {
             var storage = SystemManager.ServiceProvider.GetRequiredService<IStorageRepository<ExampleDomain>>();
 
@@ -34,6 +34,34 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             await efcs.SaveChangesAsync();
 
             efcs.DetachAllEntities();
+        }
+
+        [Fact]
+        public virtual Task StorageGetConnectionStringSuccess()
+        {
+            IConfiguration configuration = SystemManager.ServiceProvider.GetRequiredService<IConfiguration>();
+            string connectionString = configuration.GetCosmosConnectionString();
+            Assert.True(!string.IsNullOrEmpty(connectionString));
+
+            var database = configuration.GetCosmosDatabase();
+            Assert.True(!string.IsNullOrEmpty(database));
+
+            connectionString = configuration.GetGeneralConnectionString();
+            Assert.True(!string.IsNullOrEmpty(connectionString));
+
+            database = configuration.GetGeneralDatabase();
+            Assert.True(!string.IsNullOrEmpty(database));
+
+            connectionString = configuration.GetPostgresConnectionString();
+            Assert.True(!string.IsNullOrEmpty(connectionString));
+
+            connectionString = configuration.GetSqliteConnectionString();
+            Assert.True(!string.IsNullOrEmpty(connectionString));
+
+            connectionString = configuration.GetSqlServerConnectionString();
+            Assert.True(!string.IsNullOrEmpty(connectionString));
+
+            return Task.CompletedTask;
         }
     }
 }

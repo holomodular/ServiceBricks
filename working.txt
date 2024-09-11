@@ -1,0 +1,61 @@
+dotnet test --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover
+
+
+dotnet test --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=cobertura
+
+dotnet test --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=../../../../TestResults/ -p:CoverletOutputFormat=\"json,cobertura\" -p:MergeWith=TestResults/coverlet.json
+
+dotnet test --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=../../../../TestResults/ -p:CoverletOutputFormat=\"json,opencover\" -p:MergeWith=src/TestResults/coverlet.json -m:1
+
+dotnet test src/V1/Tests/ServiceBricks.XunitNet8 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=../../../../../TestResults/ -p:CoverletOutputFormat=\"json,opencover\" 
+
+
+dotnet test src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet8 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\" -p:MergeWith=../ServiceBricks.XunitNet8/TestResults/coverlet.json
+
+
+
+
+\
+   "/p:CollectCoverage=true" \
+   "/p:CoverletOutput=../TestResults/" \
+   "/p:MergeWith=../TestResults/coverlet.json" \
+   "/p:CoverletOutputFormat=\"json,cobertura\"" 
+
+dotnet-coverage merge --output merge.cobertura.xml --output-format cobertura "src/V1/Tests/**/TestResults/coverage.cobertura.xml"
+
+dotnet-coverage merge --output merge.opencover.xml --output-format opencover "src/V1/Tests/**/TestResults/coverage.opencover.xml"
+
+
+
+****
+FINAL
+*****
+
+dotnet test src/V1/Tests/ServiceBricks.XunitNet8 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=../../../../TestResults/ -p:CoverletOutputFormat=\"json,opencover\"
+
+
+
+
+
+********** ALL TOGETHER
+
+dotnet test --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=../../../TestResults/ -p:CoverletOutputFormat=\"json,opencover\" -p:MergeWith=src/TestResults/coverage.json
+
+
+
+
+core
+sequenceCoverage="24.56" branchCoverage="17.75" 
+efc
+sequenceCoverage="36.01" branchCoverage="27.93"
+
+
+dotnet test --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\"
+
+
+dotnet test src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet8 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover,cobertura\" -p:MergeWith="../ServiceBricks.XunitNet8/TestResults/coverage.json"
+
+
+
+reportgenerator -reports:"src\V1\Tests\ServiceBricks.Storage.EntityFrameworkCore.XunitNet8\TestResults\coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+

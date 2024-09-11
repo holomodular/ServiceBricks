@@ -18,6 +18,6 @@
         /// <summary>
         /// The field(s) this messages correlates to.
         /// </summary>
-        System.Collections.Generic.IList<string> Fields { get; set; }
+        IList<string> Fields { get; set; }
     }
 }

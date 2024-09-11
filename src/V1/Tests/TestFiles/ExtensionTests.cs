@@ -53,6 +53,9 @@ namespace ServiceBricks.Xunit
             var apiconfig = config.GetApiConfig();
             Assert.True(apiconfig != null);
 
+            apiconfig = config.GetApiConfig("test");
+            Assert.True(apiconfig != null);
+
             return Task.CompletedTask;
         }
 

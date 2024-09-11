@@ -33,6 +33,19 @@ namespace ServiceBricks.Xunit
             }
         }
 
+        public class ReturnNullHttpClientHandler : HttpClientHandler
+        {
+            protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                return null;
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                return null;
+            }
+        }
+
         public class CustomHttpClientHandler : HttpClientHandler
         {
             private IApiController<ExampleDto> _service;
@@ -227,9 +240,9 @@ namespace ServiceBricks.Xunit
 
         public class ExampleHttpClientFactory : IHttpClientFactory
         {
-            private CustomHttpClientHandler _handler;
+            private HttpClientHandler _handler;
 
-            public ExampleHttpClientFactory(CustomHttpClientHandler handler)
+            public ExampleHttpClientFactory(HttpClientHandler handler)
             {
                 _handler = handler;
             }
@@ -470,6 +483,90 @@ namespace ServiceBricks.Xunit
             Assert.True(handler.SendAsyncCalled);
             Assert.True(handler.GetAccessTokenAsyncCalled);
             handler.QueryAsyncCalled = false;
+        }
+
+        [Fact]
+        public virtual Task ApiClientCallNullSendError()
+        {
+            var loggerFactory = SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>();
+            var options = new ClientApiOptions()
+            {
+                BaseServiceUrl = "https://localhost:7000/api/v1.0",
+                DisableAuthentication = true,
+                ReturnResponseObject = false,
+                TokenUrl = "https://localhost:7000/api/v1.0/token",
+            };
+            var handler = new ReturnNullHttpClientHandler();
+            var handlerFactory = new ExampleHttpClientFactory(handler);
+            var client = new ExampleApiClient(
+                loggerFactory,
+                handlerFactory,
+                options);
+
+            var dto = new ExampleDto() { StorageKey = "1" };
+
+            // Get
+            var respGet = client.Get(dto.StorageKey);
+            Assert.True(respGet.Error);
+
+            // Create
+            var respCreate = client.Create(dto);
+            Assert.True(respCreate.Error);
+
+            // Update
+            var respUpdate = client.Update(dto);
+            Assert.True(respUpdate.Error);
+
+            // Delete
+            var respDelete = client.Delete(dto.StorageKey);
+            Assert.True(respDelete.Error);
+
+            // Query
+            var respQuery = client.Query(new ServiceQueryRequest());
+            Assert.True(respQuery.Error);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual async Task ApiClientCallNullSendErrorAsync()
+        {
+            var loggerFactory = SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>();
+            var options = new ClientApiOptions()
+            {
+                BaseServiceUrl = "https://localhost:7000/api/v1.0",
+                DisableAuthentication = true,
+                ReturnResponseObject = false,
+                TokenUrl = "https://localhost:7000/api/v1.0/token",
+            };
+            var handler = new ReturnNullHttpClientHandler();
+            var handlerFactory = new ExampleHttpClientFactory(handler);
+            var client = new ExampleApiClient(
+                loggerFactory,
+                handlerFactory,
+                options);
+
+            var dto = new ExampleDto() { StorageKey = "1" };
+
+            // Get
+            var respGet = await client.GetAsync(dto.StorageKey);
+            Assert.True(respGet.Error);
+
+            // Create
+            var respCreate = await client.CreateAsync(dto);
+            Assert.True(respCreate.Error);
+
+            // Update
+            var respUpdate = await client.UpdateAsync(dto);
+            Assert.True(respUpdate.Error);
+
+            // Delete
+            var respDelete = await client.DeleteAsync(dto.StorageKey);
+            Assert.True(respDelete.Error);
+
+            // Query
+            var respQuery = await client.QueryAsync(new ServiceQueryRequest());
+            Assert.True(respQuery.Error);
         }
     }
 }

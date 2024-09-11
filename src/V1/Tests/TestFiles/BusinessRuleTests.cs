@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceQuery;
+using System.Diagnostics;
 
 namespace ServiceBricks.Xunit
 {
@@ -41,6 +42,23 @@ namespace ServiceBricks.Xunit
             }
         }
 
+        private class ThrowExceptionBusinessRule : BusinessRuleExclusion
+        {
+            public ThrowExceptionBusinessRule()
+            {
+            }
+
+            public override IResponse ExecuteRule(IBusinessRuleContext context)
+            {
+                throw new Exception("test");
+            }
+
+            public override Task<IResponse> ExecuteRuleAsync(IBusinessRuleContext context)
+            {
+                throw new Exception("test");
+            }
+        }
+
         private class ErrorDontStopBusinessRule : BusinessRule
         {
             public ErrorDontStopBusinessRule()
@@ -55,6 +73,10 @@ namespace ServiceBricks.Xunit
                 response.AddMessage(ResponseMessage.CreateError("Error"));
                 return response;
             }
+        }
+
+        public class ExampleBroadcast : DomainBroadcast<ExampleBroadcast>
+        {
         }
 
         [Fact]
@@ -212,6 +234,42 @@ namespace ServiceBricks.Xunit
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
             registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
+
+            BusinessRuleContext context = new BusinessRuleContext();
+            context.Object = new ExampleDto();
+
+            var response = await businessRuleService.ExecuteRulesAsync(context);
+            Assert.True(response.Error);
+
+            // Cleanup
+            registry.UnRegister(typeof(ExampleDto));
+        }
+
+        [Fact]
+        public virtual Task ServiceExceptionError()
+        {
+            var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+            registry.RegisterItem(typeof(ExampleDto), typeof(ThrowExceptionBusinessRule));
+
+            BusinessRuleContext context = new BusinessRuleContext();
+            context.Object = new ExampleDto();
+
+            var response = businessRuleService.ExecuteRules(context);
+            Assert.True(response.Error);
+
+            // Cleanup
+            registry.UnRegister(typeof(ExampleDto));
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual async Task ServiceExceptionErrorAsync()
+        {
+            var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+            registry.RegisterItem(typeof(ExampleDto), typeof(ThrowExceptionBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -934,6 +992,50 @@ namespace ServiceBricks.Xunit
         }
 
         [Fact]
+        public virtual async Task ServiceBusWorkerSuccess()
+        {
+            var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+            var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
+            // Register rule
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ExampleCreatedBroadcastRule.RegisterServiceBus(servicebus);
+
+            // Create context
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
+            BusinessRuleContext context = new BusinessRuleContext();
+            context.Object = new CreatedBroadcast<ExampleDto>(
+                new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
+
+            // Execute rule
+
+            var worker = new ServiceBusTaskWorker<CreatedBroadcast<ExampleDto>>(
+                SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
+                SystemManager.ServiceProvider.GetRequiredService<IServiceBus>(),
+                SystemManager.ServiceProvider,
+                SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>());
+
+            await worker.DoWork(new ServiceBusTaskDetail<ServiceBusTaskWorker<CreatedBroadcast<ExampleDto>>, CreatedBroadcast<ExampleDto>>(
+                new CreatedBroadcast<ExampleDto>(new ExampleDto()))
+                , CancellationToken.None);
+
+            // Assert
+            CancellationTokenSource cts = new CancellationTokenSource();
+            cts.CancelAfter(3000);
+            while (!ExampleCreatedBroadcastRule.WasExecuted)
+            {
+                if (cts.Token.IsCancellationRequested)
+                    break;
+            }
+
+            Assert.True(ExampleCreatedBroadcastRule.WasExecuted);
+
+            // Cleanup
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ExampleCreatedBroadcastRule.UnRegisterServiceBus(servicebus);
+            ExampleCreatedBroadcastRule.WasExecuted = false;
+        }
+
+        [Fact]
         public virtual Task DomainCreateDateRuleSuccess()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
@@ -1210,11 +1312,28 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry, nameof(ExampleDomain.ExampleDate));
+            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry,
+                nameof(ExampleDomain.ExampleDate),
+                nameof(ExampleDomain.ExampleNullableDate),
+                nameof(ExampleDomain.ExampleNullableDateNotSet),
+                nameof(ExampleDomain.SimpleDate),
+                nameof(ExampleDomain.SimpleNullableDate),
+                nameof(ExampleDomain.SimpleNullableDateNotSet));
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
-            var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now, ExampleDate = now };
+            DateTime nowDatetime = now.DateTime;
+            var domain = new ExampleDomain()
+            {
+                Key = 1,
+                Name = "Name",
+                CreateDate = now,
+                UpdateDate = now,
+                ExampleDate = now,
+                ExampleNullableDate = now,
+                SimpleDate = nowDatetime,
+                SimpleNullableDate = nowDatetime
+            };
             BusinessRuleContext context = new BusinessRuleContext();
 
             // Do Create
@@ -1228,10 +1347,20 @@ namespace ServiceBricks.Xunit
             Assert.True(now.Offset != TimeSpan.Zero);
             Assert.True(domain.ExampleDate == now);
             Assert.True(domain.ExampleDate.Offset == TimeSpan.Zero);
+            Assert.True(domain.ExampleNullableDate.Value == now);
+            Assert.True(domain.ExampleNullableDate.Value.Offset == TimeSpan.Zero);
+            Assert.True(!domain.ExampleNullableDateNotSet.HasValue);
+            Assert.True(domain.SimpleDate == nowDatetime);
+            Assert.True(domain.SimpleNullableDate.Value == nowDatetime);
+            Assert.True(!domain.SimpleNullableDateNotSet.HasValue);
 
             // Do Update
             now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
+            nowDatetime = now.DateTime;
             domain.ExampleDate = now;
+            domain.ExampleNullableDate = now;
+            domain.SimpleDate = now.DateTime;
+            domain.SimpleNullableDate = now.DateTime;
             context.Object = new DomainUpdateBeforeEvent<ExampleDomain>(domain);
 
             // Execute rule
@@ -1242,6 +1371,20 @@ namespace ServiceBricks.Xunit
             Assert.True(now.Offset != TimeSpan.Zero);
             Assert.True(domain.ExampleDate == now);
             Assert.True(domain.ExampleDate.Offset == TimeSpan.Zero);
+            Assert.True(domain.ExampleNullableDate.Value == now);
+            Assert.True(domain.ExampleNullableDate.Value.Offset == TimeSpan.Zero);
+            Assert.True(!domain.ExampleNullableDateNotSet.HasValue);
+            Assert.True(domain.SimpleDate == nowDatetime);
+            Assert.True(domain.SimpleNullableDate.Value == nowDatetime);
+            Assert.True(!domain.SimpleNullableDateNotSet.HasValue);
+
+            // Unknown object test
+            var rule = new DomainDateTimeOffsetRule<ExampleDomain>(
+                SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
+                SystemManager.ServiceProvider.GetRequiredService<ITimezoneService>());
+            rule.SetProperties(nameof(ExampleDomain.ExampleDate));
+            var resp = rule.ExecuteRule(null);
+            Assert.True(resp.Error);
 
             // Cleanup
             DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
@@ -1260,7 +1403,18 @@ namespace ServiceBricks.Xunit
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
-            var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now, ExampleDate = now };
+            DateTime nowDatetime = now.DateTime;
+            var domain = new ExampleDomain()
+            {
+                Key = 1,
+                Name = "Name",
+                CreateDate = now,
+                UpdateDate = now,
+                ExampleDate = now,
+                ExampleNullableDate = now,
+                SimpleDate = nowDatetime,
+                SimpleNullableDate = nowDatetime
+            };
             BusinessRuleContext context = new BusinessRuleContext();
 
             // Do Create
@@ -1288,6 +1442,90 @@ namespace ServiceBricks.Xunit
             Assert.True(now.Offset != TimeSpan.Zero);
             Assert.True(domain.ExampleDate == now);
             Assert.True(domain.ExampleDate.Offset == TimeSpan.Zero);
+
+            // Unknown object test
+            var rule = new DomainDateTimeOffsetRule<ExampleDomain>(
+                SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
+                SystemManager.ServiceProvider.GetRequiredService<ITimezoneService>());
+            rule.SetProperties(nameof(ExampleDomain.ExampleDate));
+            var resp = await rule.ExecuteRuleAsync(null);
+            Assert.True(resp.Error);
+
+            // Cleanup
+            DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
+        }
+
+        [Fact]
+        public virtual Task DomainDateTimeOffsetRuleError()
+        {
+            var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            // Register rule
+            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry,
+                "UnknownPropertyName");
+
+            // Create context
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
+            DateTime nowDatetime = now.DateTime;
+            var domain = new ExampleDomain()
+            {
+                Key = 1,
+                Name = "Name",
+                CreateDate = now,
+                UpdateDate = now,
+                ExampleDate = now,
+                ExampleNullableDate = now,
+                SimpleDate = nowDatetime,
+                SimpleNullableDate = nowDatetime
+            };
+            BusinessRuleContext context = new BusinessRuleContext();
+
+            // Do Create
+            context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
+
+            // Execute rule
+            var response = businessRuleService.ExecuteRules(context);
+            Assert.True(response.Error);
+
+            // Cleanup
+            DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual async Task DomainDateTimeOffsetRuleErrorAsync()
+        {
+            var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            // Register rule
+            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry,
+                "UnknownPropertyName");
+
+            // Create context
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
+            DateTime nowDatetime = now.DateTime;
+            var domain = new ExampleDomain()
+            {
+                Key = 1,
+                Name = "Name",
+                CreateDate = now,
+                UpdateDate = now,
+                ExampleDate = now,
+                ExampleNullableDate = now,
+                SimpleDate = nowDatetime,
+                SimpleNullableDate = nowDatetime
+            };
+            BusinessRuleContext context = new BusinessRuleContext();
+
+            // Do Create
+            context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
+
+            // Execute rule
+            var response = await businessRuleService.ExecuteRulesAsync(context);
+            Assert.True(response.Error);
 
             // Cleanup
             DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
@@ -1355,6 +1593,70 @@ namespace ServiceBricks.Xunit
 
             // Cleanup
             DomainQueryPropertyRenameRule<ExampleDomain>.UnRegisterRule(registry);
+        }
+
+        [Fact]
+        public virtual Task CallProcessSuccess()
+        {
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            // Create context
+            DomainProcess<ExampleDto> process = new DomainProcess<ExampleDto>();
+
+            // Execute rule
+            var response = businessRuleService.ExecuteProcess(process);
+
+            // Assert
+            Assert.True(response.Success);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual async Task CallProcessSuccessAsync()
+        {
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            // Create context
+            DomainProcess<ExampleDto> process = new DomainProcess<ExampleDto>();
+
+            // Execute rule
+            var response = await businessRuleService.ExecuteProcessAsync(process);
+
+            // Assert
+            Assert.True(response.Success);
+        }
+
+        [Fact]
+        public virtual Task CallEventSuccess()
+        {
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            // Create context
+            DomainEvent<ExampleDto> testevent = new DomainEvent<ExampleDto>();
+
+            // Execute rule
+            var response = businessRuleService.ExecuteEvent(testevent);
+
+            // Assert
+            Assert.True(response.Success);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual async Task CallEventSuccessAsync()
+        {
+            var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+
+            // Create context
+            DomainEvent<ExampleDto> testevent = new DomainEvent<ExampleDto>();
+
+            // Execute rule
+            var response = await businessRuleService.ExecuteEventAsync(testevent);
+
+            // Assert
+            Assert.True(response.Success);
         }
     }
 }

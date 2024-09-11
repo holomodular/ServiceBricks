@@ -7,6 +7,10 @@
         public DateTimeOffset UpdateDate { get; set; }
         public DateTimeOffset ExampleDate { get; set; }
         public DateTimeOffset? ExampleNullableDate { get; set; }
+        public DateTimeOffset? ExampleNullableDateNotSet { get; set; }
+        public DateTime SimpleDate { get; set; }
+        public DateTime SimpleNullableDate { get; set; }
+        public DateTime? SimpleNullableDateNotSet { get; set; }
     }
 
     public class ExampleDomain : IDomainObject<ExampleDomain>, IDpCreateDate, IDpUpdateDate
@@ -17,6 +21,10 @@
         public DateTimeOffset UpdateDate { get; set; }
         public DateTimeOffset ExampleDate { get; set; }
         public DateTimeOffset? ExampleNullableDate { get; set; }
+        public DateTimeOffset? ExampleNullableDateNotSet { get; set; }
+        public DateTime SimpleDate { get; set; }
+        public DateTime? SimpleNullableDate { get; set; }
+        public DateTime? SimpleNullableDateNotSet { get; set; }
     }
 
     public class ExampleProcessQueueDomain : IDomainObject<ExampleProcessQueueDomain>, IDpProcessQueue, IDpCreateDate, IDpUpdateDate

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.Extensions.Logging;
 
 namespace ServiceBricks
 {
@@ -68,6 +69,17 @@ namespace ServiceBricks
                 typeof(DomainDateTimeOffsetRule<TDomainObject>));
         }
 
+        public void SetProperties(params string[] props)
+        {
+            if (props == null || props.Length == 0)
+                return;
+            List<string> list = new List<string>(props);
+            if (CustomData.ContainsKey(Key_PropertyName))
+                CustomData[Key_PropertyName] = list;
+            else
+                CustomData.Add(Key_PropertyName, list);
+        }
+
         /// <summary>
         /// Execute the business rule.
         /// </summary>
@@ -99,24 +111,13 @@ namespace ServiceBricks
                         var curProp = curItemList.AsQueryable().Select(x => x.GetType().GetProperty(propName).GetValue(x)).FirstOrDefault();
                         if (curProp != null)
                         {
+                            // This also gets nullable types
                             if (curProp is DateTimeOffset datetimeoffset)
                             {
                                 if (datetimeoffset.Offset != TimeSpan.Zero)
                                 {
                                     var newval = _timezoneService.ConvertPostBackToUTC(datetimeoffset);
                                     item.GetType().GetProperty(propName).SetValue(item, newval);
-                                }
-                            }
-                            else if (curProp is DateTimeOffset?)
-                            {
-                                DateTimeOffset? nullableDateTimeOffset = (DateTimeOffset?)curProp;
-                                if (nullableDateTimeOffset.HasValue)
-                                {
-                                    if (nullableDateTimeOffset.Value.Offset != TimeSpan.Zero)
-                                    {
-                                        DateTimeOffset? newval = _timezoneService.ConvertPostBackToUTC(nullableDateTimeOffset.Value);
-                                        item.GetType().GetProperty(propName).SetValue(item, newval);
-                                    }
                                 }
                             }
                         }
@@ -133,24 +134,13 @@ namespace ServiceBricks
                         var curProp = curItemList.AsQueryable().Select(x => x.GetType().GetProperty(propName).GetValue(x)).FirstOrDefault();
                         if (curProp != null)
                         {
+                            // This also gets nullable types
                             if (curProp is DateTimeOffset datetimeoffset)
                             {
                                 if (datetimeoffset.Offset != TimeSpan.Zero)
                                 {
                                     var newval = _timezoneService.ConvertPostBackToUTC(datetimeoffset);
                                     item.GetType().GetProperty(propName).SetValue(item, newval);
-                                }
-                            }
-                            else if (curProp is DateTimeOffset?)
-                            {
-                                DateTimeOffset? nullableDateTimeOffset = (DateTimeOffset?)curProp;
-                                if (nullableDateTimeOffset.HasValue)
-                                {
-                                    if (nullableDateTimeOffset.Value.Offset != TimeSpan.Zero)
-                                    {
-                                        DateTimeOffset? newval = _timezoneService.ConvertPostBackToUTC(nullableDateTimeOffset.Value);
-                                        item.GetType().GetProperty(propName).SetValue(item, newval);
-                                    }
                                 }
                             }
                         }

@@ -125,7 +125,6 @@
 	  <Compile Include="..\ServiceBricks\Model\ClientApiOptions.cs" Link="ClientApiOptions.cs" />
 	  <Compile Include="..\ServiceBricks\Model\LocalizationResource.cs" Link="LocalizationResource.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ModuleRegistry.cs" Link="ModuleRegistry.cs" />
-	  <Compile Include="..\ServiceBricks\Model\Registry.cs" Link="Registry.cs" />
 	  <Compile Include="..\ServiceBricks\Model\RegistryContext.cs" Link="RegistryContext.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ServiceBricksConstants.cs" Link="ServiceBricksConstants.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ServiceBricksModule.cs" Link="ServiceBricksModule.cs" />

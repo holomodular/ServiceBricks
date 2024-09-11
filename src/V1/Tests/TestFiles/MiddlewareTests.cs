@@ -41,7 +41,7 @@ namespace ServiceBricks.Xunit
             try
             {
                 PropogateExceptionResponseMiddleware middleware = new PropogateExceptionResponseMiddleware(
-                                   async (context) =>
+                                    (context) =>
                                    {
                                        throw new Exception("Test Exception");
                                    },

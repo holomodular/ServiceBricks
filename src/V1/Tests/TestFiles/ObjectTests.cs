@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using ServiceQuery;
 
 namespace ServiceBricks.Xunit
@@ -113,6 +115,17 @@ namespace ServiceBricks.Xunit
         }
 
         [Fact]
+        public virtual Task ResponseMessageConstructorTest()
+        {
+            var errorMessage = ResponseMessage.CreateError("test");
+
+            ResponseMessage newMessage = new ResponseMessage(errorMessage);
+            Assert.True(newMessage.Severity == ResponseSeverity.Error);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
         public virtual Task ResponseCountSuccess()
         {
             ResponseCount response = new ResponseCount();
@@ -129,6 +142,8 @@ namespace ServiceBricks.Xunit
             response.List = new List<ExampleDto>();
             response.Count = 1;
 
+            response = new ResponseAggregateCountList<ExampleDto>(
+                new List<ExampleDto>());
             return Task.CompletedTask;
         }
 
@@ -239,13 +254,21 @@ namespace ServiceBricks.Xunit
 
             exception = new BusinessException(Guid.NewGuid().ToString());
             Assert.True(exception.Messages.Count == 1);
+            exception = new BusinessException(string.Empty);
+            Assert.True(exception.Messages.Count == 1);
 
             exception = new BusinessException(new Exception());
+            Assert.True(exception.Messages.Count == 2);
+
+            exception = new BusinessException(new Exception(string.Empty));
             Assert.True(exception.Messages.Count == 2);
 
             exception = new BusinessException(new Exception(), "test");
             Assert.True(exception.Messages.Count == 2);
             Assert.True(exception.Messages[0].Message == "test");
+
+            exception = new BusinessException(new Exception(), string.Empty);
+            Assert.True(exception.Messages.Count == 2);
 
             var response = new Response();
             response.AddMessage(ResponseMessage.CreateInfo("test"));
@@ -268,6 +291,9 @@ namespace ServiceBricks.Xunit
             exception.CopyFrom(response);
             Assert.True(exception.Messages.Count == 2);
 
+            string message = exception.GetMessage(Environment.NewLine);
+            Assert.True(message.Length > 0);
+
             return Task.CompletedTask;
         }
 
@@ -279,14 +305,26 @@ namespace ServiceBricks.Xunit
             response.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString()));
             Assert.True(response.Error);
 
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(string.Empty));
+            Assert.True(response.Error);
+
             // Error
             response = new Response();
             response.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString(), "field"));
             Assert.True(response.Error);
 
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(string.Empty, "field"));
+            Assert.True(response.Error);
+
             // Error
             response = new Response();
             response.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString(), new List<string>() { "field" }));
+            Assert.True(response.Error);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(string.Empty, new List<string>() { "field" }));
             Assert.True(response.Error);
 
             // Exception
@@ -299,9 +337,17 @@ namespace ServiceBricks.Xunit
             response.AddMessage(ResponseMessage.CreateError(new BusinessException(), "test"));
             Assert.True(response.Error);
 
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException(), string.Empty));
+            Assert.True(response.Error);
+
             // Exception
             response = new Response();
             response.AddMessage(ResponseMessage.CreateError(new BusinessException(), "test", new List<string>() { "field" }));
+            Assert.True(response.Error);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException(), string.Empty, new List<string>() { "field" }));
             Assert.True(response.Error);
 
             // Info
@@ -309,9 +355,17 @@ namespace ServiceBricks.Xunit
             response.AddMessage(ResponseMessage.CreateInfo(Guid.NewGuid().ToString()));
             Assert.True(response.Success);
 
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(string.Empty));
+            Assert.True(response.Success);
+
             // Info
             response = new Response();
             response.AddMessage(ResponseMessage.CreateInfo(Guid.NewGuid().ToString(), "field"));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(string.Empty, "field"));
             Assert.True(response.Success);
 
             // Info
@@ -319,9 +373,17 @@ namespace ServiceBricks.Xunit
             response.AddMessage(ResponseMessage.CreateInfo(Guid.NewGuid().ToString(), new List<string>() { "field" }));
             Assert.True(response.Success);
 
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(string.Empty, new List<string>() { "field" }));
+            Assert.True(response.Success);
+
             // Warning
             response = new Response();
             response.AddMessage(ResponseMessage.CreateWarning(Guid.NewGuid().ToString()));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(string.Empty));
             Assert.True(response.Success);
 
             // Warning
@@ -329,9 +391,17 @@ namespace ServiceBricks.Xunit
             response.AddMessage(ResponseMessage.CreateWarning(Guid.NewGuid().ToString(), "field"));
             Assert.True(response.Success);
 
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(string.Empty, "field"));
+            Assert.True(response.Success);
+
             // Warning
             response = new Response();
             response.AddMessage(ResponseMessage.CreateWarning(Guid.NewGuid().ToString(), new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(string.Empty, new List<string>() { "field" }));
             Assert.True(response.Success);
 
             // Success
@@ -339,15 +409,30 @@ namespace ServiceBricks.Xunit
             response.AddMessage(ResponseMessage.CreateSuccess(Guid.NewGuid().ToString()));
             Assert.True(response.Success);
 
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(string.Empty));
+            Assert.True(response.Success);
+
             // Success
             response = new Response();
             response.AddMessage(ResponseMessage.CreateSuccess(Guid.NewGuid().ToString(), "field"));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(string.Empty, "field"));
             Assert.True(response.Success);
 
             // Success
             response = new Response();
             response.AddMessage(ResponseMessage.CreateSuccess(Guid.NewGuid().ToString(), new List<string>() { "field" }));
             Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(string.Empty, new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            var msg = response.GetMessage(Environment.NewLine);
+            Assert.True(msg != null && msg.Length > 0);
 
             return Task.CompletedTask;
         }
@@ -381,6 +466,128 @@ namespace ServiceBricks.Xunit
             responseerror.CopyTo(response);
             Assert.True(response.Error);
 
+            return Task.CompletedTask;
+        }
+
+        public class TestMapProfile : DomainObjectMappingProfile<ExampleDomain, ExampleDto>
+        {
+        }
+
+        [Fact]
+        public virtual Task DomainMapProfileTest()
+        {
+            TestMapProfile testProfile = new TestMapProfile();
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainTypeProfileTest()
+        {
+            DomainTypeMappingProfile testProfile = new DomainTypeMappingProfile();
+            return Task.CompletedTask;
+        }
+
+        public class TestHttpContextAccessor : IHttpContextAccessor
+        {
+            public TestHttpContextAccessor()
+            {
+                HttpContext = new DefaultHttpContext();
+            }
+
+            public HttpContext HttpContext { get; set; }
+        }
+
+        [Fact]
+        public virtual async Task ValidationResponseTest()
+        {
+            TestHttpContextAccessor contextAccessor = new TestHttpContextAccessor();
+
+            ValidationResponseResult result = new ValidationResponseResult();
+
+            Microsoft.AspNetCore.Mvc.ActionContext actionContext =
+                new Microsoft.AspNetCore.Mvc.ActionContext();
+            actionContext.HttpContext = contextAccessor.HttpContext;
+            actionContext.HttpContext.RequestServices = SystemManager.ServiceProvider;
+            actionContext.ModelState.AddModelError("key", "error");
+
+            try
+            {
+                await result.ExecuteResultAsync(actionContext);
+            }
+            catch
+            {
+                // TODO: Fix this test
+            }
+        }
+
+        public static class ExampleTask
+        {
+            public class Detail : ITaskDetail<Detail, Worker>
+            {
+            }
+
+            public class Worker : ITaskWork<Detail, Worker>
+            {
+                public static bool WasCalled = false;
+
+                public async Task DoWork(Detail detail, CancellationToken cancellationToken)
+                {
+                    WasCalled = true;
+                }
+            }
+        }
+
+        public class ExampleTimer : TaskTimerHostedService<ExampleTask.Detail, ExampleTask.Worker>
+        {
+            public ExampleTimer(
+                IServiceProvider serviceProvider,
+                ILoggerFactory logger) : base(serviceProvider, logger)
+            {
+            }
+
+            public override TimeSpan TimerTickInterval
+            {
+                get { return TimeSpan.FromMilliseconds(1); }
+            }
+
+            public override TimeSpan TimerDueTime
+            {
+                get { return TimeSpan.FromMilliseconds(1); }
+            }
+
+            public override ITaskDetail<ExampleTask.Detail, ExampleTask.Worker> TaskDetail
+            {
+                get { return new ExampleTask.Detail(); }
+            }
+
+            public override bool TimerTickShouldProcessRun()
+            {
+                return true;
+            }
+        }
+
+        [Fact]
+        public virtual async Task TimerHostedServiceTest()
+        {
+            var exampleTimer = new ExampleTimer(SystemManager.ServiceProvider, SystemManager.ServiceProvider.GetService<ILoggerFactory>());
+            await exampleTimer.StartAsync(CancellationToken.None);
+
+            await Task.Delay(1000);
+
+            await exampleTimer.StopAsync(CancellationToken.None);
+
+            Assert.True(ExampleTask.Worker.WasCalled);
+        }
+
+        [Fact]
+        public virtual Task ServicePartsTests()
+        {
+            IServiceCollection services = new ServiceCollection();
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddAppSettingsConfig().Build();
+            services.AddServiceBricks(configuration);
+            var parts = services.GetServiceBricksParts();
+            Assert.True(parts != null);
             return Task.CompletedTask;
         }
     }

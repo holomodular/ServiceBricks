@@ -149,6 +149,7 @@ namespace ServiceBricks
             }
         }
 
+        /// <summary>
         /// Get the list of managed keys.
         /// </summary>
         /// <returns></returns>

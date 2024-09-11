@@ -130,7 +130,8 @@ namespace ServiceBricks
                         .GetGenericArguments()
                         .Last();
 
-                    var worker = scope.ServiceProvider.GetRequiredService(workerType);
+                    var worker = ActivatorUtilities.CreateInstance(scope.ServiceProvider, workerType);
+                    //var worker = scope.ServiceProvider.GetRequiredService(workerType);
                     var task = (Task)workerType.GetMethod("DoWork")
                         .Invoke(worker, new object[] { TaskDetail, cancellationToken });
                     await task;
