@@ -32,12 +32,6 @@
 		<Compile Include="..\TestFiles\StorageEfc\MappingTest.cs" Link="MappingTest.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\StubApiClientTests.cs" Link="StubApiClientTests.cs" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\TestFiles\appsettings.json" Link="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
 	
 
 	<ItemGroup>

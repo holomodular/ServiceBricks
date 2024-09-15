@@ -13,9 +13,9 @@ namespace ServiceBricks.Xunit
     {
         public class ExampleHttpClientFactory : IHttpClientFactory
         {
-            private ApiClientTests.CustomHttpClientHandler _handler;
+            private ApiClientTests.CustomGenericHttpClientHandler<ExampleDto> _handler;
 
-            public ExampleHttpClientFactory(ApiClientTests.CustomHttpClientHandler handler)
+            public ExampleHttpClientFactory(ApiClientTests.CustomGenericHttpClientHandler<ExampleDto> handler)
             {
                 _handler = handler;
             }
@@ -32,7 +32,7 @@ namespace ServiceBricks.Xunit
             var apiservice = serviceProvider.GetRequiredService<IApiService<ExampleDto>>();
             var controller = new ExampleApiController(apiservice, apioptions);
             var options = new OptionsWrapper<ClientApiOptions>(new ClientApiOptions() { ReturnResponseObject = false, BaseServiceUrl = "https://localhost:7000/", TokenUrl = "https://localhost:7000/token" });
-            var handler = new ApiClientTests.CustomHttpClientHandler(controller);
+            var handler = new ApiClientTests.CustomGenericHttpClientHandler<ExampleDto>(controller);
             var clientHandlerFactory = new ExampleHttpClientFactory(handler);
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
@@ -40,7 +40,7 @@ namespace ServiceBricks.Xunit
                 options);
         }
 
-        public ApiClientTests.CustomHttpClientHandler Handler { get; set; }
+        public ApiClientTests.CustomGenericHttpClientHandler<ExampleDto> Handler { get; set; }
 
         public override IApiClient<ExampleDto> GetClientReturnResponse(IServiceProvider serviceProvider)
         {
@@ -49,7 +49,7 @@ namespace ServiceBricks.Xunit
             var controller = new ExampleApiController(apiservice, apioptions);
 
             var options = new OptionsWrapper<ClientApiOptions>(new ClientApiOptions() { ReturnResponseObject = true, BaseServiceUrl = "https://localhost:7000/", TokenUrl = "https://localhost:7000/token" });
-            var handler = new ApiClientTests.CustomHttpClientHandler(controller);
+            var handler = new ApiClientTests.CustomGenericHttpClientHandler<ExampleDto>(controller);
             var clientHandlerFactory = new ExampleHttpClientFactory(handler);
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),

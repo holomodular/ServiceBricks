@@ -8,16 +8,31 @@
 
 	<ItemGroup>
 	  <Compile Include="..\ServiceBricks.Xunit\ApiClientReturnResponseTest.cs" Link="ApiClientReturnResponseTest.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ApiClientReturnResponseTests.cs" Link="ApiClientReturnResponseTests.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\ApiClientTest.cs" Link="ApiClientTest.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ApiClientTests.cs" Link="ApiClientTests.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\ApiControllerTest.cs" Link="ApiControllerTest.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ApiControllerTests.cs" Link="ApiControllerTests.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ApiServiceTests.cs" Link="ApiServiceTests.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\BusinessRuleTests.cs" Link="BusinessRuleTests.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\Constants.cs" Link="Constants.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\DomainQueueProcessTests.cs" Link="DomainQueueProcessTests.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\DomainRepositoryTests.cs" Link="DomainRepositoryTests.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ExampleDto.cs" Link="ExampleDto.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ExtensionTests.cs" Link="ExtensionTests.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\IpAddressServiceTests.cs" Link="IpAddressServiceTests.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\ISystemManager.cs" Link="ISystemManager.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\ITestManager.cs" Link="ITestManager.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\MappingTests.cs" Link="MappingTests.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\MiddlewareTests.cs" Link="MiddlewareTests.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\ObjectTests.cs" Link="ObjectTests.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\ServiceBricksStartup.cs" Link="ServiceBricksStartup.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\ServiceBricksTestModule.cs" Link="ServiceBricksTestModule.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\SystemManager.cs" Link="SystemManager.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\TestManager.cs" Link="TestManager.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\TestModule.cs" Link="TestModule.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\TestStartup.cs" Link="TestStartup.cs" />
+	  <Compile Include="..\ServiceBricks.Xunit\TimezoneServiceTests.cs" Link="TimezoneServiceTests.cs" />
 	  <Compile Include="..\ServiceBricks.Xunit\Usings.cs" Link="Usings.cs" />
 	</ItemGroup>
 

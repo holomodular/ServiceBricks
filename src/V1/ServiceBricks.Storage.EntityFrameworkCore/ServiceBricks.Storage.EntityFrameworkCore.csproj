@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.1.0-d</Version>
+		<Version>1.1.0-f</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Storage.EntityFrameworkCore</PackageId>
 		<Title>ServiceBricks.Storage.EntityFrameworkCore</Title>
@@ -14,7 +14,7 @@
 		<Copyright>Copyright © 2024 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
 		<PackageProjectUrl>https://ServiceBricks.com</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
-		<PackageTags>service;bricks;storage;entityframeworkcore;efc</PackageTags>
+		<PackageTags>servicebricks;storage;entityframeworkcore;efc</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<SignAssembly>True</SignAssembly>
 		<AssemblyOriginatorKeyFile>Resource\ServiceBricks.Storage.EntityFrameworkCore.snk</AssemblyOriginatorKeyFile>
@@ -33,7 +33,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.1.0-d" />
+		<PackageReference Include="ServiceBricks" Version="1.1.0-f" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">

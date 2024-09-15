@@ -1,0 +1,619 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using ServiceQuery;
+
+namespace ServiceBricks.Xunit
+{
+    [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
+    public partial class ObjectTests
+    {
+        public virtual ISystemManager SystemManager { get; set; }
+
+        public ObjectTests()
+        {
+            SystemManager = ServiceBricksSystemManager.GetSystemManager(typeof(ServiceBricksStartup));
+        }
+
+        [Fact]
+        public virtual Task ApplicationEmailSuccess()
+        {
+            ApplicationEmailDto dto = new ApplicationEmailDto
+            {
+                BccAddress = Guid.NewGuid().ToString(),
+                CcAddress = Guid.NewGuid().ToString(),
+                FromAddress = Guid.NewGuid().ToString(),
+                Subject = Guid.NewGuid().ToString(),
+                ToAddress = Guid.NewGuid().ToString(),
+                Body = Guid.NewGuid().ToString(),
+                BodyHtml = Guid.NewGuid().ToString(),
+                FutureProcessDate = DateTimeOffset.Now,
+                IsHtml = true,
+                Priority = Guid.NewGuid().ToString(),
+                StorageKey = Guid.NewGuid().ToString(),
+            };
+
+            var broadcast = new CreateApplicationEmailBroadcast(dto);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ApplicationLogSuccess()
+        {
+            ApplicationLogDto dto = new ApplicationLogDto
+            {
+                Application = Guid.NewGuid().ToString(),
+                Category = Guid.NewGuid().ToString(),
+                CreateDate = DateTimeOffset.Now,
+                Exception = Guid.NewGuid().ToString(),
+                Level = Guid.NewGuid().ToString(),
+                Message = Guid.NewGuid().ToString(),
+                Path = Guid.NewGuid().ToString(),
+                Properties = Guid.NewGuid().ToString(),
+                Server = Guid.NewGuid().ToString(),
+                StorageKey = Guid.NewGuid().ToString(),
+                UserStorageKey = Guid.NewGuid().ToString(),
+            };
+
+            var broadcast = new CreateApplicationLogBroadcast(dto);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ApplicationSmsSuccess()
+        {
+            ApplicationSmsDto dto = new ApplicationSmsDto
+            {
+                FutureProcessDate = DateTimeOffset.Now,
+                Message = Guid.NewGuid().ToString(),
+                PhoneNumber = Guid.NewGuid().ToString(),
+                StorageKey = Guid.NewGuid().ToString(),
+            };
+
+            var broadcast = new CreateApplicationSmsBroadcast(dto);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainTypeDtoSuccess()
+        {
+            DomainTypeDto dto = new DomainTypeDto
+            {
+                Name = Guid.NewGuid().ToString(),
+                StorageKey = Guid.NewGuid().ToString(),
+            };
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainTypeSuccess()
+        {
+            DomainType dto = new DomainType
+            {
+                Name = Guid.NewGuid().ToString(),
+                Key = 1
+            };
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ResponseListSuccess()
+        {
+            ResponseList<ExampleDto> response = new ResponseList<ExampleDto>();
+            response.List = new List<ExampleDto>();
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ResponseMessageConstructorTest()
+        {
+            var errorMessage = ResponseMessage.CreateError("test");
+
+            ResponseMessage newMessage = new ResponseMessage(errorMessage);
+            Assert.True(newMessage.Severity == ResponseSeverity.Error);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ResponseCountSuccess()
+        {
+            ResponseCount response = new ResponseCount();
+            response.Count = 1;
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ResponseAggregateCountListSuccess()
+        {
+            ResponseAggregateCountList<ExampleDto> response = new ResponseAggregateCountList<ExampleDto>();
+            response.Aggregate = 1;
+            response.List = new List<ExampleDto>();
+            response.Count = 1;
+
+            response = new ResponseAggregateCountList<ExampleDto>(
+                new List<ExampleDto>());
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ServicebusRegistrationSuccess()
+        {
+            var test = new ServiceBusRuleRegistration<CreateApplicationLogBroadcast>(
+                new CreateApplicationLogBroadcast(new ApplicationLogDto()));
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ModuleSuccess()
+        {
+            ServiceBricksModule module = new ServiceBricksModule();
+            var a = module.ViewAssemblies;
+            var auto = module.AutomapperAssemblies;
+            var d = module.DependentModules;
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ModuleRegistrySuccess()
+        {
+            ServiceBricksModule module = new ServiceBricksModule();
+
+            var mods = ModuleRegistry.Instance.GetModules();
+            Assert.True(mods.Count == 0);
+
+            var keys = ModuleRegistry.Instance.GetKeys();
+            ModuleRegistry.Instance.RegisterItem(typeof(ServiceBricksModule), module);
+            Assert.True(keys.Count == 1);
+
+            mods = ModuleRegistry.Instance.GetModules();
+            Assert.True(mods.Count == 1);
+
+            var item = ModuleRegistry.Instance.GetRegistryItem(typeof(ServiceBricksModule));
+            Assert.True(item != null);
+
+            ModuleRegistry.Instance.UnRegisterItem(typeof(ServiceBricksModule));
+            Assert.True(ModuleRegistry.Instance.GetKeys().Count == 0);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DataTransferObjectSuccess()
+        {
+            DataTransferObject dto = new DataTransferObject
+            {
+                StorageKey = Guid.NewGuid().ToString(),
+            };
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainBroadcastSuccess()
+        {
+            DomainBroadcast dto = new DomainBroadcast
+            {
+                DomainObject = Guid.NewGuid().ToString(),
+            };
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainEventSuccess()
+        {
+            DomainEvent dto = new DomainEvent
+            {
+                DomainObject = Guid.NewGuid().ToString(),
+            };
+
+            return Task.CompletedTask;
+        }
+
+        public class TestClass : DomainObject<TestClass>
+        {
+            public int Key { get; set; }
+        }
+
+        [Fact]
+        public virtual Task DomainObjectSuccess()
+        {
+            TestClass dto = new TestClass
+            {
+                Key = 1
+            };
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainProcessSuccess()
+        {
+            DomainProcess dto = new DomainProcess
+            {
+                DomainObject = Guid.NewGuid().ToString(),
+            };
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainProcessGenericSuccess()
+        {
+            DomainProcess<ExampleDto> dto = new DomainProcess<ExampleDto>
+            {
+                DomainObject = new ExampleDto()
+            };
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ApplicationOptionsSuccess()
+        {
+            ApplicationOptions options = new ApplicationOptions()
+            {
+                Name = Guid.NewGuid().ToString(),
+            };
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task BusinessExceptionSuccess()
+        {
+            BusinessException exception = new BusinessException();
+
+            exception = new BusinessException(Guid.NewGuid().ToString());
+            Assert.True(exception.Messages.Count == 1);
+            exception = new BusinessException(string.Empty);
+            Assert.True(exception.Messages.Count == 1);
+
+            exception = new BusinessException(new Exception());
+            Assert.True(exception.Messages.Count == 2);
+
+            exception = new BusinessException(new Exception(string.Empty));
+            Assert.True(exception.Messages.Count == 2);
+
+            exception = new BusinessException(new Exception(), "test");
+            Assert.True(exception.Messages.Count == 2);
+            Assert.True(exception.Messages[0].Message == "test");
+
+            exception = new BusinessException(new Exception(), string.Empty);
+            Assert.True(exception.Messages.Count == 2);
+
+            var response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo("test"));
+            exception = new BusinessException(response);
+            Assert.True(exception.Messages.Count == 1);
+            Assert.True(exception.Messages[0].Message == "test");
+
+            exception = new BusinessException(ResponseMessage.CreateWarning("test"));
+            Assert.True(exception.Messages.Count == 1);
+            Assert.True(exception.Messages[0].Message == "test");
+
+            exception = new BusinessException();
+            response = new Response();
+            exception.CopyTo(response);
+            Assert.True(response.Error);
+
+            exception = new BusinessException();
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo("test"));
+            exception.CopyFrom(response);
+            Assert.True(exception.Messages.Count == 2);
+
+            string message = exception.GetMessage(Environment.NewLine);
+            Assert.True(message.Length > 0);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ResponseCreateMessage()
+        {
+            // Error
+            var response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString()));
+            Assert.True(response.Error);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(string.Empty));
+            Assert.True(response.Error);
+
+            // Error
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString(), "field"));
+            Assert.True(response.Error);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(string.Empty, "field"));
+            Assert.True(response.Error);
+
+            // Error
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString(), new List<string>() { "field" }));
+            Assert.True(response.Error);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(string.Empty, new List<string>() { "field" }));
+            Assert.True(response.Error);
+
+            // Exception
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException()));
+            Assert.True(response.Error);
+
+            // Exception
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException(), "test"));
+            Assert.True(response.Error);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException(), string.Empty));
+            Assert.True(response.Error);
+
+            // Exception
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException(), "test", new List<string>() { "field" }));
+            Assert.True(response.Error);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException(), string.Empty, new List<string>() { "field" }));
+            Assert.True(response.Error);
+
+            // Info
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(Guid.NewGuid().ToString()));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(string.Empty));
+            Assert.True(response.Success);
+
+            // Info
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(Guid.NewGuid().ToString(), "field"));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(string.Empty, "field"));
+            Assert.True(response.Success);
+
+            // Info
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(Guid.NewGuid().ToString(), new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateInfo(string.Empty, new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            // Warning
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(Guid.NewGuid().ToString()));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(string.Empty));
+            Assert.True(response.Success);
+
+            // Warning
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(Guid.NewGuid().ToString(), "field"));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(string.Empty, "field"));
+            Assert.True(response.Success);
+
+            // Warning
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(Guid.NewGuid().ToString(), new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateWarning(string.Empty, new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            // Success
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(Guid.NewGuid().ToString()));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(string.Empty));
+            Assert.True(response.Success);
+
+            // Success
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(Guid.NewGuid().ToString(), "field"));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(string.Empty, "field"));
+            Assert.True(response.Success);
+
+            // Success
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(Guid.NewGuid().ToString(), new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateSuccess(string.Empty, new List<string>() { "field" }));
+            Assert.True(response.Success);
+
+            var msg = response.GetMessage(Environment.NewLine);
+            Assert.True(msg != null && msg.Length > 0);
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task ResponseCopy()
+        {
+            // Error
+            var responseerror = new Response();
+            responseerror.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString()));
+            Assert.True(responseerror.Error);
+
+            // Success
+            var response = new Response();
+            Assert.True(response.Success);
+
+            // Copy Error
+            response.CopyFrom(responseerror);
+            Assert.True(response.Error);
+
+            // Error
+            responseerror = new Response();
+            responseerror.AddMessage(ResponseMessage.CreateError(Guid.NewGuid().ToString()));
+            Assert.True(responseerror.Error);
+
+            // Success
+            response = new Response();
+            Assert.True(response.Success);
+
+            // Copy Error
+            responseerror.CopyTo(response);
+            Assert.True(response.Error);
+
+            return Task.CompletedTask;
+        }
+
+        public class TestMapProfile : DomainObjectMappingProfile<ExampleDomain, ExampleDto>
+        {
+        }
+
+        [Fact]
+        public virtual Task DomainMapProfileTest()
+        {
+            TestMapProfile testProfile = new TestMapProfile();
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task DomainTypeProfileTest()
+        {
+            DomainTypeMappingProfile testProfile = new DomainTypeMappingProfile();
+            return Task.CompletedTask;
+        }
+
+        public class TestHttpContextAccessor : IHttpContextAccessor
+        {
+            public TestHttpContextAccessor()
+            {
+                HttpContext = new DefaultHttpContext();
+            }
+
+            public HttpContext HttpContext { get; set; }
+        }
+
+        [Fact]
+        public virtual async Task ValidationResponseTest()
+        {
+            TestHttpContextAccessor contextAccessor = new TestHttpContextAccessor();
+
+            ValidationResponseResult result = new ValidationResponseResult();
+
+            Microsoft.AspNetCore.Mvc.ActionContext actionContext =
+                new Microsoft.AspNetCore.Mvc.ActionContext();
+            actionContext.HttpContext = contextAccessor.HttpContext;
+            actionContext.HttpContext.RequestServices = SystemManager.ServiceProvider;
+            actionContext.ModelState.AddModelError("key", "error");
+
+            try
+            {
+                await result.ExecuteResultAsync(actionContext);
+            }
+            catch
+            {
+                // TODO: Fix this test
+            }
+        }
+
+        public static class ExampleTask
+        {
+            public class Detail : ITaskDetail<Detail, Worker>
+            {
+            }
+
+            public class Worker : ITaskWork<Detail, Worker>
+            {
+                public static bool WasCalled = false;
+
+                public Task DoWork(Detail detail, CancellationToken cancellationToken)
+                {
+                    WasCalled = true;
+                    return Task.CompletedTask;
+                }
+            }
+        }
+
+        public class ExampleTimer : TaskTimerHostedService<ExampleTask.Detail, ExampleTask.Worker>
+        {
+            public ExampleTimer(
+                IServiceProvider serviceProvider,
+                ILoggerFactory logger) : base(serviceProvider, logger)
+            {
+            }
+
+            public override TimeSpan TimerTickInterval
+            {
+                get { return TimeSpan.FromMilliseconds(1); }
+            }
+
+            public override TimeSpan TimerDueTime
+            {
+                get { return TimeSpan.FromMilliseconds(1); }
+            }
+
+            public override ITaskDetail<ExampleTask.Detail, ExampleTask.Worker> TaskDetail
+            {
+                get { return new ExampleTask.Detail(); }
+            }
+
+            public override bool TimerTickShouldProcessRun()
+            {
+                return true;
+            }
+        }
+
+        [Fact]
+        public virtual async Task TimerHostedServiceTest()
+        {
+            var exampleTimer = new ExampleTimer(SystemManager.ServiceProvider, SystemManager.ServiceProvider.GetService<ILoggerFactory>());
+            await exampleTimer.StartAsync(CancellationToken.None);
+
+            await Task.Delay(1000);
+
+            await exampleTimer.StopAsync(CancellationToken.None);
+
+            Assert.True(ExampleTask.Worker.WasCalled);
+        }
+
+        [Fact]
+        public virtual Task ServicePartsTests()
+        {
+            IServiceCollection services = new ServiceCollection();
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddAppSettingsConfig().Build();
+            services.AddServiceBricks(configuration);
+            var parts = services.GetServiceBricksParts();
+            Assert.True(parts != null);
+            return Task.CompletedTask;
+        }
+    }
+}

@@ -10,32 +10,6 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\TestFiles\ApiClientReturnResponseTests.cs" Link="ApiClientReturnResponseTests.cs" />
-		<Compile Include="..\TestFiles\ApiClientTests.cs" Link="ApiClientTests.cs" />
-		<Compile Include="..\TestFiles\ApiControllerTests.cs" Link="ApiControllerTests.cs" />
-		<Compile Include="..\TestFiles\ApiServiceTests.cs" Link="ApiServiceTests.cs" />
-		<Compile Include="..\TestFiles\BusinessRuleTests.cs" Link="BusinessRuleTests.cs" />
-		<Compile Include="..\TestFiles\DomainQueueProcessTests.cs" Link="DomainQueueProcessTests.cs" />
-		<Compile Include="..\TestFiles\DomainRepositoryTests.cs" Link="DomainRepositoryTests.cs" />
-		<Compile Include="..\TestFiles\ExtensionTests.cs" Link="ExtensionTests.cs" />
-		<Compile Include="..\TestFiles\IpAddressServiceTests.cs" Link="IpAddressServiceTests.cs" />
-		<Compile Include="..\TestFiles\MiddlewareTests.cs" Link="MiddlewareTests.cs" />
-		<Compile Include="..\TestFiles\ObjectTests.cs" Link="ObjectTests.cs" />		
-		<Compile Include="..\TestFiles\ExampleDto.cs" Link="ExampleDto.cs" />		
-		<Compile Include="..\TestFiles\ExampleMappingProfile.cs" Link="ExampleMappingProfile.cs" />
-		<Compile Include="..\TestFiles\MappingTests.cs" Link="MappingTests.cs" />
-		<Compile Include="..\TestFiles\TestModule.cs" Link="TestModule.cs" />
-		<Compile Include="..\TestFiles\TestStartup.cs" Link="TestStartup.cs" />
-		<Compile Include="..\TestFiles\TimezoneServiceTests.cs" Link="TimezoneServiceTests.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\TestFiles\appsettings.json" Link="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\..\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj" />
 	</ItemGroup>
 

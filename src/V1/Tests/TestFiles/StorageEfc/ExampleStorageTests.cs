@@ -39,7 +39,16 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
         [Fact]
         public virtual Task StorageGetConnectionStringSuccess()
         {
-            IConfiguration configuration = SystemManager.ServiceProvider.GetRequiredService<IConfiguration>();
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.AddAppSettingsConfig();
+            var newconfig = new Dictionary<string, string>()
+            {
+                ["ServiceBricks:Storage:General:ConnectionString"] = "test",
+                ["ServiceBricks:Storage:General:Database"] = "test",
+            };
+            builder.AddInMemoryCollection(newconfig);
+            var configuration = builder.Build();
+
             string connectionString = configuration.GetCosmosConnectionString();
             Assert.True(!string.IsNullOrEmpty(connectionString));
 
