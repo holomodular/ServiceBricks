@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        void RegisterItem(TKey key, TValue value);
+        void Register(TKey key, TValue value);
 
         /// <summary>
         /// Register an item with context.
@@ -27,7 +27,7 @@
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="domainRuleContext"></param>
-        void RegisterItem(TKey key, TValue value, Dictionary<string, object> custom);
+        void Register(TKey key, TValue value, Dictionary<string, object> custom);
 
         /// <summary>
         /// Unregister all items.
@@ -36,11 +36,19 @@
         void UnRegister(TKey key);
 
         /// <summary>
-        /// Unregister a single item.
+        /// Unregister all matching items.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        void UnRegisterItem(TKey key, TValue value);
+        void UnRegister(TKey key, TValue value);
+
+        /// <summary>
+        /// Unregister all matching items.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="custom"></param>
+        void UnRegister(TKey key, TValue value, Dictionary<string, object> custom);
 
         /// Get the list of managed keys.
         /// </summary>

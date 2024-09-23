@@ -259,7 +259,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <param name="handler"></param>
         public virtual void Subscribe(Type message, Type handler)
         {
-            _businessRuleRegistry.RegisterItem(message, handler);
+            _businessRuleRegistry.Register(message, handler);
         }
 
         /// <summary>
@@ -279,9 +279,9 @@ namespace ServiceBricks.ServiceBus.Azure
         /// </summary>
         /// <param name="message"></param>
         /// <param name="handler"></param>
-        public virtual void Unsubscribe(Type message, Type handler)
+        public virtual void UnSubscribe(Type message, Type handler)
         {
-            UnsubscribeAsync(message, handler).GetAwaiter().GetResult();
+            UnSubscribeAsync(message, handler).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -290,9 +290,9 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <param name="message"></param>
         /// <param name="handler"></param>
         /// <returns></returns>
-        public virtual async Task UnsubscribeAsync(Type message, Type handler)
+        public virtual async Task UnSubscribeAsync(Type message, Type handler)
         {
-            _businessRuleRegistry.UnRegisterItem(message, handler);
+            _businessRuleRegistry.UnRegister(message, handler);
 
             try
             {

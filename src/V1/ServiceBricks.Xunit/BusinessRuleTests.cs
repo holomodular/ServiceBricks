@@ -83,7 +83,7 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterOne()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
             Assert.True(list.Count == 1);
 
@@ -100,8 +100,8 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterTwo()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
 
             var list = registry.GetKeys();
             Assert.True(list.Count == 1);
@@ -119,8 +119,8 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterDuplicate()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
             Assert.True(list.Count == 1);
 
@@ -134,10 +134,10 @@ namespace ServiceBricks.Xunit
         public virtual Task UnRegister()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             registry.UnRegister(typeof(ExampleDto));
             var list = registry.GetKeys();
-            Assert.True(list.Count == 0);
+            Assert.True(list.Count == 0, string.Join(",", list.Select(x => x.FullName)));
 
             return Task.CompletedTask;
         }
@@ -146,8 +146,8 @@ namespace ServiceBricks.Xunit
         public virtual Task UnRegisterItem()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
-            registry.UnRegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.UnRegister(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
             Assert.True(list.Count == 0);
 
@@ -158,9 +158,9 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterTwoUnRegisterOne()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
-            registry.UnRegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.UnRegister(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
             Assert.True(list.Count == 1);
 
@@ -178,7 +178,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -197,7 +197,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(SuccessBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -214,7 +214,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -233,7 +233,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -250,7 +250,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ThrowExceptionBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ThrowExceptionBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -269,7 +269,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ThrowExceptionBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ThrowExceptionBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -286,8 +286,8 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
-            registry.RegisterItem(typeof(ExampleDto), typeof(ExcludeErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ExcludeErrorBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -306,8 +306,8 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
-            registry.RegisterItem(typeof(ExampleDto), typeof(ExcludeErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ExcludeErrorBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -324,7 +324,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -346,7 +346,7 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -366,8 +366,8 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorDontStopBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorDontStopBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -387,8 +387,8 @@ namespace ServiceBricks.Xunit
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorBusinessRule));
-            registry.RegisterItem(typeof(ExampleDto), typeof(ErrorDontStopBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
+            registry.Register(typeof(ExampleDto), typeof(ErrorDontStopBusinessRule));
 
             BusinessRuleContext context = new BusinessRuleContext();
             context.Object = new ExampleDto();
@@ -408,7 +408,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.Register(registry, nameof(ExampleDomain.Name));
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -424,7 +424,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Success);
 
             // Cleanup
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegister(registry, nameof(ExampleDomain.Name));
 
             return Task.CompletedTask;
         }
@@ -436,7 +436,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.Register(registry, nameof(ExampleDomain.Name));
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -452,7 +452,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Success);
 
             // Cleanup
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegister(registry, nameof(ExampleDomain.Name));
         }
 
         [Fact]
@@ -462,7 +462,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.Register(registry, nameof(ExampleDomain.Name));
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -478,7 +478,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Error);
 
             // Cleanup
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegister(registry, nameof(ExampleDomain.Name));
 
             return Task.CompletedTask;
         }
@@ -490,7 +490,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.RegisterRule(registry, nameof(ExampleDomain.Name));
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.Register(registry, nameof(ExampleDomain.Name));
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -506,7 +506,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Error);
 
             // Cleanup
-            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByStringRule<ExampleDomain, ExampleDto>.UnRegister(registry, nameof(ExampleDomain.Name));
         }
 
         [Fact]
@@ -516,7 +516,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -532,7 +532,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Success);
 
             // Cleanup
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegister(registry);
 
             return Task.CompletedTask;
         }
@@ -544,7 +544,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -560,7 +560,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Success);
 
             // Cleanup
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegister(registry);
         }
 
         [Fact]
@@ -570,7 +570,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -587,7 +587,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Error);
 
             // Cleanup
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegister(registry);
 
             return Task.CompletedTask;
         }
@@ -599,7 +599,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -616,7 +616,7 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Error);
 
             // Cleanup
-            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiConcurrencyByUpdateDateRule<ExampleDomain, ExampleDto>.UnRegister(registry);
         }
 
         public sealed class ExampleCreatedBroadcastRule : BusinessRule
@@ -636,7 +636,7 @@ namespace ServiceBricks.Xunit
 
             public static void UnRegisterServiceBus(IServiceBus serviceBus)
             {
-                serviceBus.Unsubscribe(
+                serviceBus.UnSubscribe(
                     typeof(CreatedBroadcast<ExampleDto>),
                     typeof(ExampleCreatedBroadcastRule));
             }
@@ -679,7 +679,7 @@ namespace ServiceBricks.Xunit
 
             public static void UnRegisterServiceBus(IServiceBus serviceBus)
             {
-                serviceBus.Unsubscribe(
+                serviceBus.UnSubscribe(
                     typeof(UpdatedBroadcast<ExampleDto>),
                     typeof(ExampleUpdatedBroadcastRule));
             }
@@ -722,7 +722,7 @@ namespace ServiceBricks.Xunit
 
             public static void UnRegisterServiceBus(IServiceBus serviceBus)
             {
-                serviceBus.Unsubscribe(
+                serviceBus.UnSubscribe(
                     typeof(DeletedBroadcast<ExampleDto>),
                     typeof(ExampleDeletedBroadcastRule));
             }
@@ -755,7 +755,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
             var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
             // Register rule
-            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.Register(registry);
             ExampleCreatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
@@ -782,7 +782,7 @@ namespace ServiceBricks.Xunit
             Assert.True(ExampleCreatedBroadcastRule.WasExecuted);
 
             // Cleanup
-            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegister(registry);
             ExampleCreatedBroadcastRule.UnRegisterServiceBus(servicebus);
             ExampleCreatedBroadcastRule.WasExecuted = false;
 
@@ -797,7 +797,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
             var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
             // Register rule
-            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.Register(registry);
             ExampleCreatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
@@ -824,7 +824,7 @@ namespace ServiceBricks.Xunit
             Assert.True(ExampleCreatedBroadcastRule.WasExecuted);
 
             // Cleanup
-            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegister(registry);
             ExampleCreatedBroadcastRule.UnRegisterServiceBus(servicebus);
             ExampleCreatedBroadcastRule.WasExecuted = false;
         }
@@ -836,7 +836,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
             var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
             // Register rule
-            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.Register(registry);
             ExampleUpdatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
@@ -863,7 +863,7 @@ namespace ServiceBricks.Xunit
             Assert.True(ExampleUpdatedBroadcastRule.WasExecuted);
 
             // Cleanup
-            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegister(registry);
             ExampleUpdatedBroadcastRule.UnRegisterServiceBus(servicebus);
             ExampleUpdatedBroadcastRule.WasExecuted = false;
 
@@ -878,7 +878,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
             var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
             // Register rule
-            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.Register(registry);
             ExampleUpdatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
@@ -905,7 +905,7 @@ namespace ServiceBricks.Xunit
             Assert.True(ExampleUpdatedBroadcastRule.WasExecuted);
 
             // Cleanup
-            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiUpdatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegister(registry);
             ExampleUpdatedBroadcastRule.UnRegisterServiceBus(servicebus);
             ExampleUpdatedBroadcastRule.WasExecuted = false;
         }
@@ -917,7 +917,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
             var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
             // Register rule
-            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.Register(registry);
             ExampleDeletedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
@@ -944,7 +944,7 @@ namespace ServiceBricks.Xunit
             Assert.True(ExampleDeletedBroadcastRule.WasExecuted);
 
             // Cleanup
-            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.UnRegister(registry);
             ExampleDeletedBroadcastRule.UnRegisterServiceBus(servicebus);
             ExampleDeletedBroadcastRule.WasExecuted = false;
 
@@ -959,7 +959,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
             var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
             // Register rule
-            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.Register(registry);
             ExampleDeletedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
@@ -986,7 +986,7 @@ namespace ServiceBricks.Xunit
             Assert.True(ExampleDeletedBroadcastRule.WasExecuted);
 
             // Cleanup
-            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiDeletedBroadcastRule<ExampleDomain, ExampleDto>.UnRegister(registry);
             ExampleDeletedBroadcastRule.UnRegisterServiceBus(servicebus);
             ExampleDeletedBroadcastRule.WasExecuted = false;
         }
@@ -997,7 +997,7 @@ namespace ServiceBricks.Xunit
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
             var servicebus = SystemManager.ServiceProvider.GetRequiredService<IServiceBus>();
             // Register rule
-            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.RegisterRule(registry);
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.Register(registry);
             ExampleCreatedBroadcastRule.RegisterServiceBus(servicebus);
 
             // Create context
@@ -1030,7 +1030,7 @@ namespace ServiceBricks.Xunit
             Assert.True(ExampleCreatedBroadcastRule.WasExecuted);
 
             // Cleanup
-            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegisterRule(registry);
+            ApiCreatedBroadcastRule<ExampleDomain, ExampleDto>.UnRegister(registry);
             ExampleCreatedBroadcastRule.UnRegisterServiceBus(servicebus);
             ExampleCreatedBroadcastRule.WasExecuted = false;
         }
@@ -1042,7 +1042,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainCreateDateRule<ExampleDomain>.RegisterRule(registry);
+            DomainCreateDateRule<ExampleDomain>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1074,7 +1074,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.CreateDate.Offset == TimeSpan.Zero);
 
             // Cleanup
-            DomainCreateDateRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainCreateDateRule<ExampleDomain>.UnRegister(registry);
 
             return Task.CompletedTask;
         }
@@ -1086,7 +1086,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainCreateDateRule<ExampleDomain>.RegisterRule(registry);
+            DomainCreateDateRule<ExampleDomain>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1118,7 +1118,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.CreateDate.Offset == TimeSpan.Zero);
 
             // Cleanup
-            DomainCreateDateRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainCreateDateRule<ExampleDomain>.UnRegister(registry);
         }
 
         [Fact]
@@ -1128,7 +1128,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainCreateUpdateDateRule<ExampleDomain>.RegisterRule(registry);
+            DomainCreateUpdateDateRule<ExampleDomain>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1165,7 +1165,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Cleanup
-            DomainCreateUpdateDateRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainCreateUpdateDateRule<ExampleDomain>.UnRegister(registry);
 
             return Task.CompletedTask;
         }
@@ -1177,7 +1177,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainCreateUpdateDateRule<ExampleDomain>.RegisterRule(registry);
+            DomainCreateUpdateDateRule<ExampleDomain>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1191,7 +1191,7 @@ namespace ServiceBricks.Xunit
             var response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
-            Assert.True(response.Success);
+            Assert.True(response.Success, response.GetMessage(","));
             Assert.True(domain.CreateDate > now); // Always sets a new value on create
             Assert.True(domain.UpdateDate > now); // Always sets a new value on create
             Assert.True(domain.CreateDate.Offset == TimeSpan.Zero);
@@ -1214,7 +1214,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Cleanup
-            DomainCreateUpdateDateRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainCreateUpdateDateRule<ExampleDomain>.UnRegister(registry);
         }
 
         [Fact]
@@ -1224,7 +1224,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainUpdateDateRule<ExampleDomain>.RegisterRule(registry);
+            DomainUpdateDateRule<ExampleDomain>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1257,7 +1257,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Cleanup
-            DomainUpdateDateRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainUpdateDateRule<ExampleDomain>.UnRegister(registry);
 
             return Task.CompletedTask;
         }
@@ -1269,7 +1269,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainUpdateDateRule<ExampleDomain>.RegisterRule(registry);
+            DomainUpdateDateRule<ExampleDomain>.Register(registry);
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1302,7 +1302,7 @@ namespace ServiceBricks.Xunit
             Assert.True(domain.UpdateDate.Offset == TimeSpan.Zero);
 
             // Cleanup
-            DomainUpdateDateRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainUpdateDateRule<ExampleDomain>.UnRegister(registry);
         }
 
         [Fact]
@@ -1312,7 +1312,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry,
+            DomainDateTimeOffsetRule<ExampleDomain>.Register(registry,
                 nameof(ExampleDomain.ExampleDate),
                 nameof(ExampleDomain.ExampleNullableDate),
                 nameof(ExampleDomain.ExampleNullableDateNotSet),
@@ -1387,7 +1387,13 @@ namespace ServiceBricks.Xunit
             Assert.True(resp.Error);
 
             // Cleanup
-            DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainDateTimeOffsetRule<ExampleDomain>.UnRegister(registry,
+                nameof(ExampleDomain.ExampleDate),
+                nameof(ExampleDomain.ExampleNullableDate),
+                nameof(ExampleDomain.ExampleNullableDateNotSet),
+                nameof(ExampleDomain.SimpleDate),
+                nameof(ExampleDomain.SimpleNullableDate),
+                nameof(ExampleDomain.SimpleNullableDateNotSet));
 
             return Task.CompletedTask;
         }
@@ -1399,7 +1405,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry, nameof(ExampleDomain.ExampleDate));
+            DomainDateTimeOffsetRule<ExampleDomain>.Register(registry, nameof(ExampleDomain.ExampleDate));
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1452,7 +1458,7 @@ namespace ServiceBricks.Xunit
             Assert.True(resp.Error);
 
             // Cleanup
-            DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainDateTimeOffsetRule<ExampleDomain>.UnRegister(registry, nameof(ExampleDomain.ExampleDate));
         }
 
         [Fact]
@@ -1462,7 +1468,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry,
+            DomainDateTimeOffsetRule<ExampleDomain>.Register(registry,
                 "UnknownPropertyName");
 
             // Create context
@@ -1489,7 +1495,8 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Error);
 
             // Cleanup
-            DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainDateTimeOffsetRule<ExampleDomain>.UnRegister(registry,
+                "UnknownPropertyName");
 
             return Task.CompletedTask;
         }
@@ -1501,7 +1508,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainDateTimeOffsetRule<ExampleDomain>.RegisterRule(registry,
+            DomainDateTimeOffsetRule<ExampleDomain>.Register(registry,
                 "UnknownPropertyName");
 
             // Create context
@@ -1528,7 +1535,8 @@ namespace ServiceBricks.Xunit
             Assert.True(response.Error);
 
             // Cleanup
-            DomainDateTimeOffsetRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainDateTimeOffsetRule<ExampleDomain>.UnRegister(registry,
+                "UnknownPropertyName");
         }
 
         [Fact]
@@ -1538,7 +1546,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainQueryPropertyRenameRule<ExampleDomain>.RegisterRule(registry, "TestName", "NewName");
+            DomainQueryPropertyRenameRule<ExampleDomain>.Register(registry, "TestName", "NewName");
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1559,7 +1567,7 @@ namespace ServiceBricks.Xunit
             Assert.True(sqr.Filters[0].Properties[0] == "NewName");
 
             // Cleanup
-            DomainQueryPropertyRenameRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainQueryPropertyRenameRule<ExampleDomain>.UnRegister(registry, "TestName", "NewName");
 
             return Task.CompletedTask;
         }
@@ -1571,7 +1579,7 @@ namespace ServiceBricks.Xunit
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
 
             // Register rule
-            DomainQueryPropertyRenameRule<ExampleDomain>.RegisterRule(registry, "TestName", "NewName");
+            DomainQueryPropertyRenameRule<ExampleDomain>.Register(registry, "TestName", "NewName");
 
             // Create context
             DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
@@ -1592,7 +1600,7 @@ namespace ServiceBricks.Xunit
             Assert.True(sqr.Filters[0].Properties[0] == "NewName");
 
             // Cleanup
-            DomainQueryPropertyRenameRule<ExampleDomain>.UnRegisterRule(registry);
+            DomainQueryPropertyRenameRule<ExampleDomain>.UnRegister(registry, "TestName", "NewName");
         }
 
         [Fact]

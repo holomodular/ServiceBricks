@@ -1,22 +1,28 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Newtonsoft.Json.Linq;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a registry of all business rules registered in the application.
     /// </summary>
     public partial class BusinessRuleRegistry : IRegistryList<Type, Type>, IBusinessRuleRegistry
     {
-        protected static ReaderWriterLock _lock = new ReaderWriterLock();
+        /// <summary>
+        /// Lock object for cache
+        /// </summary>
+        public static ReaderWriterLock LockObject = new ReaderWriterLock();
 
-        protected static Dictionary<Type, IList<RegistryContext<Type>>> _cache =
+        /// <summary>
+        /// Cache
+        /// </summary>
+        public static Dictionary<Type, IList<RegistryContext<Type>>> Cache =
             new Dictionary<Type, IList<RegistryContext<Type>>>();
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public BusinessRuleRegistry()
         {
-            _lock = new ReaderWriterLock();
-            _cache = new Dictionary<Type, IList<RegistryContext<Type>>>();
+            LockObject = new ReaderWriterLock();
+            Cache = new Dictionary<Type, IList<RegistryContext<Type>>>();
         }
 
         /// <summary>
@@ -31,13 +37,13 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual IList<RegistryContext<Type>> GetRegistryList(Type key)
         {
-            _lock.AcquireReaderLock(Timeout.Infinite);
+            LockObject.AcquireReaderLock(Timeout.Infinite);
             try
             {
-                if (!_cache.ContainsKey(key))
+                if (!Cache.ContainsKey(key))
                     return null;
 
-                var existing = _cache[key];
+                var existing = Cache[key];
                 var list = new List<RegistryContext<Type>>();
                 foreach (var item in existing)
                     list.Add(item);
@@ -45,7 +51,7 @@ namespace ServiceBricks
             }
             finally
             {
-                _lock.ReleaseReaderLock();
+                LockObject.ReleaseReaderLock();
             }
         }
 
@@ -54,9 +60,9 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="key"></param>
         /// <param name="data"></param>
-        public virtual void RegisterItem(Type key, Type data)
+        public virtual void Register(Type key, Type data)
         {
-            RegisterItem(key, data, null);
+            Register(key, data, null);
         }
 
         /// <summary>
@@ -65,35 +71,110 @@ namespace ServiceBricks
         /// <param name="key"></param>
         /// <param name="data"></param>
         /// <param name="domainRuleContext"></param>
-        public virtual void RegisterItem(Type key, Type data, Dictionary<string, object> custom)
+        public virtual void Register(Type key, Type data, Dictionary<string, object> custom)
         {
-            _lock.AcquireWriterLock(Timeout.Infinite);
+            LockObject.AcquireWriterLock(Timeout.Infinite);
 
             try
             {
-                if (_cache.ContainsKey(key))
+                if (Cache.ContainsKey(key))
                 {
                     // Check duplicates
-                    var existing = _cache[key];
+                    var existing = Cache[key];
                     foreach (var item in existing)
                     {
                         if (item.Value.Equals(data))
-                            return;
+                        {
+                            if (IsDuplicate(item.CustomData, custom))
+                                return;
+                        }
                     }
+
                     existing.Add(new RegistryContext<Type>() { CustomData = custom, Value = data });
-                    _cache[key] = existing;
+                    Cache[key] = existing;
                 }
                 else
                 {
                     var newlist = new List<RegistryContext<Type>>();
                     newlist.Add(new RegistryContext<Type>() { CustomData = custom, Value = data });
-                    _cache.Add(key, newlist);
+                    Cache.Add(key, newlist);
                 }
             }
             finally
             {
-                _lock.ReleaseWriterLock();
+                LockObject.ReleaseWriterLock();
             }
+        }
+
+        /// <summary>
+        /// Determine if the dictionaries are the same
+        /// </summary>
+        /// <param name="dic1"></param>
+        /// <param name="dic2"></param>
+        /// <returns></returns>
+        protected virtual bool IsDuplicate(Dictionary<string, object> dic1, Dictionary<string, object> dic2)
+        {
+            if (dic1 == null && dic2 == null)
+                return true;
+            if (dic1 == null && dic2 != null)
+                return false;
+            if (dic1 != null && dic2 == null)
+                return false;
+            if (dic1.Keys.Count != dic2.Keys.Count)
+                return false;
+
+            foreach (var itemdic1Key in dic2.Keys)
+            {
+                if (!dic1.ContainsKey(itemdic1Key))
+                    return false;
+
+                var dic1val = dic1[itemdic1Key];
+                var dic2val = dic2[itemdic1Key];
+
+                if (dic1val == null && dic2val == null)
+                    continue;
+
+                if (dic1val != null && dic2val == null)
+                    return false;
+                if (dic1val == null && dic2val != null)
+                    return false;
+
+                if (dic1val is IList<string> && dic2val is IList<string>)
+                {
+                    if (!IsDuplicate(dic1val as IList<string>, dic2val as IList<string>))
+                        return false;
+                }
+                else
+                {
+                    if (!dic2val.Equals(dic1val))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Determine if lists are the same
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
+        protected virtual bool IsDuplicate(IList<string> list1, IList<string> list2)
+        {
+            if (list1 == null && list2 == null)
+                return true;
+            if (list1 == null && list2 != null)
+                return false;
+            if (list1 != null && list2 == null)
+                return false;
+            if (list1.Count != list2.Count)
+                return false;
+            foreach (string list1key in list1)
+            {
+                if (!list2.Contains(list1key))
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -102,15 +183,15 @@ namespace ServiceBricks
         /// <param name="key"></param>
         public virtual void UnRegister(Type key)
         {
-            _lock.AcquireWriterLock(Timeout.Infinite);
+            LockObject.AcquireWriterLock(Timeout.Infinite);
             try
             {
-                if (_cache.ContainsKey(key))
-                    _cache.Remove(key);
+                if (Cache.ContainsKey(key))
+                    Cache.Remove(key);
             }
             finally
             {
-                _lock.ReleaseWriterLock();
+                LockObject.ReleaseWriterLock();
             }
         }
 
@@ -119,33 +200,72 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="key"></param>
         /// <param name="val"></param>
-        public virtual void UnRegisterItem(Type key, Type val)
+        public virtual void UnRegister(Type key, Type val)
         {
-            _lock.AcquireWriterLock(Timeout.Infinite);
+            LockObject.AcquireWriterLock(Timeout.Infinite);
 
             try
             {
-                if (!_cache.ContainsKey(key))
+                if (!Cache.ContainsKey(key))
                     return;
 
-                var existing = _cache[key];
+                var existing = Cache[key];
                 for (int i = 0; i < existing.Count; i++)
                 {
                     if (existing[i].Value.Equals(val))
                     {
                         existing.RemoveAt(i);
-                        break;
+                        i--;
                     }
                 }
 
                 if (existing.Count == 0)
-                    _cache.Remove(key);
+                    Cache.Remove(key);
                 else
-                    _cache[key] = existing;
+                    Cache[key] = existing;
             }
             finally
             {
-                _lock.ReleaseWriterLock();
+                LockObject.ReleaseWriterLock();
+            }
+        }
+
+        /// <summary>
+        /// Unregister an item.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="val"></param>
+        /// <param name="custom"></param>
+        public virtual void UnRegister(Type key, Type val, Dictionary<string, object> custom)
+        {
+            LockObject.AcquireWriterLock(Timeout.Infinite);
+
+            try
+            {
+                if (!Cache.ContainsKey(key))
+                    return;
+
+                var existing = Cache[key];
+                for (int i = 0; i < existing.Count; i++)
+                {
+                    if (existing[i].Value.Equals(val))
+                    {
+                        if (IsDuplicate(existing[i].CustomData, custom))
+                        {
+                            existing.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+
+                if (existing.Count == 0)
+                    Cache.Remove(key);
+                else
+                    Cache[key] = existing;
+            }
+            finally
+            {
+                LockObject.ReleaseWriterLock();
             }
         }
 
@@ -155,10 +275,10 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual ICollection<Type> GetKeys()
         {
-            _lock.AcquireReaderLock(Timeout.Infinite);
+            LockObject.AcquireReaderLock(Timeout.Infinite);
             try
             {
-                var keys = _cache.Keys;
+                var keys = Cache.Keys;
                 var list = new List<Type>();
                 foreach (var item in keys)
                     list.Add(item);
@@ -166,7 +286,7 @@ namespace ServiceBricks
             }
             finally
             {
-                _lock.ReleaseReaderLock();
+                LockObject.ReleaseReaderLock();
             }
         }
     }

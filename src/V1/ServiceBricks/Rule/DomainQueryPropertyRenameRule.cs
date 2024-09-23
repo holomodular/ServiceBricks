@@ -32,9 +32,12 @@ namespace ServiceBricks
         }
 
         /// <summary>
-        /// Register a rule for a domain object.
+        /// Register the rule
         /// </summary>
-        public static void RegisterRule(
+        /// <param name="registry"></param>
+        /// <param name="fromPropertyName"></param>
+        /// <param name="toPropertyName"></param>
+        public static void Register(
             IBusinessRuleRegistry registry,
             string fromPropertyName,
             string toPropertyName)
@@ -45,21 +48,33 @@ namespace ServiceBricks
                 {Key_ToPropertyName, toPropertyName },
             };
 
-            registry.RegisterItem(
+            registry.Register(
                 typeof(DomainQueryBeforeEvent<TDomainObject>),
                 typeof(DomainQueryPropertyRenameRule<TDomainObject>),
                 custom);
         }
 
         /// <summary>
-        /// UnRegister a rule for a domain object.
+        /// Unregister the rule
         /// </summary>
-        public static void UnRegisterRule(
-            IBusinessRuleRegistry registry)
+        /// <param name="registry"></param>
+        /// <param name="fromPropertyName"></param>
+        /// <param name="toPropertyName"></param>
+        public static void UnRegister(
+            IBusinessRuleRegistry registry,
+            string fromPropertyName,
+            string toPropertyName)
         {
-            registry.UnRegisterItem(
+            var custom = new Dictionary<string, object>()
+            {
+                {Key_FromPropertyName, fromPropertyName },
+                {Key_ToPropertyName, toPropertyName },
+            };
+
+            registry.UnRegister(
                 typeof(DomainQueryBeforeEvent<TDomainObject>),
-                typeof(DomainQueryPropertyRenameRule<TDomainObject>));
+                typeof(DomainQueryPropertyRenameRule<TDomainObject>),
+                custom);
         }
 
         /// <summary>

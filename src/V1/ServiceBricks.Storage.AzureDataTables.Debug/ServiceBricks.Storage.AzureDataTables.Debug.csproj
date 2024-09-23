@@ -25,17 +25,17 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Azure.Data.Tables" Version="12.9.0" />
+		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
 		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Azure.Data.Tables" Version="12.9.0" />
+		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
 		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Azure.Data.Tables" Version="12.9.0" />
+		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
 		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
 	</ItemGroup>
 	

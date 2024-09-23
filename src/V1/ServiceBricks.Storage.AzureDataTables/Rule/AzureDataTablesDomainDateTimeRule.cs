@@ -32,7 +32,7 @@ namespace ServiceBricks.Storage.AzureDataTables
         /// <summary>
         /// Register a rule for a domain object.
         /// </summary>
-        public static void RegisterRule(
+        public static void Register(
             IBusinessRuleRegistry registry,
             params string[] propertyNames)
         {
@@ -40,12 +40,12 @@ namespace ServiceBricks.Storage.AzureDataTables
             var list = new List<string>(propertyNames);
             custom.Add(Key_PropertyName, list);
 
-            registry.RegisterItem(
+            registry.Register(
                 typeof(DomainCreateBeforeEvent<TDomainObject>),
                 typeof(AzureDataTablesDomainDateTimeRule<TDomainObject>),
                 custom);
 
-            registry.RegisterItem(
+            registry.Register(
                 typeof(DomainUpdateBeforeEvent<TDomainObject>),
                 typeof(AzureDataTablesDomainDateTimeRule<TDomainObject>),
                 custom);
@@ -54,16 +54,23 @@ namespace ServiceBricks.Storage.AzureDataTables
         /// <summary>
         /// UnRegister a rule for a domain object.
         /// </summary>
-        public static void UnRegisterRule(
-            IBusinessRuleRegistry registry)
+        public static void UnRegister(
+            IBusinessRuleRegistry registry,
+            params string[] propertyNames)
         {
-            registry.UnRegisterItem(
-                typeof(DomainCreateBeforeEvent<TDomainObject>),
-                typeof(AzureDataTablesDomainDateTimeRule<TDomainObject>));
+            var custom = new Dictionary<string, object>();
+            var list = new List<string>(propertyNames);
+            custom.Add(Key_PropertyName, list);
 
-            registry.UnRegisterItem(
+            registry.UnRegister(
+                typeof(DomainCreateBeforeEvent<TDomainObject>),
+                typeof(AzureDataTablesDomainDateTimeRule<TDomainObject>),
+                custom);
+
+            registry.UnRegister(
                 typeof(DomainUpdateBeforeEvent<TDomainObject>),
-                typeof(AzureDataTablesDomainDateTimeRule<TDomainObject>));
+                typeof(AzureDataTablesDomainDateTimeRule<TDomainObject>),
+                custom);
         }
 
         /// <summary>

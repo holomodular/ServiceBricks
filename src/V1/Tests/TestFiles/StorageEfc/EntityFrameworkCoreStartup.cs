@@ -41,7 +41,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             services.AddScoped<IStorageRepository<ExampleDomain>, ExampleStorageRepository<ExampleDomain>>();
 
             // Rules
-            ExampleQueryRule.RegisterRule(BusinessRuleRegistry.Instance);
+            ExampleQueryRule.Register(BusinessRuleRegistry.Instance);
 
             // Remove all background tasks/timers for unit testing
 

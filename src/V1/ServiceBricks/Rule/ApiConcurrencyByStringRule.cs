@@ -31,14 +31,14 @@ namespace ServiceBricks
         /// <summary>
         /// Register a rule for a domain object.
         /// </summary>
-        public static void RegisterRule(
+        public static void Register(
             IBusinessRuleRegistry registry,
             string propertyName)
         {
             var custom = new Dictionary<string, object>();
             custom.Add(Key_PropertyName, propertyName);
 
-            registry.RegisterItem(
+            registry.Register(
                 typeof(ApiUpdateBeforeEvent<TDomainObject, TDto>),
                 typeof(ApiConcurrencyByStringRule<TDomainObject, TDto>),
                 custom);
@@ -47,12 +47,17 @@ namespace ServiceBricks
         /// <summary>
         /// UnRegister a rule for a domain object.
         /// </summary>
-        public static void UnRegisterRule(
-            IBusinessRuleRegistry registry)
+        public static void UnRegister(
+            IBusinessRuleRegistry registry,
+            string propertyName)
         {
-            registry.UnRegisterItem(
+            var custom = new Dictionary<string, object>();
+            custom.Add(Key_PropertyName, propertyName);
+
+            registry.UnRegister(
                 typeof(ApiUpdateBeforeEvent<TDomainObject, TDto>),
-                typeof(ApiConcurrencyByStringRule<TDomainObject, TDto>));
+                typeof(ApiConcurrencyByStringRule<TDomainObject, TDto>),
+                custom);
         }
 
         /// <summary>

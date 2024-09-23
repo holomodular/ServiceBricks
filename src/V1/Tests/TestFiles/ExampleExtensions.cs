@@ -36,8 +36,8 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Model
             services.AddScoped<IStorageRepository<ExampleDomain>, ExampleStorageRepository<ExampleDomain>>();
 
             // Rules
-            ExampleQueryRule.RegisterRule(BusinessRuleRegistry.Instance);
-            //ExampleDtoRule.RegisterRule(BusinessRuleRegistry.Instance);
+            ExampleQueryRule.Register(BusinessRuleRegistry.Instance);
+            //ExampleDtoRule.Register(BusinessRuleRegistry.Instance);
 
             return services;
         }

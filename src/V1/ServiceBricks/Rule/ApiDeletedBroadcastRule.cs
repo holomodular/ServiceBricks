@@ -28,9 +28,9 @@ namespace ServiceBricks
         /// <summary>
         /// Register the rule.
         /// </summary>
-        public static void RegisterRule(IBusinessRuleRegistry registry)
+        public static void Register(IBusinessRuleRegistry registry)
         {
-            registry.RegisterItem(
+            registry.Register(
                 typeof(ApiDeleteAfterEvent<TDomain, TDto>),
                 typeof(ApiDeletedBroadcastRule<TDomain, TDto>));
         }
@@ -38,9 +38,9 @@ namespace ServiceBricks
         /// <summary>
         /// UnRegister the rule.
         /// </summary>
-        public static void UnRegisterRule(IBusinessRuleRegistry registry)
+        public static void UnRegister(IBusinessRuleRegistry registry)
         {
-            registry.UnRegisterItem(
+            registry.UnRegister(
                 typeof(ApiDeleteAfterEvent<TDomain, TDto>),
                 typeof(ApiDeletedBroadcastRule<TDomain, TDto>));
         }

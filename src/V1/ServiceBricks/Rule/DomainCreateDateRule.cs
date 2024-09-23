@@ -29,13 +29,13 @@ namespace ServiceBricks
         /// <summary>
         /// Register a rule for a domain object.
         /// </summary>
-        public static void RegisterRule(IBusinessRuleRegistry registry)
+        public static void Register(IBusinessRuleRegistry registry)
         {
-            registry.RegisterItem(
+            registry.Register(
                 typeof(DomainCreateBeforeEvent<TDomainObject>),
                 typeof(DomainCreateDateRule<TDomainObject>));
 
-            registry.RegisterItem(
+            registry.Register(
                 typeof(DomainUpdateBeforeEvent<TDomainObject>),
                 typeof(DomainCreateDateRule<TDomainObject>));
         }
@@ -43,13 +43,13 @@ namespace ServiceBricks
         /// <summary>
         /// UnRegister a rule for a domain object.
         /// </summary>
-        public static void UnRegisterRule(IBusinessRuleRegistry registry)
+        public static void UnRegister(IBusinessRuleRegistry registry)
         {
-            registry.UnRegisterItem(
+            registry.UnRegister(
                 typeof(DomainCreateBeforeEvent<TDomainObject>),
                 typeof(DomainCreateDateRule<TDomainObject>));
 
-            registry.UnRegisterItem(
+            registry.UnRegister(
                 typeof(DomainUpdateBeforeEvent<TDomainObject>),
                 typeof(DomainCreateDateRule<TDomainObject>));
         }

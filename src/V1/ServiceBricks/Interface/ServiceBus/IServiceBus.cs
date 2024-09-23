@@ -49,7 +49,7 @@
         /// </summary>
         /// <param name="message"></param>
         /// <param name="handler"></param>
-        void Unsubscribe(Type message, Type handler);
+        void UnSubscribe(Type message, Type handler);
 
         /// <summary>
         /// Unsubscribe from a message.
@@ -57,6 +57,6 @@
         /// <param name="message"></param>
         /// <param name="handler"></param>
         /// <returns></returns>
-        Task UnsubscribeAsync(Type message, Type handler);
+        Task UnSubscribeAsync(Type message, Type handler);
     }
 }

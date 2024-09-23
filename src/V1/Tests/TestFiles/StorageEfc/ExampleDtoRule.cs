@@ -23,9 +23,9 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Rules
         /// <summary>
         /// Register a rule for a domain object.
         /// </summary>
-        public static void RegisterRule(IBusinessRuleRegistry registry)
+        public static void Register(IBusinessRuleRegistry registry)
         {
-            registry.RegisterItem(
+            registry.Register(
                 typeof(ExampleDto),
                 typeof(ExampleDtoRule));
         }
