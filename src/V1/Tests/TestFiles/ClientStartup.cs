@@ -23,7 +23,7 @@ namespace ServiceBricks.Client.Xunit
             // Register TestManagers
             services.AddScoped<ITestManager<ExampleDto>, ExampleTestManager>();
 
-            services.AddServiceBricksComplete();
+            services.AddServiceBricksComplete(Configuration);
         }
 
         public virtual void Configure(IApplicationBuilder app)

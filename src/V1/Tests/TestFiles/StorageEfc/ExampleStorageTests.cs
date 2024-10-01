@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using ServiceQuery;
 using ServiceBricks.Xunit;
 
 namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
@@ -22,9 +18,6 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
         public virtual async Task GetStorageRepositorySuccess()
         {
             var storage = SystemManager.ServiceProvider.GetRequiredService<IStorageRepository<ExampleDomain>>();
-
-            var s = storage.GetStorageRepository();
-            Assert.True(storage == s);
 
             var efcs = storage as EntityFrameworkCoreStorageRepository<ExampleDomain>;
             Assert.True(efcs != null);

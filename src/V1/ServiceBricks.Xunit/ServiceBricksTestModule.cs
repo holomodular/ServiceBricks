@@ -2,14 +2,7 @@
 
 namespace ServiceBricks.Xunit
 {
-    public class ServiceBricksTestModule : IModule
+    public class ServiceBricksTestModule : Module
     {
-        public ServiceBricksTestModule()
-        {
-        }
-
-        public List<Assembly> AutomapperAssemblies { get; }
-        public List<Assembly> ViewAssemblies { get; }
-        public List<IModule> DependentModules { get; }
     }
 }

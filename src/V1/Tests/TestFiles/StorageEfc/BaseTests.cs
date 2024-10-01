@@ -1,11 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using ServiceQuery;
-
-namespace ServiceBricks.Xunit
+﻿namespace ServiceBricks.Xunit
 {
     [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
     public partial class EfcApiClientTests : ApiClientTests

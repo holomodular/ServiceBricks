@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a business rule for domain objects when querying to rename a
@@ -12,22 +10,18 @@ namespace ServiceBricks
         /// <summary>
         /// The key for the from property name.
         /// </summary>
-        public const string Key_FromPropertyName = "DomainQueryPropertyRenameRule_FromPropertyName";
+        public const string DEFINITION_FROM_PROPERTY = "FromPropertyName";
 
         /// <summary>
         /// The key for the to property name.
         /// </summary>
-        public const string Key_ToPropertyName = "DomainQueryPropertyRenameRule_ToPropertyName";
-
-        private readonly ILogger _logger;
+        public const string DEFINITION_TO_PROPERTY = "ToPropertyName";
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="loggerFactory"></param>
-        public DomainQueryPropertyRenameRule(ILoggerFactory loggerFactory)
+        public DomainQueryPropertyRenameRule()
         {
-            _logger = loggerFactory.CreateLogger<DomainQueryPropertyRenameRule<TDomainObject>>();
             Priority = PRIORITY_NORMAL;
         }
 
@@ -44,8 +38,8 @@ namespace ServiceBricks
         {
             var custom = new Dictionary<string, object>()
             {
-                {Key_FromPropertyName, fromPropertyName },
-                {Key_ToPropertyName, toPropertyName },
+                {DEFINITION_FROM_PROPERTY, fromPropertyName },
+                {DEFINITION_TO_PROPERTY, toPropertyName },
             };
 
             registry.Register(
@@ -67,8 +61,8 @@ namespace ServiceBricks
         {
             var custom = new Dictionary<string, object>()
             {
-                {Key_FromPropertyName, fromPropertyName },
-                {Key_ToPropertyName, toPropertyName },
+                {DEFINITION_FROM_PROPERTY, fromPropertyName },
+                {DEFINITION_TO_PROPERTY, toPropertyName },
             };
 
             registry.UnRegister(
@@ -86,47 +80,59 @@ namespace ServiceBricks
         {
             var response = new Response();
 
-            try
+            // AI: Make sure the context object is the correct type
+            if (context == null || context.Object == null)
             {
-                // AI: Make sure the context object is the correct type
-                if (context.Object is DomainQueryBeforeEvent<TDomainObject> ei)
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
+            }
+            var ei = context.Object as DomainQueryBeforeEvent<TDomainObject>;
+            if (ei == null || ei.ServiceQueryRequest == null)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
+            }
+
+            //Get the property names from the custom context
+            if (DefinitionData == null || !DefinitionData.ContainsKey(DEFINITION_FROM_PROPERTY))
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "DefinitionData"));
+                return response;
+            }
+            var fpropName = DefinitionData[DEFINITION_FROM_PROPERTY];
+            if (fpropName == null)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "DefinitionData"));
+                return response;
+            }
+            string fromPropertyName = fpropName.ToString();
+
+            if (DefinitionData == null || !DefinitionData.ContainsKey(DEFINITION_TO_PROPERTY))
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "DefinitionData"));
+                return response;
+            }
+            var tpropName = DefinitionData[DEFINITION_TO_PROPERTY];
+            if (tpropName == null)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "DefinitionData"));
+                return response;
+            }
+            string toPropertyName = tpropName.ToString();
+
+            if (ei.ServiceQueryRequest == null || ei.ServiceQueryRequest.Filters == null)
+                return response;
+            foreach (var filter in ei.ServiceQueryRequest.Filters)
+            {
+                if (filter.Properties != null &&
+                    filter.Properties.Count > 0)
                 {
-                    //Get the property names from the custom context
-                    if (CustomData == null || !CustomData.ContainsKey(Key_FromPropertyName))
-                        throw new Exception("CustomData missing from propertyname");
-                    var fpropName = CustomData[Key_FromPropertyName];
-                    if (fpropName == null)
-                        throw new Exception("CustomData frompropertyname invalid");
-                    string fromPropertyName = fpropName.ToString();
-
-                    if (CustomData == null || !CustomData.ContainsKey(Key_ToPropertyName))
-                        throw new Exception("CustomData missing to propertyname");
-                    var tpropName = CustomData[Key_ToPropertyName];
-                    if (tpropName == null)
-                        throw new Exception("CustomData topropertyname invalid");
-                    string toPropertyName = tpropName.ToString();
-
-                    var item = ei.DomainObject;
-                    if (ei.ServiceQueryRequest == null || ei.ServiceQueryRequest.Filters == null)
-                        return response;
-                    foreach (var filter in ei.ServiceQueryRequest.Filters)
+                    for (int i = 0; i < filter.Properties.Count; i++)
                     {
-                        if (filter.Properties != null &&
-                            filter.Properties.Count > 0)
-                        {
-                            for (int i = 0; i < filter.Properties.Count; i++)
-                            {
-                                if (string.Compare(filter.Properties[i], fromPropertyName, true) == 0)
-                                    filter.Properties[i] = toPropertyName;
-                            }
-                        }
+                        if (string.Compare(filter.Properties[i], fromPropertyName, true) == 0)
+                            filter.Properties[i] = toPropertyName;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE));
             }
 
             return response;

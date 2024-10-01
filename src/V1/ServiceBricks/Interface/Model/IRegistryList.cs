@@ -1,11 +1,13 @@
-﻿namespace ServiceBricks
+﻿using ServiceBricks.Business;
+
+namespace ServiceBricks
 {
     /// <summary>
     /// This is a registry list of items.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public partial interface IRegistryList<TKey, TValue>
+    public partial interface IRegistryList<TKey, TValue> : IRegistry<TKey, TValue>
     {
         /// <summary>
         /// Get a list of items.
@@ -19,21 +21,8 @@
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        void Register(TKey key, TValue value);
-
-        /// <summary>
-        /// Register an item with context.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="domainRuleContext"></param>
-        void Register(TKey key, TValue value, Dictionary<string, object> custom);
-
-        /// <summary>
-        /// Unregister all items.
-        /// </summary>
-        /// <param name="key"></param>
-        void UnRegister(TKey key);
+        /// <param name="definitionData"></param>
+        void Register(TKey key, TValue value, Dictionary<string, object> definitionData);
 
         /// <summary>
         /// Unregister all matching items.
@@ -43,16 +32,11 @@
         void UnRegister(TKey key, TValue value);
 
         /// <summary>
-        /// Unregister all matching items.
+        /// Unregister all matching items
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <param name="custom"></param>
-        void UnRegister(TKey key, TValue value, Dictionary<string, object> custom);
-
-        /// Get the list of managed keys.
-        /// </summary>
-        /// <returns></returns>
-        ICollection<TKey> GetKeys();
+        /// <param name="definitionData"></param>
+        void UnRegister(TKey key, TValue value, Dictionary<string, object> definitionData);
     }
 }

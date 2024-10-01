@@ -1,9 +1,8 @@
-﻿using ServiceBricks;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace WebApp.Model
 {
-    public class WebAppModule : IModule
+    public class WebAppModule : ServiceBricks.Module
     {
         public WebAppModule()
         {
@@ -12,11 +11,5 @@ namespace WebApp.Model
                 typeof(WebAppModule).Assembly
             };
         }
-
-        public List<IModule> DependentModules { get; set; }
-
-        public List<Assembly> AutomapperAssemblies { get; set; }
-
-        public List<Assembly> ViewAssemblies { get; set; }
     }
 }

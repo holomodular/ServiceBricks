@@ -17,6 +17,7 @@ namespace ServiceBricks.ServiceBus.Azure
         protected readonly IBusinessRuleRegistry _businessRuleRegistry;
         protected readonly IServiceBusConnection _serviceBusConnection;
         protected readonly IConfiguration _configuration;
+        protected readonly IBusinessRuleService _businessRuleService;
 
         protected ServiceBusProcessor _processor;
 
@@ -31,25 +32,28 @@ namespace ServiceBricks.ServiceBus.Azure
         public const string DEFAULT_SUBSCRIPTION_NAME = "ServiceBricksSubscription";
 
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
         /// <param name="loggerFactory"></param>
         /// <param name="serviceBusQueue"></param>
         /// <param name="businessRuleRegistry"></param>
         /// <param name="configuration"></param>
         /// <param name="serviceBusConnection"></param>
+        /// <param name="businessRuleService"></param>
         public ServiceBusTopic(
             ILoggerFactory loggerFactory,
             IServiceBusQueue serviceBusQueue,
             IBusinessRuleRegistry businessRuleRegistry,
             IConfiguration configuration,
-            IServiceBusConnection serviceBusConnection)
+            IServiceBusConnection serviceBusConnection,
+            IBusinessRuleService businessRuleService)
         {
             _logger = loggerFactory.CreateLogger<ServiceBusTopic>();
             _serviceBusQueue = serviceBusQueue;
             _businessRuleRegistry = businessRuleRegistry;
             _configuration = configuration;
             _serviceBusConnection = serviceBusConnection;
+            _businessRuleService = businessRuleService;
 
             // Set topic
             var topic = _configuration.GetValue<string>(ServiceBusAzureConstants.APPSETTINGS_TOPIC);
@@ -339,14 +343,14 @@ namespace ServiceBricks.ServiceBus.Azure
             _processor.ProcessMessageAsync +=
                 async (args) =>
                 {
-                    var eventName = $"{args.Message.Subject}";
+                    var eventName = args.Message.Subject;
                     string messageData = args.Message.Body.ToString();
 
-                    // Complete the message so that it is not received again.
+                    // Process the broadcast
                     if (await ProcessBroadcast(eventName, messageData))
-                    {
                         await args.CompleteMessageAsync(args.Message);
-                    }
+                    else
+                        await args.DeadLetterMessageAsync(args.Message);
                 };
 
             _processor.ProcessErrorAsync += ErrorHandler;
@@ -372,18 +376,19 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <returns></returns>
         protected virtual async Task<bool> ProcessBroadcast(string broadcastName, string message)
         {
-            var processed = false;
-
             // If subscribed to, a reference will be found
             var type = _businessRuleRegistry.GetKeys().Where(x => x.FullName == broadcastName).FirstOrDefault();
             if (type != null)
             {
+                // Convert to the broadcast type
                 var domainBroadcast = (IDomainBroadcast)JsonConvert.DeserializeObject(message, type);
-                var detail = new ServiceBusTask<IDomainBroadcast>.Detail(domainBroadcast);
-                _serviceBusQueue.Queue(detail);
+
+                // Execute the broadcast
+                BusinessRuleContext context = new BusinessRuleContext(domainBroadcast);
+                var resp = await _businessRuleService.ExecuteRulesAsync(context);
+                return resp.Success;
             }
-            processed = true;
-            return await Task.FromResult<bool>(processed);
+            return true;
         }
     }
 }

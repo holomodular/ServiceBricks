@@ -21,7 +21,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             services.AddServiceBricks(Configuration);
 
             // Add module
-            ModuleRegistry.Instance.RegisterItem(typeof(ExampleModule), new ExampleModule());
+            ModuleRegistry.Instance.Register(new ExampleModule());
 
             // Register Database
             var builder = new DbContextOptionsBuilder<ExampleInMemoryContext>();
@@ -48,7 +48,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             // Register TestManager
             services.AddScoped<ITestManager<ExampleDto>, ExampleTestManager>();
 
-            services.AddServiceBricksComplete();
+            services.AddServiceBricksComplete(Configuration);
         }
 
         public virtual void Configure(IApplicationBuilder app)

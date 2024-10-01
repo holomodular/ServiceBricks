@@ -10,7 +10,7 @@
         /// </summary>
         public BusinessRuleContext()
         {
-            CustomData = new Dictionary<string, object>();
+            ExtraData = new Dictionary<string, object>();
         }
 
         /// <summary>
@@ -28,9 +28,9 @@
         public virtual object Object { get; set; }
 
         /// <summary>
-        /// The data to process.
+        /// Extra data that can be passed to other rules while processing.
         /// </summary>
-        public virtual Dictionary<string, object> CustomData { get; set; }
+        public virtual Dictionary<string, object> ExtraData { get; set; }
 
         /// <summary>
         /// The cancellation token.

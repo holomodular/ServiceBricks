@@ -1,17 +1,24 @@
-﻿namespace ServiceBricks
+﻿using ServiceBricks.Business;
+
+namespace ServiceBricks
 {
     /// <summary>
-    /// This is a registry of all Service Brick Modules registered in the application.
+    /// This is a registry of all modules registered in the application.
     /// </summary>
-    public partial class ModuleRegistry : IRegistry<Type, IModule>, IModuleRegistry
+    public partial class ModuleRegistry : IModuleRegistry
     {
-        protected static ReaderWriterLock _lock = new ReaderWriterLock();
-
-        protected static Dictionary<Type, IModule> _cache =
-            new Dictionary<Type, IModule>();
+        /// <summary>
+        /// Lock object for cache
+        /// </summary>
+        public static ReaderWriterLock LockObject = new ReaderWriterLock();
 
         /// <summary>
-        /// The singelton instance of the module registry.
+        /// Cache
+        /// </summary>
+        public static List<IModule> List = new List<IModule>();
+
+        /// <summary>
+        /// Singleton instance of the business rule registry.
         /// </summary>
         public static ModuleRegistry Instance = new ModuleRegistry();
 
@@ -20,66 +27,26 @@
         /// </summary>
         public ModuleRegistry()
         {
-            _lock = new ReaderWriterLock();
-            _cache = new Dictionary<Type, IModule>();
+            LockObject = new ReaderWriterLock();
+            List = new List<IModule>();
         }
 
         /// <summary>
-        /// Get a list of all modules.
-        /// </summary>
-        /// <returns></returns>
-        public virtual List<IModule> GetModules()
-        {
-            _lock.AcquireReaderLock(Timeout.Infinite);
-            try
-            {
-                return _cache.Values.ToList();
-            }
-            finally
-            {
-                _lock.ReleaseReaderLock();
-            }
-        }
-
-        /// <summary>
-        /// Get an item.
+        /// Register an item with context.
         /// </summary>
         /// <param name="key"></param>
-        /// <returns></returns>
-        public virtual IModule GetRegistryItem(Type key)
+        public virtual void Register(IModule key)
         {
-            _lock.AcquireReaderLock(Timeout.Infinite);
-            try
-            {
-                if (_cache.ContainsKey(key))
-                    return _cache[key];
-                return null;
-            }
-            finally
-            {
-                _lock.ReleaseReaderLock();
-            }
-        }
-
-        /// <summary>
-        /// Register an item.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="data"></param>
-        public virtual void RegisterItem(Type key, IModule data)
-        {
-            _lock.AcquireWriterLock(Timeout.Infinite);
+            LockObject.AcquireWriterLock(Timeout.Infinite);
 
             try
             {
-                if (_cache.ContainsKey(key))
-                    _cache[key] = data;
-                else
-                    _cache.Add(key, data);
+                if (!List.Contains(key))
+                    List.Add(key);
             }
             finally
             {
-                _lock.ReleaseWriterLock();
+                LockObject.ReleaseWriterLock();
             }
         }
 
@@ -87,18 +54,17 @@
         /// Unregister an item.
         /// </summary>
         /// <param name="key"></param>
-        public virtual void UnRegisterItem(Type key)
+        public virtual void UnRegister(IModule key)
         {
-            _lock.AcquireWriterLock(Timeout.Infinite);
-
+            LockObject.AcquireWriterLock(Timeout.Infinite);
             try
             {
-                if (_cache.ContainsKey(key))
-                    _cache.Remove(key);
+                if (List.Contains(key))
+                    List.Remove(key);
             }
             finally
             {
-                _lock.ReleaseWriterLock();
+                LockObject.ReleaseWriterLock();
             }
         }
 
@@ -106,16 +72,18 @@
         /// Get the list of managed keys.
         /// </summary>
         /// <returns></returns>
-        public virtual ICollection<Type> GetKeys()
+        public virtual ICollection<IModule> GetKeys()
         {
-            _lock.AcquireReaderLock(Timeout.Infinite);
+            LockObject.AcquireReaderLock(Timeout.Infinite);
             try
             {
-                return _cache.Keys;
+                List<IModule> modules = new List<IModule>();
+                modules.AddRange(List);
+                return modules;
             }
             finally
             {
-                _lock.ReleaseReaderLock();
+                LockObject.ReleaseReaderLock();
             }
         }
     }

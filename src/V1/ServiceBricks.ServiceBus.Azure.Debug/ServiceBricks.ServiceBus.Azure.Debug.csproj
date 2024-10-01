@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
@@ -7,7 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Extension\ApplicationBuilderExtensions.cs" Link="ApplicationBuilderExtensions.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Extension\ServiceCollectionExtensions.cs" Link="ServiceCollectionExtensions.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Interface\IServiceBusConnection.cs" Link="IServiceBusConnection.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Model\ServiceBusAzureConstants.cs" Link="ServiceBusAzureConstants.cs" />
@@ -15,6 +14,9 @@
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Model\ServiceBusConnection.cs" Link="ServiceBusConnection.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Model\ServiceBusQueue.cs" Link="ServiceBusQueue.cs" />
 	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Model\ServiceBusTopic.cs" Link="ServiceBusTopic.cs" />
+	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Rule\ServiceBusAzureModuleStartRule.cs" Link="ServiceBusAzureModuleStartRule.cs" />
+	  <Compile Include="..\ServiceBricks.ServiceBus.Azure\Rule\ServiceBusAzureModuleTopicAddRule.cs" Link="ServiceBusAzureModuleTopicAddRule.cs" />
+		<Compile Include="..\ServiceBricks.ServiceBus.Azure\Rule\ServiceBusAzureModuleQueueAddRule.cs" Link="ServiceBusAzureModuleQueueAddRule.cs" />	  
 	</ItemGroup>
 	
 	<ItemGroup>

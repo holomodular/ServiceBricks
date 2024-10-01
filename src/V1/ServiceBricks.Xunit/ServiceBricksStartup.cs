@@ -25,7 +25,7 @@ namespace ServiceBricks.Xunit
 
             base.AddBricks(services);
 
-            services.AddServiceBricksComplete();
+            services.AddServiceBricksComplete(Configuration);
         }
 
         public override void StartBricks(IApplicationBuilder app)

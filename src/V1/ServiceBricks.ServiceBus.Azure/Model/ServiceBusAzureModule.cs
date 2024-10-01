@@ -1,25 +1,21 @@
-﻿using System.Reflection;
-
-namespace ServiceBricks.ServiceBus.Azure
+﻿namespace ServiceBricks
 {
     /// <summary>
-    /// The module definition for the ServiceBusAzure module.
+    /// The module definition for the Service Bricks module.
     /// </summary>
-    public partial class ServiceBusAzureModule : IModule
+    public partial class ServiceBusAzureModule : ServiceBricks.Module
     {
         /// <summary>
-        /// The list of dependent modules.
+        /// Static instance
         /// </summary>
-        public List<IModule> DependentModules { get; }
+        public static ServiceBusAzureModule Instance = new ServiceBusAzureModule();
 
         /// <summary>
-        /// The list of assemblies that contain automapper profiles.
+        /// Constructor.
         /// </summary>
-        public List<Assembly> AutomapperAssemblies { get; }
-
-        /// <summary>
-        /// The list of assemblies that contain views.
-        /// </summary>
-        public List<Assembly> ViewAssemblies { get; }
+        public ServiceBusAzureModule() : base()
+        {
+            StartPriority = BusinessRule.PRIORITY_AFTER_LOW;
+        }
     }
 }

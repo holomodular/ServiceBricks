@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualBasic;
-using ServiceBricks.Xunit;
 using ServiceBricks.Client.Xunit;
 
 namespace ServiceBricks.Xunit.Integration

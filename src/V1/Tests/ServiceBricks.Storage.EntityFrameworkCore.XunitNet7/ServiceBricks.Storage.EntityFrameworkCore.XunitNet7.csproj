@@ -22,6 +22,7 @@
 		<Compile Include="..\TestFiles\StorageEfc\ExampleInMemoryContext.cs" Link="ExampleInMemoryContext.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\ExampleMappingProfile.cs" Link="ExampleMappingProfile.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\ExampleModule.cs" Link="ExampleModule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleModuleAddRule.cs" Link="ExampleModuleAddRule.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\ExampleQueryRule.cs" Link="ExampleQueryRule.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\ExampleStorageRepository.cs" Link="ExampleStorageRepository.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\ExampleStorageTests.cs" Link="ExampleStorageTests.cs" />
@@ -43,7 +44,7 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.20" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-		<PackageReference Include="xunit" Version="2.9.0" />
+		<PackageReference Include="xunit" Version="2.9.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>

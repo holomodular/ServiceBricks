@@ -2,8 +2,10 @@
 
 namespace ServiceBricks.Xunit
 {
-    public class TestModule : IModule
+    public class TestModule : Module
     {
+        public static TestModule Instance = new TestModule();
+
         public TestModule()
         {
             AutomapperAssemblies = new List<Assembly>()
@@ -11,11 +13,5 @@ namespace ServiceBricks.Xunit
                 typeof(TestModule).Assembly
             };
         }
-
-        public List<IModule> DependentModules { get; set; }
-
-        public List<Assembly> AutomapperAssemblies { get; set; }
-
-        public List<Assembly> ViewAssemblies { get; set; }
     }
 }

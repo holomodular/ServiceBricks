@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a business rule for domain objects to determine if a concurrency violation has happened.
@@ -10,21 +8,16 @@ namespace ServiceBricks
         where TDomainObject : class, IDomainObject<TDomainObject>
         where TDto : class, IDataTransferObject
     {
-        private readonly ILogger _logger;
-
         /// <summary>
         /// The property name to check for concurrency.
         /// </summary>
-        public const string Key_PropertyName = "ApiConcurrencyByStringRule_PropertyName";
+        public const string DEFINITION_PROPERTY_KEY = "PropertyName";
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="loggerFactory"></param>
-        public ApiConcurrencyByStringRule(
-            ILoggerFactory loggerFactory)
+        public ApiConcurrencyByStringRule()
         {
-            _logger = loggerFactory.CreateLogger<ApiConcurrencyByStringRule<TDomainObject, TDto>>();
             Priority = PRIORITY_HIGH;
         }
 
@@ -36,7 +29,7 @@ namespace ServiceBricks
             string propertyName)
         {
             var custom = new Dictionary<string, object>();
-            custom.Add(Key_PropertyName, propertyName);
+            custom.Add(DEFINITION_PROPERTY_KEY, propertyName);
 
             registry.Register(
                 typeof(ApiUpdateBeforeEvent<TDomainObject, TDto>),
@@ -52,7 +45,7 @@ namespace ServiceBricks
             string propertyName)
         {
             var custom = new Dictionary<string, object>();
-            custom.Add(Key_PropertyName, propertyName);
+            custom.Add(DEFINITION_PROPERTY_KEY, propertyName);
 
             registry.UnRegister(
                 typeof(ApiUpdateBeforeEvent<TDomainObject, TDto>),
@@ -69,40 +62,44 @@ namespace ServiceBricks
         {
             var response = new Response();
 
-            try
+            // AI: Make sure the context object is the correct type
+            if (context == null || context.Object == null)
             {
-                // AI: Make sure the context object is the correct type
-                var e = context.Object as ApiUpdateBeforeEvent<TDomainObject, TDto>;
-                if (e == null)
-                    return response;
-
-                var item = e.DomainObject;
-
-                // Get the property name from the custom context
-                if (CustomData == null || !CustomData.ContainsKey(Key_PropertyName))
-                    throw new Exception("Context missing propertyname");
-                var propName = CustomData[Key_PropertyName];
-                if (propName == null)
-                    throw new Exception("Context propertyname invalid");
-                string propertyName = propName.ToString();
-
-                // Get old and new values
-                var existingProp = e.DomainObject.GetType().GetProperty(propertyName).GetValue(e.DomainObject);
-                var existingValue = existingProp.ToString();
-                var newProp = e.DtoObject.GetType().GetProperty(propertyName).GetValue(e.DtoObject);
-                var newValue = newProp.ToString();
-
-                // Concurrency violation check
-                if (newValue != existingValue)
-                {
-                    response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE_CONCURRENCY));
-                    return response;
-                }
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
-            catch (Exception ex)
+            var e = context.Object as ApiUpdateBeforeEvent<TDomainObject, TDto>;
+            if (e == null)
             {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
+            }
+
+            // Get the property name from the custom context
+            if (DefinitionData == null || !DefinitionData.ContainsKey(DEFINITION_PROPERTY_KEY))
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE));
+                return response;
+            }
+            var propName = DefinitionData[DEFINITION_PROPERTY_KEY];
+            if (propName == null)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE));
+                return response;
+            }
+            string propertyName = propName.ToString();
+
+            // Get old and new values
+            var existingProp = e.DomainObject.GetType().GetProperty(propertyName).GetValue(e.DomainObject);
+            var existingValue = existingProp.ToString();
+            var newProp = e.DtoObject.GetType().GetProperty(propertyName).GetValue(e.DtoObject);
+            var newValue = newProp.ToString();
+
+            // Concurrency violation check
+            if (newValue != existingValue)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE_CONCURRENCY));
+                return response;
             }
 
             return response;

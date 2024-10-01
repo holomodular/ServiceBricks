@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ServiceQuery;
-using System.Reflection;
 
 namespace ServiceBricks.Xunit
 {

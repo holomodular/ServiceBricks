@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a response message.

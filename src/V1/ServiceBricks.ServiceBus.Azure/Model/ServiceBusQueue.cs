@@ -15,6 +15,7 @@ namespace ServiceBricks.ServiceBus.Azure
         protected readonly IServiceBusQueue _serviceBusQueue;
         protected readonly IBusinessRuleRegistry _businessRuleRegistry;
         protected readonly IServiceBusConnection _serviceBusConnection;
+        protected readonly IBusinessRuleService _businessRuleService;
         protected readonly List<ServiceBusProcessor> _processors = new List<ServiceBusProcessor>();
 
         /// <summary>
@@ -23,18 +24,20 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <param name="loggerFactory"></param>
         /// <param name="serviceBusQueue"></param>
         /// <param name="businessRuleRegistry"></param>
-        /// <param name="configuration"></param>
         /// <param name="serviceBusConnection"></param>
+        /// <param name="businessRuleService"></param>
         public ServiceBusQueue(
             ILoggerFactory loggerFactory,
             IServiceBusQueue serviceBusQueue,
             IBusinessRuleRegistry businessRuleRegistry,
-            IServiceBusConnection serviceBusConnection)
+            IServiceBusConnection serviceBusConnection,
+            IBusinessRuleService businessRuleService)
         {
             _logger = loggerFactory.CreateLogger<ServiceBusTopic>();
             _serviceBusQueue = serviceBusQueue;
             _businessRuleRegistry = businessRuleRegistry;
             _serviceBusConnection = serviceBusConnection;
+            _businessRuleService = businessRuleService;
         }
 
         /// <summary>
@@ -192,11 +195,11 @@ namespace ServiceBricks.ServiceBus.Azure
                     var eventName = $"{args.Message.Subject}";
                     string messageData = args.Message.Body.ToString();
 
-                    // Complete the message so that it is not received again.
+                    // Process the message
                     if (await ProcessBroadcastAsync(eventName, messageData))
-                    {
                         await args.CompleteMessageAsync(args.Message);
-                    }
+                    else
+                        await args.DeadLetterMessageAsync(args.Message);
                 };
 
             processor.ProcessErrorAsync += ErrorHandler;
@@ -210,7 +213,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <returns></returns>
         protected virtual Task ErrorHandler(ProcessErrorEventArgs args)
         {
-            _logger.LogError(args.Exception, $"{args.ErrorSource}");
+            _logger.LogError(args.Exception, $"ServiceBus Error: {args.ErrorSource}");
             return Task.CompletedTask;
         }
 
@@ -222,18 +225,19 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <returns></returns>
         protected virtual async Task<bool> ProcessBroadcastAsync(string broadcastName, string message)
         {
-            var processed = false;
-
             // If subscribed to, a reference will be found
             var type = _businessRuleRegistry.GetKeys().Where(x => x.FullName == broadcastName).FirstOrDefault();
             if (type != null)
             {
+                // Convert to the broadcast type
                 var domainBroadcast = (IDomainBroadcast)JsonConvert.DeserializeObject(message, type);
-                var detail = new ServiceBusTask<IDomainBroadcast>.Detail(domainBroadcast);
-                _serviceBusQueue.Queue(detail);
+
+                // Execute the broadcast
+                BusinessRuleContext context = new BusinessRuleContext(domainBroadcast);
+                var resp = await _businessRuleService.ExecuteRulesAsync(context);
+                return resp.Success;
             }
-            processed = true;
-            return await Task.FromResult<bool>(processed);
+            return true;
         }
     }
 }

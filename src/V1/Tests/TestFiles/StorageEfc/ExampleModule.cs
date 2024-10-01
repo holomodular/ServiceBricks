@@ -2,7 +2,7 @@
 
 namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Model
 {
-    public class ExampleModule : IModule
+    public class ExampleModule : ServiceBricks.Module
     {
         public ExampleModule()
         {
@@ -11,13 +11,5 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Model
                 typeof(ExampleModule).Assembly
             };
         }
-
-        public string Name { get; set; }
-
-        public List<IModule> DependentModules { get; set; }
-
-        public List<Assembly> AutomapperAssemblies { get; set; }
-
-        public List<Assembly> ViewAssemblies { get; set; }
     }
 }

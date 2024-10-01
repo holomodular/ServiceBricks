@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ServiceBricks.Business;
 
 namespace ServiceBricks
 {
@@ -9,24 +10,38 @@ namespace ServiceBricks
     public partial class BusinessRuleService : IBusinessRuleService
     {
         protected readonly IServiceProvider _serviceProvider;
-        protected readonly ILogger _logger;
-        protected readonly IBusinessRuleRegistry _domainRuleRegistry;
+        protected readonly ILogger<BusinessRuleService> _logger;
+        protected readonly IBusinessRuleRegistry _businessRuleRegistry;
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="businessRuleRegistry"></param>
+        public BusinessRuleService(
+            IServiceProvider serviceProvider,
+            IBusinessRuleRegistry businessRuleRegistry
+            )
+        {
+            _serviceProvider = serviceProvider;
+            _businessRuleRegistry = businessRuleRegistry;
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="logFactory"></param>
-        /// <param name="domainRuleRegistry"></param>
+        /// <param name="businessRuleRegistry"></param>
         public BusinessRuleService(
             IServiceProvider serviceProvider,
             ILoggerFactory logFactory,
-            IBusinessRuleRegistry domainRuleRegistry
+            IBusinessRuleRegistry businessRuleRegistry
             )
         {
             _logger = logFactory.CreateLogger<BusinessRuleService>();
             _serviceProvider = serviceProvider;
-            _domainRuleRegistry = domainRuleRegistry;
+            _businessRuleRegistry = businessRuleRegistry;
         }
 
         /// <summary>
@@ -99,7 +114,7 @@ namespace ServiceBricks
         /// <param name="context"></param>
         /// <param name="additionalRules"></param>
         /// <returns></returns>
-        public virtual IResponse ExecuteRules(IBusinessRuleContext context, System.Collections.Generic.IList<IBusinessRule> additionalRules)
+        public virtual IResponse ExecuteRules(IBusinessRuleContext context, IList<IBusinessRule> additionalRules)
         {
             Response response = new Response();
 
@@ -107,11 +122,14 @@ namespace ServiceBricks
             {
                 //input validation
                 if (context == null || context.Object == null)
+                {
+                    response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
                     return response;
+                }
 
                 //Find all Domain rule types for this object type
                 Type itemType = context.Object.GetType();
-                IList<RegistryContext<Type>> registry = _domainRuleRegistry.GetRegistryList(itemType);
+                IList<RegistryContext<Type>> registry = _businessRuleRegistry.GetRegistryList(itemType);
                 if (registry == null || registry.Count == 0)
                 {
                     if (additionalRules == null || additionalRules.Count == 0)
@@ -130,7 +148,7 @@ namespace ServiceBricks
                             IBusinessRule rule = ActivatorUtilities.CreateInstance(_serviceProvider, type.Value) as IBusinessRule;
                             if (rule != null)
                             {
-                                rule.SetCustomData(type.CustomData);
+                                rule.SetDefinitionData(type.DefinitionData);
                                 rules.Add(rule);
                             }
                         }
@@ -186,7 +204,9 @@ namespace ServiceBricks
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                if (_logger != null)
+                    _logger.LogError(ex, ex.Message);
+
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
                 return response;
             }
@@ -206,11 +226,14 @@ namespace ServiceBricks
             {
                 //input validation
                 if (context == null || context.Object == null)
+                {
+                    response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
                     return response;
+                }
 
                 //Find all Domain rule types for this object type
                 Type itemType = context.Object.GetType();
-                IList<RegistryContext<Type>> registry = _domainRuleRegistry.GetRegistryList(itemType);
+                IList<RegistryContext<Type>> registry = _businessRuleRegistry.GetRegistryList(itemType);
                 if (registry == null || registry.Count == 0)
                 {
                     if (additionalRules == null || additionalRules.Count == 0)
@@ -230,7 +253,7 @@ namespace ServiceBricks
                             if (rule != null)
                             {
                                 rules.Add(rule);
-                                rule.SetCustomData(type.CustomData);
+                                rule.SetDefinitionData(type.DefinitionData);
                             }
                         }
                         catch (Exception ex)
@@ -259,6 +282,13 @@ namespace ServiceBricks
                 //Order rules by priority
                 var orderedRules = rules.OrderBy(x => x.Priority);
 
+                // Check if cancellation requested before processing rules
+                if (context.CancellationToken.HasValue && context.CancellationToken.Value.IsCancellationRequested)
+                {
+                    response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE));
+                    return response;
+                }
+
                 //Process each rule
                 foreach (IBusinessRule rule in orderedRules)
                 {
@@ -278,7 +308,9 @@ namespace ServiceBricks
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                if (_logger != null)
+                    _logger.LogError(ex, ex.Message);
+
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
                 return response;
             }

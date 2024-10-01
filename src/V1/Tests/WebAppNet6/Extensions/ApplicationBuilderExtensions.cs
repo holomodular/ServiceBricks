@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.CookiePolicy;
-using ServiceBricks;
+﻿using ServiceBricks;
 
 namespace WebApp.Extensions
 {

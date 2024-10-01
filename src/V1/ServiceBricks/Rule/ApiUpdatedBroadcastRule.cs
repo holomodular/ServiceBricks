@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a domain rule that handles sending a service bus message
@@ -10,19 +8,15 @@ namespace ServiceBricks
         where TDomain : IDomainObject<TDomain>
     {
         private readonly IServiceBus _serviceBus;
-        private readonly ILogger _logger;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="serviceBus"></param>
-        /// <param name="loggerFactory"></param>
         public ApiUpdatedBroadcastRule(
-            IServiceBus serviceBus,
-            ILoggerFactory loggerFactory)
+            IServiceBus serviceBus)
         {
             _serviceBus = serviceBus;
-            _logger = loggerFactory.CreateLogger<ApiUpdatedBroadcastRule<TDomain, TDto>>();
         }
 
         /// <summary>
@@ -53,20 +47,24 @@ namespace ServiceBricks
         public override IResponse ExecuteRule(IBusinessRuleContext context)
         {
             var response = new Response();
-            try
+
+            // AI: Make sure the context object is the correct type
+            if (context == null || context.Object == null)
             {
-                // AI: Make sure the context object is the correct type
-                if (context.Object is ApiUpdateAfterEvent<TDomain, TDto> updateEvent)
-                {
-                    var e = new UpdatedBroadcast<TDto>(updateEvent.DtoObject);
-                    _serviceBus.Send(e);
-                }
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
-            catch (Exception ex)
+            var updateEvent = context.Object as ApiUpdateAfterEvent<TDomain, TDto>;
+            if (updateEvent == null || updateEvent.DtoObject == null)
             {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
+
+            // Send the broadcast
+            var e = new UpdatedBroadcast<TDto>(updateEvent.DtoObject);
+            _serviceBus.Send(e);
+
             return response;
         }
 
@@ -78,20 +76,24 @@ namespace ServiceBricks
         public override async Task<IResponse> ExecuteRuleAsync(IBusinessRuleContext context)
         {
             var response = new Response();
-            try
+
+            // AI: Make sure the context object is the correct type
+            if (context == null || context.Object == null)
             {
-                // AI: Make sure the context object is the correct type
-                if (context.Object is ApiUpdateAfterEvent<TDomain, TDto> updateEvent)
-                {
-                    var e = new UpdatedBroadcast<TDto>(updateEvent.DtoObject);
-                    await _serviceBus.SendAsync(e);
-                }
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
-            catch (Exception ex)
+            var updateEvent = context.Object as ApiUpdateAfterEvent<TDomain, TDto>;
+            if (updateEvent == null || updateEvent.DtoObject == null)
             {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
+
+            // Send the broadcast
+            var e = new UpdatedBroadcast<TDto>(updateEvent.DtoObject);
+            await _serviceBus.SendAsync(e);
+
             return response;
         }
     }

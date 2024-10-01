@@ -1,4 +1,4 @@
-﻿namespace ServiceBricks
+﻿namespace ServiceBricks.Business
 {
     /// <summary>
     /// This is the value stored for a registry.
@@ -11,13 +11,13 @@
         /// </summary>
         public RegistryContext()
         {
-            CustomData = new Dictionary<string, object>();
+            DefinitionData = new Dictionary<string, object>();
         }
 
         /// <summary>
         /// The custom data.
         /// </summary>
-        public virtual Dictionary<string, object> CustomData { get; set; }
+        public virtual Dictionary<string, object> DefinitionData { get; set; }
 
         /// <summary>
         /// The value

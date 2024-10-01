@@ -47,7 +47,7 @@
         {
             Priority = PRIORITY_NORMAL;
             StopOnError = true;
-            CustomData = new Dictionary<string, object>();
+            DefinitionData = new Dictionary<string, object>();
         }
 
         /// <summary>
@@ -62,9 +62,9 @@
         }
 
         /// <summary>
-        /// Custom data for the rule
+        /// Definition information for the rule
         /// </summary>
-        public virtual Dictionary<string, object> CustomData { get; set; }
+        public virtual Dictionary<string, object> DefinitionData { get; set; }
 
         /// <summary>
         /// Stop on error
@@ -97,10 +97,10 @@
         /// Set custom data
         /// </summary>
         /// <param name="data"></param>
-        public virtual void SetCustomData(Dictionary<string, object> data)
+        public virtual void SetDefinitionData(Dictionary<string, object> data)
         {
             if (data != null)
-                CustomData = data;
+                DefinitionData = data;
         }
     }
 }

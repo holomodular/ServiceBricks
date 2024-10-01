@@ -1,10 +1,6 @@
 ﻿using Asp.Versioning;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using ServiceBricks;
-using System.Text.Json.Serialization;
 using WebApp.Model;
 
 namespace WebApp.Extensions
@@ -14,7 +10,7 @@ namespace WebApp.Extensions
         public static IServiceCollection AddCustomWebsite(this IServiceCollection services, IConfiguration Configuration)
         {
             // Add to module registry
-            ModuleRegistry.Instance.RegisterItem(typeof(WebAppModule), new WebAppModule());
+            ModuleRegistry.Instance.Register(new WebAppModule());
 
             services.AddControllers();
             services.AddRazorPages();

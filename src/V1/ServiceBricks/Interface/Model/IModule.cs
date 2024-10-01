@@ -5,8 +5,24 @@ namespace ServiceBricks
     /// <summary>
     /// THe module definition.
     /// </summary>
-    public partial interface IModule
+    public partial interface IModule : IEquatable<IModule>
+
     {
+        /// <summary>
+        /// The fullname of the module.
+        /// </summary>
+        public string FullName { get; }
+
+        /// <summary>
+        /// Flag to denote if the module has been started.
+        /// </summary>
+        public bool Started { get; set; }
+
+        /// <summary>
+        /// The start priority of the module.
+        /// </summary>
+        public int StartPriority { get; }
+
         /// <summary>
         /// The list of dependent modules.
         /// </summary>

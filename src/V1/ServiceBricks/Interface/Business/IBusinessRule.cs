@@ -21,10 +21,15 @@
         int Priority { get; }
 
         /// <summary>
+        /// Definition information for the rule
+        /// </summary>
+        Dictionary<string, object> DefinitionData { get; set; }
+
+        /// <summary>
         /// Sets custom data for the rule.
         /// </summary>
-        /// <param name="customData"></param>
-        void SetCustomData(Dictionary<string, object> customData);
+        /// <param name="definitionData"></param>
+        void SetDefinitionData(Dictionary<string, object> definitionData);
 
         /// <summary>
         /// Executes the rule.

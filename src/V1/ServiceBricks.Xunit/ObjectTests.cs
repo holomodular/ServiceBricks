@@ -1,11 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using ServiceQuery;
 
 namespace ServiceBricks.Xunit
 {
@@ -99,7 +96,7 @@ namespace ServiceBricks.Xunit
             DomainType dto = new DomainType
             {
                 Name = Guid.NewGuid().ToString(),
-                Key = 1
+                Key = Guid.NewGuid().ToString()
             };
 
             return Task.CompletedTask;
@@ -171,21 +168,184 @@ namespace ServiceBricks.Xunit
         {
             ServiceBricksModule module = new ServiceBricksModule();
 
-            var mods = ModuleRegistry.Instance.GetModules();
-            Assert.True(mods.Count == 0);
-
-            var keys = ModuleRegistry.Instance.GetKeys();
-            ModuleRegistry.Instance.RegisterItem(typeof(ServiceBricksModule), module);
-            Assert.True(keys.Count == 1);
-
-            mods = ModuleRegistry.Instance.GetModules();
+            // assert
+            var mods = ModuleRegistry.Instance.GetKeys();
             Assert.True(mods.Count == 1);
 
-            var item = ModuleRegistry.Instance.GetRegistryItem(typeof(ServiceBricksModule));
-            Assert.True(item != null);
+            // register again
+            ModuleRegistry.Instance.Register(module);
 
-            ModuleRegistry.Instance.UnRegisterItem(typeof(ServiceBricksModule));
-            Assert.True(ModuleRegistry.Instance.GetKeys().Count == 0);
+            // assert
+            mods = ModuleRegistry.Instance.GetKeys();
+            Assert.True(mods.Count == 1);
+
+            // unregister
+            ModuleRegistry.Instance.UnRegister(new ServiceBricksModule());
+
+            // assert
+            mods = ModuleRegistry.Instance.GetKeys();
+            Assert.True(mods.Count == 0);
+
+            // Cleanup (put it back)
+            ModuleRegistry.Instance.Register(module);
+
+            return Task.CompletedTask;
+        }
+
+        public class ModuleA : Module
+        {
+            public ModuleA()
+            { StartPriority = 0; }
+        }
+
+        public class ModuleB : Module
+        {
+            public ModuleB()
+            { StartPriority = 0; }
+        }
+
+        public class ModulePriority1 : Module
+        {
+            public ModulePriority1()
+            { StartPriority = 1; }
+        }
+
+        public class ModulePriority2 : Module
+        {
+            public ModulePriority2()
+            { StartPriority = 2; }
+        }
+
+        public class ModuleAStartRule : BusinessRule
+        {
+            public static DateTimeOffset CallDate;
+
+            public static void Register(IBusinessRuleRegistry registry)
+            {
+                registry.Register(typeof(ModuleStartEvent<ModuleA>), typeof(ModuleAStartRule));
+            }
+
+            public static void UnRegister(IBusinessRuleRegistry registry)
+            {
+                registry.UnRegister(typeof(ModuleStartEvent<ModuleA>), typeof(ModuleAStartRule));
+            }
+
+            public override IResponse ExecuteRule(IBusinessRuleContext context)
+            {
+                CallDate = DateTimeOffset.UtcNow;
+                return new Response();
+            }
+        }
+
+        public class ModuleBStartRule : BusinessRule
+        {
+            public static DateTimeOffset CallDate;
+
+            public static void Register(IBusinessRuleRegistry registry)
+            {
+                registry.Register(typeof(ModuleStartEvent<ModuleB>), typeof(ModuleBStartRule));
+            }
+
+            public static void UnRegister(IBusinessRuleRegistry registry)
+            {
+                registry.UnRegister(typeof(ModuleStartEvent<ModuleB>), typeof(ModuleBStartRule));
+            }
+
+            public override IResponse ExecuteRule(IBusinessRuleContext context)
+            {
+                CallDate = DateTimeOffset.UtcNow;
+                return new Response();
+            }
+        }
+
+        public class ModulePriority1StartRule : BusinessRule
+        {
+            public static DateTimeOffset CallDate;
+
+            public static void Register(IBusinessRuleRegistry registry)
+            {
+                registry.Register(typeof(ModuleStartEvent<ModulePriority1>), typeof(ModulePriority1StartRule));
+            }
+
+            public static void UnRegister(IBusinessRuleRegistry registry)
+            {
+                registry.UnRegister(typeof(ModuleStartEvent<ModulePriority1>), typeof(ModulePriority1StartRule));
+            }
+
+            public override IResponse ExecuteRule(IBusinessRuleContext context)
+            {
+                CallDate = DateTimeOffset.UtcNow;
+                return new Response();
+            }
+        }
+
+        public class ModulePriority2StartRule : BusinessRule
+        {
+            public static DateTimeOffset CallDate;
+
+            public static void Register(IBusinessRuleRegistry registry)
+            {
+                registry.Register(typeof(ModuleStartEvent<ModulePriority2>), typeof(ModulePriority2StartRule));
+            }
+
+            public static void UnRegister(IBusinessRuleRegistry registry)
+            {
+                registry.UnRegister(typeof(ModuleStartEvent<ModulePriority2>), typeof(ModulePriority2StartRule));
+            }
+
+            public override IResponse ExecuteRule(IBusinessRuleContext context)
+            {
+                CallDate = DateTimeOffset.UtcNow;
+                return new Response();
+            }
+        }
+
+        [Fact]
+        public virtual Task ModulePriorityTests()
+        {
+            // assert (ServiceBricksModule is there from startup)
+            var mods = ModuleRegistry.Instance.GetKeys();
+            Assert.True(mods.Count == 1);
+
+            // Create modules
+            var moda = new ModuleA();
+            var modb = new ModuleB();
+            var mod1 = new ModulePriority1();
+            var mod2 = new ModulePriority2();
+
+            // Register new ones
+            ModuleRegistry.Instance.Register(mod2);
+            ModuleRegistry.Instance.Register(modb);
+            ModuleRegistry.Instance.Register(mod1);
+            ModuleRegistry.Instance.Register(moda);
+            ModuleAStartRule.Register(BusinessRuleRegistry.Instance);
+            ModuleBStartRule.Register(BusinessRuleRegistry.Instance);
+            ModulePriority1StartRule.Register(BusinessRuleRegistry.Instance);
+            ModulePriority2StartRule.Register(BusinessRuleRegistry.Instance);
+
+            // assert
+            mods = ModuleRegistry.Instance.GetKeys();
+            Assert.True(mods.Count == 5);
+
+            // Call Start
+            ApplicationBuilder builder = new ApplicationBuilder(SystemManager.ServiceProvider);
+            builder.StartServiceBricks();
+
+            // Make sure they are ordered correctly, should be:
+            // modb, moda, mod1, mod2
+            Assert.True(ModuleBStartRule.CallDate < ModuleAStartRule.CallDate);
+            Assert.True(ModuleAStartRule.CallDate < ModulePriority1StartRule.CallDate);
+            Assert.True(ModulePriority1StartRule.CallDate < ModulePriority2StartRule.CallDate);
+
+            // Cleanup
+            ModuleRegistry.Instance.UnRegister(mod2);
+            ModuleRegistry.Instance.UnRegister(modb);
+            ModuleRegistry.Instance.UnRegister(mod1);
+            ModuleRegistry.Instance.UnRegister(moda);
+            ModuleAStartRule.UnRegister(BusinessRuleRegistry.Instance);
+            ModuleBStartRule.UnRegister(BusinessRuleRegistry.Instance);
+            ModulePriority1StartRule.UnRegister(BusinessRuleRegistry.Instance);
+            ModulePriority2StartRule.UnRegister(BusinessRuleRegistry.Instance);
 
             return Task.CompletedTask;
         }

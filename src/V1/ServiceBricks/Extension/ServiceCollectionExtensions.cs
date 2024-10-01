@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
+﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
+using System.Linq;
 
 namespace ServiceBricks
 {
@@ -22,37 +20,13 @@ namespace ServiceBricks
         /// <returns></returns>
         public static IServiceCollection AddServiceBricks(this IServiceCollection services, IConfiguration configuration)
         {
-            // HttpContextAccessor
-            services.AddHttpContextAccessor();
+            // AI: Add the module to the ModuleRegistry
+            ModuleRegistry.Instance.Register(ServiceBricksModule.Instance);
 
-            // Options
-            services.AddOptions();
-            services.Configure<ApplicationOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APPLICATIONOPTIONS));
-            services.Configure<ApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APIOPTIONS));
-            services.Configure<ClientApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS));
-
-            // Background task queue for any ordered background processing
-            services.AddSingleton<ITaskQueue, TaskQueue>();
-            services.AddHostedService<TaskQueueHostedService>();
-
-            // Business Rules
-            services.AddSingleton<IModuleRegistry>(ModuleRegistry.Instance);
-            services.AddSingleton<IBusinessRuleRegistry>(BusinessRuleRegistry.Instance);
-            services.AddScoped<IBusinessRuleService, BusinessRuleService>();
-
-            // Services
-            services.AddScoped(typeof(IDomainRepository<>), typeof(DomainRepository<>));
-            services.AddScoped<ITimezoneService, TimezoneService>();
-            services.AddScoped<IIpAddressService, IpAddressService>();
-
-            // Clients
-            services.AddHttpClient();
-
-            // Service Bus
-            services.AddSingleton<IServiceBusQueue, ServiceBusQueue>();
-            services.AddHostedService<ServiceBusQueueHostedService>();
-            services.AddScoped<ServiceBusTaskWorker<IDomainBroadcast>>();
-            services.AddSingleton<IServiceBus, ServiceBusInMemory>();
+            // AI: Add module business rules
+            ServiceBricksModuleAddRule.Register(BusinessRuleRegistry.Instance);
+            ServiceBricksModuleAddCompleteRule.Register(BusinessRuleRegistry.Instance);
+            ModuleSetStartedRule<ServiceBricksModule>.Register(BusinessRuleRegistry.Instance);
 
             return services;
         }
@@ -65,13 +39,8 @@ namespace ServiceBricks
         /// <exception cref="Exception"></exception>
         public static List<ApplicationPart> GetServiceBricksParts(this IServiceCollection services)
         {
-            var provider = services.BuildServiceProvider();
-            var registry = provider.GetRequiredService<IModuleRegistry>();
-            if (registry == null)
-                throw new Exception("You must call AddServiceBricks() prior to calling this method.");
-
             List<Assembly> assemblies = new List<Assembly>();
-            var modules = ModuleRegistry.Instance.GetModules();
+            var modules = ModuleRegistry.Instance.GetKeys();
             foreach (var module in modules)
             {
                 var tempAssemblies = module.ViewAssemblies;
@@ -96,71 +65,74 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddServiceBricksComplete(this IServiceCollection services)
+        public static IServiceCollection AddServiceBricksComplete(this IServiceCollection services, IConfiguration configuration)
         {
-            // Configure modelstate errors to use response object if needed
-            services.Configure<ApiBehaviorOptions>(x => x.InvalidModelStateResponseFactory = context =>
-            {
-                ObjectResult objectResult = null;
-                if (context.HttpContext != null &&
-                    context.HttpContext.Request != null &&
-                    context.HttpContext.Request.Path.HasValue &&
-                    context.HttpContext.Request.Path.Value.StartsWith(@"/api/", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    var apiOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<ApiOptions>>().Value;
+            // Get all modules registered
+            var moduleKeys = ModuleRegistry.Instance.GetKeys();
 
-                    if (apiOptions.ReturnResponseObject)
+            // Get all business rules
+            var businessRuleKeys = BusinessRuleRegistry.Instance.GetKeys();
+
+            // Initial service scope (nothing added)
+            using (var serviceScope = services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var moduleAddEventTypes = businessRuleKeys.Where(x => x.IsConstructedGenericType && x.GetGenericTypeDefinition() == typeof(ModuleAddEvent<>)).ToList();
+
+                // AI: Fire ModuleAdd event for each module
+                foreach (var module in moduleKeys)
+                {
+                    var moduleType = module.GetType();
+                    var moduleAddEventType = moduleAddEventTypes.Where(x => x.GenericTypeArguments.Contains(moduleType)).FirstOrDefault();
+                    if (moduleAddEventType != null)
                     {
-                        Response response = new Response();
-                        foreach (var key in context.ModelState.Keys)
+                        try
                         {
-                            foreach (var err in context.ModelState[key].Errors)
-                            {
-                                if (!string.IsNullOrEmpty(key))
-                                    response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage, key));
-                                else
-                                    response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage));
-                            }
-                        }
-                        objectResult = new ObjectResult(response) { StatusCode = StatusCodes.Status400BadRequest };
-                        return objectResult;
-                    }
-                }
-                var vpd = new ValidationProblemDetails(context.ModelState);
-                objectResult = new ObjectResult(vpd) { StatusCode = StatusCodes.Status400BadRequest };
-                return objectResult;
-            });
+                            var moduleAddEvent = (ModuleAddEvent)Activator.CreateInstance(moduleAddEventType);
+                            moduleAddEvent.DomainObject = module;
+                            moduleAddEvent.ServiceCollection = services;
+                            moduleAddEvent.Configuration = configuration;
 
-            // Get the automapper assemblies
-            List<Assembly> assemblies = new List<Assembly>();
-            var modules = ModuleRegistry.Instance.GetModules();
-            foreach (var module in modules)
-            {
-                var tempAssemblies = module.AutomapperAssemblies;
-                if (tempAssemblies != null && tempAssemblies.Count > 0)
-                {
-                    foreach (var tempAssembly in tempAssemblies)
-                    {
-                        if (!assemblies.Contains(tempAssembly))
-                            assemblies.Add(tempAssembly);
+                            // Create business rule service (without logfactory since may not be registered yet)
+                            var businessRuleService = new BusinessRuleService(
+                                serviceScope.ServiceProvider,
+                                BusinessRuleRegistry.Instance);
+
+                            businessRuleService.ExecuteEvent(moduleAddEvent);
+                        }
+                        catch { }
                     }
                 }
             }
 
-            // Add automapper assemblies
-            var mapperConfig = new MapperConfiguration(cfg =>
+            // Rebuild servicescope (everything added)
+            using (var serviceScope = services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                cfg.AddMaps(assemblies);
+                var moduleAddCompleteEventTypes = businessRuleKeys.Where(x => x.IsConstructedGenericType && x.GetGenericTypeDefinition() == typeof(ModuleAddCompleteEvent<>)).ToList();
 
-                // All datetimes as UTC
-                cfg.CreateMap<DateTime, DateTime>().ConvertUsing((s, d) =>
+                // AI: Execute ModuleAddComplete Event
+                foreach (var module in moduleKeys)
                 {
-                    return DateTime.SpecifyKind(s, DateTimeKind.Utc);
-                });
-            });
-            services.AddSingleton(mapperConfig.CreateMapper());
+                    var moduleType = module.GetType();
+                    var moduleAddCompleteEventType = moduleAddCompleteEventTypes.Where(x => x.GenericTypeArguments.Contains(moduleType)).FirstOrDefault();
+                    if (moduleAddCompleteEventType != null)
+                    {
+                        try
+                        {
+                            var moduleAddCompleteEvent = (ModuleAddCompleteEvent)Activator.CreateInstance(moduleAddCompleteEventType);
+                            moduleAddCompleteEvent.DomainObject = module;
+                            moduleAddCompleteEvent.ServiceCollection = services;
+                            moduleAddCompleteEvent.Configuration = configuration;
 
-            return services;
+                            // Create business rule service
+                            var businessRuleService = serviceScope.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+                            businessRuleService.ExecuteEvent(moduleAddCompleteEvent);
+                        }
+                        catch { }
+                    }
+                }
+
+                return services;
+            }
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿using AutoMapper;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceQuery;
-using System.Diagnostics;
 
 namespace ServiceBricks.Xunit
 {
@@ -83,9 +82,12 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterOne()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+
+            int currentCount = registry.GetKeys().Count;
+
             registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
-            Assert.True(list.Count == 1);
+            Assert.True(list.Count == currentCount + 1);
 
             var vals = registry.GetRegistryList(typeof(ExampleDto));
             Assert.True(vals.Count == 1);
@@ -100,11 +102,14 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterTwo()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+
+            int currentCount = registry.GetKeys().Count;
+
             registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
 
             var list = registry.GetKeys();
-            Assert.True(list.Count == 1);
+            Assert.True(list.Count == currentCount + 1);
 
             var vals = registry.GetRegistryList(typeof(ExampleDto));
             Assert.True(vals.Count == 2);
@@ -119,10 +124,13 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterDuplicate()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+
+            int currentCount = registry.GetKeys().Count;
+
             registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
-            Assert.True(list.Count == 1);
+            Assert.True(list.Count == currentCount + 1);
 
             // Cleanup
             registry.UnRegister(typeof(ExampleDto));
@@ -134,10 +142,13 @@ namespace ServiceBricks.Xunit
         public virtual Task UnRegister()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+
+            int currentCount = registry.GetKeys().Count;
+
             registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             registry.UnRegister(typeof(ExampleDto));
             var list = registry.GetKeys();
-            Assert.True(list.Count == 0, string.Join(",", list.Select(x => x.FullName)));
+            Assert.True(list.Count == currentCount, string.Join(",", list.Select(x => x.FullName)));
 
             return Task.CompletedTask;
         }
@@ -146,10 +157,13 @@ namespace ServiceBricks.Xunit
         public virtual Task UnRegisterItem()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+
+            int currentCount = registry.GetKeys().Count;
+
             registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             registry.UnRegister(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
-            Assert.True(list.Count == 0);
+            Assert.True(list.Count == currentCount);
 
             return Task.CompletedTask;
         }
@@ -158,11 +172,14 @@ namespace ServiceBricks.Xunit
         public virtual Task RegisterTwoUnRegisterOne()
         {
             var registry = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleRegistry>();
+
+            int currentCount = registry.GetKeys().Count;
+
             registry.Register(typeof(ExampleDto), typeof(SuccessBusinessRule));
             registry.Register(typeof(ExampleDto), typeof(ErrorBusinessRule));
             registry.UnRegister(typeof(ExampleDto), typeof(SuccessBusinessRule));
             var list = registry.GetKeys();
-            Assert.True(list.Count == 1);
+            Assert.True(list.Count == currentCount + 1);
 
             var vals = registry.GetRegistryList(typeof(ExampleDto));
             Assert.True(vals.Count == 1, $"Count is {vals.Count}");
@@ -417,8 +434,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -445,8 +470,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -471,8 +504,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "DifferentName", UpdateDate = now });
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Error);
@@ -499,8 +540,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "DifferentName", UpdateDate = now });
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Error);
@@ -525,8 +574,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -553,8 +610,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -580,8 +645,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = later });
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Error);
@@ -609,8 +682,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = later });
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new ApiUpdateBeforeEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Error);
@@ -690,9 +771,17 @@ namespace ServiceBricks.Xunit
 
                 try
                 {
+                    if (context == null || context.Object == null)
+                    {
+                        response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_SYSTEM));
+                        return response;
+                    }
                     var e = context.Object as UpdatedBroadcast<ExampleDto>;
                     if (e == null || e.DomainObject == null)
+                    {
+                        response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_SYSTEM));
                         return response;
+                    }
 
                     WasExecuted = true;
                     return response;
@@ -765,8 +854,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new ApiCreateAfterEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -807,8 +904,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new ApiCreateAfterEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -846,8 +951,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new ApiUpdateAfterEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -888,8 +1001,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new ApiUpdateAfterEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -927,8 +1048,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new ApiDeleteAfterEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -969,8 +1098,16 @@ namespace ServiceBricks.Xunit
                 new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now },
                 new ExampleDto() { StorageKey = "1", Name = "Name", UpdateDate = now });
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new ApiDeleteAfterEvent<ExampleDomain, ExampleDto>(null, null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1052,8 +1189,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1096,8 +1241,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1138,8 +1291,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1187,8 +1348,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success, response.GetMessage(","));
@@ -1234,8 +1403,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1279,8 +1456,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1339,8 +1524,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1380,7 +1573,6 @@ namespace ServiceBricks.Xunit
 
             // Unknown object test
             var rule = new DomainDateTimeOffsetRule<ExampleDomain>(
-                SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
                 SystemManager.ServiceProvider.GetRequiredService<ITimezoneService>());
             rule.SetProperties(nameof(ExampleDomain.ExampleDate));
             var resp = rule.ExecuteRule(null);
@@ -1426,8 +1618,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1451,7 +1651,6 @@ namespace ServiceBricks.Xunit
 
             // Unknown object test
             var rule = new DomainDateTimeOffsetRule<ExampleDomain>(
-                SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
                 SystemManager.ServiceProvider.GetRequiredService<ITimezoneService>());
             rule.SetProperties(nameof(ExampleDomain.ExampleDate));
             var resp = await rule.ExecuteRuleAsync(null);
@@ -1490,8 +1689,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
             Assert.True(response.Error);
 
             // Cleanup
@@ -1530,8 +1737,16 @@ namespace ServiceBricks.Xunit
             // Do Create
             context.Object = new DomainCreateBeforeEvent<ExampleDomain>(domain);
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new DomainCreateBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
             Assert.True(response.Error);
 
             // Cleanup
@@ -1559,8 +1774,16 @@ namespace ServiceBricks.Xunit
             context.Object = new DomainQueryBeforeEvent<ExampleDomain>(sqr);
             Assert.True(sqr.Filters[0].Properties[0] == "TestName");
 
+            // Execute error rules
+            var response = businessRuleService.ExecuteRules(null);
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = businessRuleService.ExecuteRules(new BusinessRuleContext(new DomainQueryBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = businessRuleService.ExecuteRules(context);
+            response = businessRuleService.ExecuteRules(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1592,8 +1815,16 @@ namespace ServiceBricks.Xunit
             context.Object = new DomainQueryBeforeEvent<ExampleDomain>(sqr);
             Assert.True(sqr.Filters[0].Properties[0] == "TestName");
 
+            // Execute error rules
+            var response = await businessRuleService.ExecuteRulesAsync(null);
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = await businessRuleService.ExecuteRulesAsync(new BusinessRuleContext(new DomainQueryBeforeEvent<ExampleDomain>(null)));
+            Assert.True(response.Error);
+
             // Execute rule
-            var response = await businessRuleService.ExecuteRulesAsync(context);
+            response = await businessRuleService.ExecuteRulesAsync(context);
 
             // Assert
             Assert.True(response.Success);
@@ -1665,6 +1896,38 @@ namespace ServiceBricks.Xunit
 
             // Assert
             Assert.True(response.Success);
+        }
+
+        [Fact]
+        public virtual Task ModuleSetStartedRuleTest()
+        {
+            ModuleSetStartedRule<TestModule> rule = new ModuleSetStartedRule<TestModule>();
+
+            // Create context
+            DateTimeOffset now = DateTimeOffset.Now.ToOffset(TimeSpan.FromHours(1));
+            var domain = new ExampleDomain() { Key = 1, Name = "Name", CreateDate = now, UpdateDate = now, ExampleDate = now };
+            BusinessRuleContext context = new BusinessRuleContext();
+
+            TestModule.Instance.Started = false;
+            var appbuilder = new ApplicationBuilder(SystemManager.ServiceProvider);
+            context.Object = new ModuleStartEvent<TestModule>(TestModule.Instance, appbuilder);
+
+            // Execute error rules
+            var response = rule.ExecuteRule(null);
+            Assert.True(response.Error);
+            response = rule.ExecuteRule(new BusinessRuleContext(null));
+            Assert.True(response.Error);
+            response = rule.ExecuteRule(new BusinessRuleContext(new ModuleStartEvent<TestModule>(null, null)));
+            Assert.True(response.Error);
+
+            // Execute rule
+            response = rule.ExecuteRule(context);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.True(TestModule.Instance.Started);
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -59,6 +59,9 @@
 	  <Compile Include="..\ServiceBricks\Event\DomainQueryBeforeEvent.cs" Link="DomainQueryBeforeEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainUpdateAfterEvent.cs" Link="DomainUpdateAfterEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Event\DomainUpdateBeforeEvent.cs" Link="DomainUpdateBeforeEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\ModuleAddCompleteEvent.cs" Link="ModuleAddCompleteEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\ModuleAddEvent.cs" Link="ModuleAddEvent.cs" />
+	  <Compile Include="..\ServiceBricks\Event\ModuleStartEvent.cs" Link="ModuleStartEvent.cs" />
 	  <Compile Include="..\ServiceBricks\Exception\BusinessException.cs" Link="BusinessException.cs" />
 	  <Compile Include="..\ServiceBricks\Extension\ApplicationBuilderExtensions.cs" Link="ApplicationBuilderExtensions.cs" />
 	  <Compile Include="..\ServiceBricks\Extension\ConfigurationBuilderExtensions.cs" Link="ConfigurationBuilderExtensions.cs" />
@@ -70,15 +73,15 @@
 	  <Compile Include="..\ServiceBricks\Interface\Api\IApiClient.cs" Link="IApiClient.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Api\IApiController.cs" Link="IApiController.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\Api\IApiService.cs" Link="IApiService.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BackgroundTask\ITaskDetail.cs" Link="ITaskDetail.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BackgroundTask\ITaskQueue.cs" Link="ITaskQueue.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BackgroundTask\ITaskTimerHostedService.cs" Link="ITaskTimerHostedService.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BackgroundTask\ITaskWork.cs" Link="ITaskWork.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BusinessRule\IBusinessRule.cs" Link="IBusinessRule.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BusinessRule\IBusinessRuleContext.cs" Link="IBusinessRuleContext.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BusinessRule\IBusinessRuleExclusion.cs" Link="IBusinessRuleExclusion.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BusinessRule\IBusinessRuleRegistry.cs" Link="IBusinessRuleRegistry.cs" />
-	  <Compile Include="..\ServiceBricks\Interface\BusinessRule\IBusinessRuleService.cs" Link="IBusinessRuleService.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Background\ITaskDetail.cs" Link="ITaskDetail.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Background\ITaskQueue.cs" Link="ITaskQueue.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Background\ITaskTimerHostedService.cs" Link="ITaskTimerHostedService.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Background\ITaskWork.cs" Link="ITaskWork.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Business\IBusinessRule.cs" Link="IBusinessRule.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Business\IBusinessRuleContext.cs" Link="IBusinessRuleContext.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Business\IBusinessRuleExclusion.cs" Link="IBusinessRuleExclusion.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Business\IBusinessRuleRegistry.cs" Link="IBusinessRuleRegistry.cs" />
+	  <Compile Include="..\ServiceBricks\Interface\Business\IBusinessRuleService.cs" Link="IBusinessRuleService.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpCreateDate.cs" Link="IDpCreateDate.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpIsActive.cs" Link="IDpIsActive.cs" />
 	  <Compile Include="..\ServiceBricks\Interface\DomainProperty\IDpName.cs" Link="IDpName.cs" />
@@ -124,6 +127,7 @@
 	  <Compile Include="..\ServiceBricks\Model\BearerTokenCredentials.cs" Link="BearerTokenCredentials.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ClientApiOptions.cs" Link="ClientApiOptions.cs" />
 	  <Compile Include="..\ServiceBricks\Model\LocalizationResource.cs" Link="LocalizationResource.cs" />
+	  <Compile Include="..\ServiceBricks\Model\Module.cs" Link="Module.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ModuleRegistry.cs" Link="ModuleRegistry.cs" />
 	  <Compile Include="..\ServiceBricks\Model\RegistryContext.cs" Link="RegistryContext.cs" />
 	  <Compile Include="..\ServiceBricks\Model\ServiceBricksConstants.cs" Link="ServiceBricksConstants.cs" />
@@ -148,6 +152,9 @@
 	  <Compile Include="..\ServiceBricks\Rule\DomainDateTimeOffsetRule.cs" Link="DomainDateTimeOffsetRule.cs" />
 	  <Compile Include="..\ServiceBricks\Rule\DomainQueryPropertyRenameRule.cs" Link="DomainQueryPropertyRenameRule.cs" />
 	  <Compile Include="..\ServiceBricks\Rule\DomainUpdateDateRule.cs" Link="DomainUpdateDateRule.cs" />
+	  <Compile Include="..\ServiceBricks\Rule\ModuleSetStartedRule.cs" Link="ModuleSetStartedRule.cs" />
+	  <Compile Include="..\ServiceBricks\Rule\ServiceBricksModuleAddCompleteRule.cs" Link="ServiceBricksModuleAddCompleteRule.cs" />
+	  <Compile Include="..\ServiceBricks\Rule\ServiceBricksModuleAddRule.cs" Link="ServiceBricksModuleAddRule.cs" />
 	  <Compile Include="..\ServiceBricks\ServiceBus\ServiceBusInMemory.cs" Link="ServiceBusInMemory.cs" />
 	  <Compile Include="..\ServiceBricks\ServiceBus\ServiceBusQueue.cs" Link="ServiceBusQueue.cs" />
 	  <Compile Include="..\ServiceBricks\ServiceBus\ServiceBusQueueHostedService.cs" Link="ServiceBusQueueHostedService.cs" />

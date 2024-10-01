@@ -8,7 +8,7 @@
         /// <summary>
         /// The key
         /// </summary>
-        public int Key { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// The name

@@ -31,13 +31,13 @@ namespace ServiceBricks.Xunit
                 services.AddServiceBricks(Configuration);
 
                 // API CONFIGS
-                ModuleRegistry.Instance.RegisterItem(typeof(TestModule), new TestModule());
+                ModuleRegistry.Instance.Register(new TestModule());
 
                 // Remove all background tasks/timers for unit testing
 
                 // Register TestManagers
 
-                services.AddServiceBricksComplete();
+                services.AddServiceBricksComplete(Configuration);
             }
 
             public virtual void Configure(IApplicationBuilder app)

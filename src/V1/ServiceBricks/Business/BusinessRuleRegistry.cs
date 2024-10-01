@@ -1,4 +1,6 @@
-﻿namespace ServiceBricks
+﻿using ServiceBricks.Business;
+
+namespace ServiceBricks
 {
     /// <summary>
     /// This is a registry of all business rules registered in the application.
@@ -17,6 +19,11 @@
             new Dictionary<Type, IList<RegistryContext<Type>>>();
 
         /// <summary>
+        /// Singleton instance of the business rule registry.
+        /// </summary>
+        public static BusinessRuleRegistry Instance = new BusinessRuleRegistry();
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         public BusinessRuleRegistry()
@@ -24,11 +31,6 @@
             LockObject = new ReaderWriterLock();
             Cache = new Dictionary<Type, IList<RegistryContext<Type>>>();
         }
-
-        /// <summary>
-        /// Singleton instance of the business rule registry.
-        /// </summary>
-        public static BusinessRuleRegistry Instance = new BusinessRuleRegistry();
 
         /// <summary>
         /// Get an item.
@@ -70,8 +72,8 @@
         /// </summary>
         /// <param name="key"></param>
         /// <param name="data"></param>
-        /// <param name="domainRuleContext"></param>
-        public virtual void Register(Type key, Type data, Dictionary<string, object> custom)
+        /// <param name="definitionData"></param>
+        public virtual void Register(Type key, Type data, Dictionary<string, object> definitionData)
         {
             LockObject.AcquireWriterLock(Timeout.Infinite);
 
@@ -85,18 +87,18 @@
                     {
                         if (item.Value.Equals(data))
                         {
-                            if (IsDuplicate(item.CustomData, custom))
+                            if (IsDuplicate(item.DefinitionData, definitionData))
                                 return;
                         }
                     }
 
-                    existing.Add(new RegistryContext<Type>() { CustomData = custom, Value = data });
+                    existing.Add(new RegistryContext<Type>() { DefinitionData = definitionData, Value = data });
                     Cache[key] = existing;
                 }
                 else
                 {
                     var newlist = new List<RegistryContext<Type>>();
-                    newlist.Add(new RegistryContext<Type>() { CustomData = custom, Value = data });
+                    newlist.Add(new RegistryContext<Type>() { DefinitionData = definitionData, Value = data });
                     Cache.Add(key, newlist);
                 }
             }
@@ -250,7 +252,7 @@
                 {
                     if (existing[i].Value.Equals(val))
                     {
-                        if (IsDuplicate(existing[i].CustomData, custom))
+                        if (IsDuplicate(existing[i].DefinitionData, custom))
                         {
                             existing.RemoveAt(i);
                             break;

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a business rule for domain objects to determine if a concurrency violation has happened.
@@ -10,16 +8,11 @@ namespace ServiceBricks
         where TDomainObject : class, IDomainObject<TDomainObject>, IDpUpdateDate
         where TDto : class, IDataTransferObject
     {
-        private readonly ILogger _logger;
-
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="loggerFactory"></param>
-        public ApiConcurrencyByUpdateDateRule(
-            ILoggerFactory loggerFactory)
+        public ApiConcurrencyByUpdateDateRule()
         {
-            _logger = loggerFactory.CreateLogger<ApiConcurrencyByUpdateDateRule<TDomainObject, TDto>>();
             Priority = PRIORITY_HIGH;
         }
 
@@ -52,33 +45,37 @@ namespace ServiceBricks
         {
             var response = new Response();
 
-            try
+            // AI: Make sure the context object is the correct type
+            if (context == null || context.Object == null)
             {
-                // AI: Make sure the context object is the correct type
-                var e = context.Object as ApiUpdateBeforeEvent<TDomainObject, TDto>;
-                if (e == null)
-                    return response;
-
-                //Get values
-                string propertyName = nameof(e.DomainObject.UpdateDate);
-                var dtoProp = e.DtoObject.GetType().GetProperty(propertyName);
-                if (dtoProp == null)
-                    throw new Exception($"DTO property not found {propertyName}");
-                var dtoVal = dtoProp.GetValue(e.DtoObject);
-                if (dtoVal is DateTimeOffset dtoDate)
-                {
-                    //Concurrency violation check
-                    if (e.DomainObject.UpdateDate != dtoDate)
-                    {
-                        response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE_CONCURRENCY));
-                        return response;
-                    }
-                }
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
-            catch (Exception ex)
+            var e = context.Object as ApiUpdateBeforeEvent<TDomainObject, TDto>;
+            if (e == null)
             {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
+            }
+
+            //Get values
+            string propertyName = nameof(e.DomainObject.UpdateDate);
+            var dtoProp = e.DtoObject.GetType().GetProperty(propertyName);
+            if (dtoProp == null)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE));
+                return response;
+            }
+
+            var dtoVal = dtoProp.GetValue(e.DtoObject);
+            if (dtoVal is DateTimeOffset dtoDate)
+            {
+                //Concurrency violation check
+                if (e.DomainObject.UpdateDate != dtoDate)
+                {
+                    response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_BUSINESS_RULE_CONCURRENCY));
+                    return response;
+                }
             }
 
             return response;

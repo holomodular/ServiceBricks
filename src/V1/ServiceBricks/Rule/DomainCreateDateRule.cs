@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a business rule for domain objects that have the CreateDate property.
@@ -10,18 +8,15 @@ namespace ServiceBricks
     public sealed class DomainCreateDateRule<TDomainObject> : BusinessRule
         where TDomainObject : IDomainObject<TDomainObject>, IDpCreateDate
     {
-        private readonly ILogger _logger;
         private readonly ITimezoneService _timezoneService;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="loggerFactory"></param>
+        /// <param name="timezoneService"></param>
         public DomainCreateDateRule(
-            ILoggerFactory loggerFactory,
             ITimezoneService timezoneService)
         {
-            _logger = loggerFactory.CreateLogger<DomainCreateDateRule<TDomainObject>>();
             _timezoneService = timezoneService;
             Priority = PRIORITY_NORMAL;
         }
@@ -63,30 +58,30 @@ namespace ServiceBricks
         {
             var response = new Response();
 
-            try
+            // AI: Make sure the context object is the correct type
+            if (context == null || context.Object == null)
             {
-                // AI: Make sure the context object is the correct type
-                if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
-                {
-                    var item = ei.DomainObject;
-                    item.CreateDate = DateTimeOffset.UtcNow;
-                }
-
-                // AI: Make sure the context object is the correct type
-                if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
-                {
-                    var item = eu.DomainObject;
-
-                    if (item.CreateDate.Offset != TimeSpan.Zero)
-                        item.CreateDate = _timezoneService.ConvertPostBackToUTC(item.CreateDate);
-                }
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
-            catch (Exception ex)
+            if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
             {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
+                var item = ei.DomainObject;
+                item.CreateDate = DateTimeOffset.UtcNow;
+                return response;
             }
 
+            // AI: Make sure the context object is the correct type
+            if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
+            {
+                var item = eu.DomainObject;
+
+                if (item.CreateDate.Offset != TimeSpan.Zero)
+                    item.CreateDate = _timezoneService.ConvertPostBackToUTC(item.CreateDate);
+                return response;
+            }
+
+            response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
             return response;
         }
     }

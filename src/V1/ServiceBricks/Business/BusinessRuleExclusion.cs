@@ -10,13 +10,13 @@
         /// </summary>
         public BusinessRuleExclusion() : base()
         {
-            ExcludedDomainRuleKeys = new System.Collections.Generic.List<string>();
+            ExcludedDomainRuleKeys = new List<string>();
         }
 
         /// <summary>
         /// The list of excluded domain rule keys.
         /// </summary>
-        public virtual System.Collections.Generic.IList<string> ExcludedDomainRuleKeys { get; set; }
+        public virtual IList<string> ExcludedDomainRuleKeys { get; set; }
 
         /// <summary>
         /// Execute the rule

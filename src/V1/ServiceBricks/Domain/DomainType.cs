@@ -9,7 +9,7 @@
         /// <summary>
         /// The key of the domain type.
         /// </summary>
-        public int Key { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// The name of the domain type.

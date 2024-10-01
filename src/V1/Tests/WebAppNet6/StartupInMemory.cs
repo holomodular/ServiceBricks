@@ -1,9 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using ServiceBricks;
-using ServiceBricks.Storage.EntityFrameworkCore.Xunit;
 using ServiceBricks.Storage.EntityFrameworkCore.Xunit.Model;
-using ServiceBricks.Storage.EntityFrameworkCore.Xunit.Rules;
-using ServiceBricks.Xunit;
 using WebApp.Extensions;
 
 namespace WebApp
@@ -26,7 +22,7 @@ namespace WebApp
 
             services.AddCustomWebsite(Configuration);
 
-            services.AddServiceBricksComplete();
+            services.AddServiceBricksComplete(Configuration);
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment webHostEnvironment)

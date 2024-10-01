@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ServiceBricks.Xunit;
-using Newtonsoft.Json;
-using ServiceQuery;
-using Microsoft.AspNetCore.Mvc;
 using ServiceBricks.Storage.EntityFrameworkCore.Xunit;
 
 namespace ServiceBricks.Xunit

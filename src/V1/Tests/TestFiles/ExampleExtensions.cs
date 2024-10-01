@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using ServiceBricks;
-using ServiceBricks.Storage.EntityFrameworkCore.Xunit;
 using ServiceBricks.Storage.EntityFrameworkCore.Xunit.Rules;
 using ServiceBricks.Xunit;
 
@@ -16,28 +14,10 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Model
         public static IServiceCollection AddServiceBricksExampleInMemory(this IServiceCollection services, IConfiguration configuration)
         {
             // Add to module registry
-            ModuleRegistry.Instance.RegisterItem(typeof(ExampleModule), new ExampleModule());
+            ModuleRegistry.Instance.Register(new ExampleModule());
 
-            // Register Database
-            var builder = new DbContextOptionsBuilder<ExampleInMemoryContext>();
-            builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
-            services.Configure<DbContextOptions<ExampleInMemoryContext>>(o => { o = builder.Options; });
-            services.AddSingleton<DbContextOptions<ExampleInMemoryContext>>(builder.Options);
-            services.AddDbContext<ExampleInMemoryContext>(c => { c = builder; }, ServiceLifetime.Scoped);
-
-            // API Service
-            services.AddScoped<IApiService<ExampleDto>, ExampleApiService>();
-            services.AddScoped<IExampleApiService, ExampleApiService>();
-
-            // Controllers
-            services.AddScoped<IExampleApiController, ExampleApiController>();
-
-            // Storage Services
-            services.AddScoped<IStorageRepository<ExampleDomain>, ExampleStorageRepository<ExampleDomain>>();
-
-            // Rules
-            ExampleQueryRule.Register(BusinessRuleRegistry.Instance);
-            //ExampleDtoRule.Register(BusinessRuleRegistry.Instance);
+            // Add module rules
+            ExampleModuleAddRule.Register(BusinessRuleRegistry.Instance);
 
             return services;
         }

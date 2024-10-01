@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ServiceBricks.Storage.AzureDataTables
+﻿namespace ServiceBricks.Storage.AzureDataTables
 {
     /// <summary>
     /// This is a business rule for domain objects that have a DateTime property.
@@ -14,18 +12,14 @@ namespace ServiceBricks.Storage.AzureDataTables
         /// <summary>
         /// The key for the property name.
         /// </summary>
-        public const string Key_PropertyName = "AzureDataTablesDomainDateTimeRule_PropertyName";
-
-        private readonly ILogger _logger;
+        public const string DEFINITION_PROPERTY_NAMES = "PropertyNames";
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        public AzureDataTablesDomainDateTimeRule(
-            ILoggerFactory loggerFactory)
+        public AzureDataTablesDomainDateTimeRule()
         {
-            _logger = loggerFactory.CreateLogger<AzureDataTablesDomainDateTimeRule<TDomainObject>>();
             Priority = PRIORITY_NORMAL;
         }
 
@@ -38,7 +32,7 @@ namespace ServiceBricks.Storage.AzureDataTables
         {
             var custom = new Dictionary<string, object>();
             var list = new List<string>(propertyNames);
-            custom.Add(Key_PropertyName, list);
+            custom.Add(DEFINITION_PROPERTY_NAMES, list);
 
             registry.Register(
                 typeof(DomainCreateBeforeEvent<TDomainObject>),
@@ -60,7 +54,7 @@ namespace ServiceBricks.Storage.AzureDataTables
         {
             var custom = new Dictionary<string, object>();
             var list = new List<string>(propertyNames);
-            custom.Add(Key_PropertyName, list);
+            custom.Add(DEFINITION_PROPERTY_NAMES, list);
 
             registry.UnRegister(
                 typeof(DomainCreateBeforeEvent<TDomainObject>),
@@ -81,85 +75,94 @@ namespace ServiceBricks.Storage.AzureDataTables
         public override IResponse ExecuteRule(IBusinessRuleContext context)
         {
             var response = new Response();
-
-            try
+            if (context == null || context.Object == null)
             {
-                //Get the property name from the custom context
-                if (CustomData == null || !CustomData.ContainsKey(Key_PropertyName))
-                    throw new Exception("CustomData missing propertyname");
-                var propVal = CustomData[Key_PropertyName];
-                if (propVal == null)
-                    throw new Exception("CustomData propertyname invalid");
-                List<string> propNames = propVal as List<string>;
-                if (propNames == null || propNames.Count == 0)
-                    throw new Exception("Propertyname list invalid");
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
+            }
 
-                // AI: Make sure the context object is the correct type
-                if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
+            //Get the property name from the custom context
+            if (DefinitionData == null || !DefinitionData.ContainsKey(DEFINITION_PROPERTY_NAMES))
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "DefinitionData"));
+                return response;
+            }
+            var propVal = DefinitionData[DEFINITION_PROPERTY_NAMES];
+            if (propVal == null)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "DefinitionData"));
+                return response;
+            }
+            List<string> propNames = propVal as List<string>;
+            if (propNames == null || propNames.Count == 0)
+            {
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "DefinitionData"));
+                return response;
+            }
+
+            // AI: Make sure the context object is the correct type
+            if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
+            {
+                var item = ei.DomainObject;
+                List<TDomainObject> curItemList = new List<TDomainObject>() { item };
+                foreach (var propName in propNames)
                 {
-                    var item = ei.DomainObject;
-                    List<TDomainObject> curItemList = new List<TDomainObject>() { item };
-                    foreach (var propName in propNames)
+                    var curProp = curItemList.AsQueryable().Select(x => x.GetType().GetProperty(propName).GetValue(x)).FirstOrDefault();
+                    if (curProp != null)
                     {
-                        var curProp = curItemList.AsQueryable().Select(x => x.GetType().GetProperty(propName).GetValue(x)).FirstOrDefault();
-                        if (curProp != null)
+                        if (curProp is DateTime DateTime)
                         {
-                            if (curProp is DateTime DateTime)
+                            // AI: Check to make sure date is within bounds for storage
+                            if (DateTime < StorageAzureDataTablesConstants.DATETIME_MINDATE)
+                                item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
+                        }
+                        else if (curProp is DateTime?)
+                        {
+                            DateTime? nullableDateTime = (DateTime?)curProp;
+                            if (nullableDateTime.HasValue)
                             {
                                 // AI: Check to make sure date is within bounds for storage
-                                if (DateTime < StorageAzureDataTablesConstants.DATETIME_MINDATE)
+                                if (nullableDateTime.Value < StorageAzureDataTablesConstants.DATETIME_MINDATE)
                                     item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
-                            }
-                            else if (curProp is DateTime?)
-                            {
-                                DateTime? nullableDateTime = (DateTime?)curProp;
-                                if (nullableDateTime.HasValue)
-                                {
-                                    // AI: Check to make sure date is within bounds for storage
-                                    if (nullableDateTime.Value < StorageAzureDataTablesConstants.DATETIME_MINDATE)
-                                        item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
-                                }
                             }
                         }
                     }
                 }
+                return response;
+            }
 
-                // AI: Make sure the context object is the correct type
-                if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
+            // AI: Make sure the context object is the correct type
+            if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
+            {
+                var item = eu.DomainObject;
+                List<TDomainObject> curItemList = new List<TDomainObject>() { item };
+                foreach (var propName in propNames)
                 {
-                    var item = eu.DomainObject;
-                    List<TDomainObject> curItemList = new List<TDomainObject>() { item };
-                    foreach (var propName in propNames)
+                    var curProp = curItemList.AsQueryable().Select(x => x.GetType().GetProperty(propName).GetValue(x)).FirstOrDefault();
+                    if (curProp != null)
                     {
-                        var curProp = curItemList.AsQueryable().Select(x => x.GetType().GetProperty(propName).GetValue(x)).FirstOrDefault();
-                        if (curProp != null)
+                        if (curProp is DateTime DateTime)
                         {
-                            if (curProp is DateTime DateTime)
+                            // AI: Check to make sure date is within bounds for storage
+                            if (DateTime < StorageAzureDataTablesConstants.DATETIME_MINDATE)
+                                item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
+                        }
+                        else if (curProp is DateTime?)
+                        {
+                            DateTime? nullableDateTime = (DateTime?)curProp;
+                            if (nullableDateTime.HasValue)
                             {
                                 // AI: Check to make sure date is within bounds for storage
-                                if (DateTime < StorageAzureDataTablesConstants.DATETIME_MINDATE)
+                                if (nullableDateTime.Value < StorageAzureDataTablesConstants.DATETIME_MINDATE)
                                     item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
-                            }
-                            else if (curProp is DateTime?)
-                            {
-                                DateTime? nullableDateTime = (DateTime?)curProp;
-                                if (nullableDateTime.HasValue)
-                                {
-                                    // AI: Check to make sure date is within bounds for storage
-                                    if (nullableDateTime.Value < StorageAzureDataTablesConstants.DATETIME_MINDATE)
-                                        item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
-                                }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
+                return response;
             }
 
+            response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
             return response;
         }
     }

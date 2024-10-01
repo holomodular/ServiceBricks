@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a business rule for domain objects that have the UpdateDate property.
@@ -8,15 +6,11 @@ namespace ServiceBricks
     /// </summary>
     public sealed class DomainUpdateDateRule<TDomainObject> : BusinessRule where TDomainObject : IDomainObject<TDomainObject>, IDpUpdateDate
     {
-        private readonly ILogger _logger;
-
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="loggerFactory"></param>
-        public DomainUpdateDateRule(ILoggerFactory loggerFactory)
+        public DomainUpdateDateRule()
         {
-            _logger = loggerFactory.CreateLogger<DomainUpdateDateRule<TDomainObject>>();
             Priority = PRIORITY_NORMAL;
         }
 
@@ -56,27 +50,27 @@ namespace ServiceBricks
         public override IResponse ExecuteRule(IBusinessRuleContext context)
         {
             var response = new Response();
-
-            try
+            if (context == null || context.Object == null)
             {
-                // AI: Make sure the context object is the correct type
-                if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
-                {
-                    eu.DomainObject.UpdateDate = DateTimeOffset.UtcNow;
-                }
-
-                // AI: Make sure the context object is the correct type
-                if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
-                {
-                    ei.DomainObject.UpdateDate = DateTimeOffset.UtcNow;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_RULE));
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
+                return response;
             }
 
+            // AI: Make sure the context object is the correct type
+            if (context.Object is DomainUpdateBeforeEvent<TDomainObject> eu)
+            {
+                eu.DomainObject.UpdateDate = DateTimeOffset.UtcNow;
+                return response;
+            }
+
+            // AI: Make sure the context object is the correct type
+            if (context.Object is DomainCreateBeforeEvent<TDomainObject> ei)
+            {
+                ei.DomainObject.UpdateDate = DateTimeOffset.UtcNow;
+                return response;
+            }
+
+            response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
             return response;
         }
     }
