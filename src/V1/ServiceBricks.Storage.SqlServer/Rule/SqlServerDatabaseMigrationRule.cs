@@ -55,7 +55,7 @@ namespace ServiceBricks.Storage.SqlServer
                 return response;
             }
             var e = context.Object as ModuleStartEvent<TModule>;
-            if (e == null || e.ApplicationBuilder == null)
+            if (e == null || e.DomainObject == null || e.ApplicationBuilder == null)
             {
                 response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "context"));
                 return response;

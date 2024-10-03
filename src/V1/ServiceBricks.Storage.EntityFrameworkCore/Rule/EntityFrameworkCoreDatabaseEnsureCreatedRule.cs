@@ -2,19 +2,19 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ServiceBricks.Storage.Postgres
+namespace ServiceBricks.Storage.EntityFrameworkCore
 {
     /// <summary>
     /// This rule migrates a database.
     /// </summary>
-    public sealed class PostgresDatabaseMigrationRule<TModule, TDatabaseContext> : BusinessRule
+    public sealed class EntityFrameworkCoreDatabaseEnsureCreatedRule<TModule, TDatabaseContext> : BusinessRule
         where TModule : IModule
         where TDatabaseContext : DbContext
     {
         /// <summary>
         /// Constructor.
         /// </summary>
-        public PostgresDatabaseMigrationRule()
+        public EntityFrameworkCoreDatabaseEnsureCreatedRule()
         {
             Priority = PRIORITY_HIGH;
         }
@@ -26,7 +26,7 @@ namespace ServiceBricks.Storage.Postgres
         {
             registry.Register(
                 typeof(ModuleStartEvent<TModule>),
-                typeof(PostgresDatabaseMigrationRule<TModule, TDatabaseContext>));
+                typeof(EntityFrameworkCoreDatabaseEnsureCreatedRule<TModule, TDatabaseContext>));
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace ServiceBricks.Storage.Postgres
         {
             registry.UnRegister(
                 typeof(ModuleStartEvent<TModule>),
-                typeof(PostgresDatabaseMigrationRule<TModule, TDatabaseContext>));
+                typeof(EntityFrameworkCoreDatabaseEnsureCreatedRule<TModule, TDatabaseContext>));
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace ServiceBricks.Storage.Postgres
             using (var serviceScope = e.ApplicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var databaseContext = serviceScope.ServiceProvider.GetService<TDatabaseContext>();
-                databaseContext.Database.Migrate();
+                databaseContext.Database.EnsureCreated();
                 databaseContext.SaveChanges();
             }
 
