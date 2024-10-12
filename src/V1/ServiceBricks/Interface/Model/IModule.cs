@@ -37,5 +37,10 @@ namespace ServiceBricks
         /// The list of view assemblies.
         /// </summary>
         public List<Assembly> ViewAssemblies { get; }
+
+        /// <summary>
+        /// The list of DTOs available.
+        /// </summary>
+        public List<Type> DataTransferObjects { get; }
     }
 }

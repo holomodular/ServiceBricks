@@ -16,12 +16,11 @@ namespace WebApp
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddServiceBricks(Configuration);
-
-            // Add the example module
             services.AddServiceBricksExampleInMemory(Configuration);
+            ModuleRegistry.Instance.Register(new WebApp.Model.WebAppModule()); // Just for automapper registration
+            services.AddServiceBricksComplete(Configuration);
 
             services.AddCustomWebsite(Configuration);
-            services.AddServiceBricksComplete(Configuration);
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment webHostEnvironment)

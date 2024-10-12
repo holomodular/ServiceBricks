@@ -41,6 +41,11 @@ namespace ServiceBricks
         public virtual List<Assembly> ViewAssemblies { get; set; }
 
         /// <summary>
+        /// The list of DTOs.
+        /// </summary>
+        public virtual List<Type> DataTransferObjects { get; set; }
+
+        /// <summary>
         /// Check equality.
         /// </summary>
         /// <param name="other"></param>
