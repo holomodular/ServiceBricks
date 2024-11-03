@@ -1,0 +1,115 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Version>1.1.0-o</Version>
+		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
+		<PackageId>ServiceBricks.Core</PackageId>
+		<Title>ServiceBricks.Core</Title>
+		<AssemblyTitle>ServiceBricks.Core</AssemblyTitle>
+		<Authors>holomodular</Authors>
+		<Company>HoloModular LLC</Company>
+		<Product>ServiceBricks</Product>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+		<Copyright>Copyright © 2024 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
+		<PackageProjectUrl>https://ServiceBricks.com</PackageProjectUrl>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageTags>servicebricks;core</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>Resource\ServiceBricks.Core.snk</AssemblyOriginatorKeyFile>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
+		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+		<IsPackable>True</IsPackable>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="Resource\readme.md" Pack="True" PackagePath="\" />
+		<None Include="Resource\logo.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ServiceBricks" Version="1.1.0-o" />
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.2" />
+		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
+		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
+		<PackageReference Include="MongoDB.Driver" Version="3.0.0" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ServiceBricks.ServiceBus.Azure\ServiceBricks.ServiceBus.Azure.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.ServiceBus.Azure.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.AzureDataTables\ServiceBricks.Storage.AzureDataTables.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.AzureDataTables.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.Cosmos\ServiceBricks.Storage.Cosmos.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.Cosmos.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.EntityFrameworkCore\ServiceBricks.Storage.EntityFrameworkCore.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.EntityFrameworkCore.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.InMemory\ServiceBricks.Storage.InMemory.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.InMemory.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.MongoDb\ServiceBricks.Storage.MongoDb.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.MongoDb.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.Postgres\ServiceBricks.Storage.Postgres.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.Postgres.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.Sqlite\ServiceBricks.Storage.Sqlite.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.Sqlite.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.Storage.SqlServer\ServiceBricks.Storage.SqlServer.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.Storage.SqlServer.dll</IncludeAssets>
+		</ProjectReference>
+	</ItemGroup>
+	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+		</ItemGroup>
+	</Target>
+</Project>

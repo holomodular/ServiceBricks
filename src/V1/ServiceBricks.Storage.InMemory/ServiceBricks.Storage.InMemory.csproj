@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.1.0-n</Version>
+		<Version>1.1.0-o</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Storage.InMemory</PackageId>
 		<Title>ServiceBricks.Storage.InMemory</Title>
@@ -23,7 +23,7 @@
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
-		<IsPackable>True</IsPackable>		
+		<IsPackable>False</IsPackable>		
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="Resource\readme.md" Pack="True" PackagePath="\" />
@@ -33,7 +33,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks.Storage.EntityFrameworkCore" Version="1.1.0-n" />
+		<PackageReference Include="ServiceBricks.Storage.EntityFrameworkCore" Version="1.1.0-o" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">

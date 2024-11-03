@@ -8,10 +8,6 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
-	
-	<ItemGroup>
-		<ProjectReference Include="..\..\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj" />
-	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.35" />
@@ -30,5 +26,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
-	
+	<ItemGroup>
+		<ProjectReference Include="..\..\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj" />
+	</ItemGroup>
 </Project>

@@ -18,7 +18,7 @@
         /// <summary>
         /// Minimum date for DateTimeOffset.
         /// </summary>
-        public static DateTime DATETIME_MINDATE = new DateTime(1601, 1, 1, 0, 0, 0);
+        public static DateTime DATETIME_MINDATE = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
         /// The delimiter for the storage key.

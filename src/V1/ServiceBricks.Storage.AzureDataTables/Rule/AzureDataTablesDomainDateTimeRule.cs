@@ -115,6 +115,8 @@
                             // AI: Check to make sure date is within bounds for storage
                             if (DateTime < StorageAzureDataTablesConstants.DATETIME_MINDATE)
                                 item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
+                            else if (DateTime.Kind != DateTimeKind.Utc)
+                                item.GetType().GetProperty(propName).SetValue(item, DateTime.SpecifyKind(DateTime, DateTimeKind.Utc));
                         }
                         else if (curProp is DateTime?)
                         {
@@ -124,6 +126,8 @@
                                 // AI: Check to make sure date is within bounds for storage
                                 if (nullableDateTime.Value < StorageAzureDataTablesConstants.DATETIME_MINDATE)
                                     item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
+                                else if (nullableDateTime.Value.Kind != DateTimeKind.Utc)
+                                    item.GetType().GetProperty(propName).SetValue(item, DateTime.SpecifyKind(nullableDateTime.Value, DateTimeKind.Utc));
                             }
                         }
                     }
@@ -146,6 +150,8 @@
                             // AI: Check to make sure date is within bounds for storage
                             if (DateTime < StorageAzureDataTablesConstants.DATETIME_MINDATE)
                                 item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
+                            else if (DateTime.Kind != DateTimeKind.Utc)
+                                item.GetType().GetProperty(propName).SetValue(item, DateTime.SpecifyKind(DateTime, DateTimeKind.Utc));
                         }
                         else if (curProp is DateTime?)
                         {
@@ -155,6 +161,8 @@
                                 // AI: Check to make sure date is within bounds for storage
                                 if (nullableDateTime.Value < StorageAzureDataTablesConstants.DATETIME_MINDATE)
                                     item.GetType().GetProperty(propName).SetValue(item, StorageAzureDataTablesConstants.DATETIME_MINDATE);
+                                else if (nullableDateTime.Value.Kind != DateTimeKind.Utc)
+                                    item.GetType().GetProperty(propName).SetValue(item, DateTime.SpecifyKind(nullableDateTime.Value, DateTimeKind.Utc));
                             }
                         }
                     }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.1.0-n</Version>
+		<Version>1.1.0-o</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Storage.AzureDataTables</PackageId>
 		<Title>ServiceBricks.Storage.AzureDataTables</Title>
@@ -23,7 +23,7 @@
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
-		<IsPackable>True</IsPackable>
+		<IsPackable>False</IsPackable>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="Resource\readme.md" Pack="True" PackagePath="\" />
@@ -33,20 +33,10 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.1.0-n" />
+		<PackageReference Include="ServiceBricks" Version="1.1.0-o" />
 	</ItemGroup>
 	
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
-		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
-		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+	<ItemGroup>
 		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
 		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
 	</ItemGroup>

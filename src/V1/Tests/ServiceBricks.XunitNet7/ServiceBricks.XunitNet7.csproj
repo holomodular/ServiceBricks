@@ -9,10 +9,6 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.20" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
@@ -29,6 +25,10 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\ServiceBricks.Xunit.Debug\ServiceBricks.Xunit.Debug.csproj" />
 	</ItemGroup>
 	
 </Project>
