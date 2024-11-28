@@ -1,3 +1,6 @@
+# 1.1.0
+- Official Production Release
+
 # 1.0.11
 - Update all package references to latest version
 - Add cleanup logic to delete objects for unit and integration tests

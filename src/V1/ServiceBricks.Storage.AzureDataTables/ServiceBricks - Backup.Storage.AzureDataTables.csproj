@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.1.0-h</Version>
+		<Version>1.1.0</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Storage.AzureDataTables</PackageId>
 		<Title>ServiceBricks.Storage.AzureDataTables</Title>
@@ -33,20 +33,10 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.1.0-i" />
+		<PackageReference Include="ServiceBricks" Version="1.1.0-p" />
 	</ItemGroup>
 	
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
-		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
-		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+	<ItemGroup>
 		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
 		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
 	</ItemGroup>
