@@ -33,7 +33,7 @@ jobs:
       id: create_coverage_badge
       with:
         label: Unit Test Coverage
-        color: orange
+        color: purple
         path: src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet8/TestResults/coverage.opencover.xml
         gist-filename: servicebricks-codecoverage.json
         gist-id: bdb5c7c570a7a88ffb3efb3505273e34
