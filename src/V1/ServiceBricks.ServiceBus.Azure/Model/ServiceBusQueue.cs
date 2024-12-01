@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
@@ -15,7 +16,7 @@ namespace ServiceBricks.ServiceBus.Azure
         protected readonly IServiceBusQueue _serviceBusQueue;
         protected readonly IBusinessRuleRegistry _businessRuleRegistry;
         protected readonly IServiceBusConnection _serviceBusConnection;
-        protected readonly IBusinessRuleService _businessRuleService;
+        protected readonly IServiceProvider _serviceProvider;
         protected readonly List<ServiceBusProcessor> _processors = new List<ServiceBusProcessor>();
 
         /// <summary>
@@ -25,19 +26,19 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <param name="serviceBusQueue"></param>
         /// <param name="businessRuleRegistry"></param>
         /// <param name="serviceBusConnection"></param>
-        /// <param name="businessRuleService"></param>
+        /// <param name="serviceProvider"></param>
         public ServiceBusQueue(
             ILoggerFactory loggerFactory,
             IServiceBusQueue serviceBusQueue,
             IBusinessRuleRegistry businessRuleRegistry,
             IServiceBusConnection serviceBusConnection,
-            IBusinessRuleService businessRuleService)
+            IServiceProvider serviceProvider)
         {
             _logger = loggerFactory.CreateLogger<ServiceBusTopic>();
             _serviceBusQueue = serviceBusQueue;
             _businessRuleRegistry = businessRuleRegistry;
             _serviceBusConnection = serviceBusConnection;
-            _businessRuleService = businessRuleService;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -232,10 +233,14 @@ namespace ServiceBricks.ServiceBus.Azure
                 // Convert to the broadcast type
                 var domainBroadcast = (IDomainBroadcast)JsonConvert.DeserializeObject(message, type);
 
-                // Execute the broadcast
-                BusinessRuleContext context = new BusinessRuleContext(domainBroadcast);
-                var resp = await _businessRuleService.ExecuteRulesAsync(context);
-                return resp.Success;
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    // Execute the broadcast
+                    BusinessRuleContext context = new BusinessRuleContext(domainBroadcast);
+                    var businessRuleService = scope.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+                    var resp = await businessRuleService.ExecuteRulesAsync(context);
+                    return resp.Success;
+                }
             }
             return true;
         }

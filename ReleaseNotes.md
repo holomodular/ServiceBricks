@@ -1,3 +1,9 @@
+# 1.1.3
+- Fix for Azure ServiceBus Topic and Queue providers to use IBusinessRuleService from scoped IServiceProvider instead of dependency injection.
+
+# 1.1.2
+- Fix for MongoDB to create Guid serializer rule
+
 # 1.1.0
 - Official Production Release
 
