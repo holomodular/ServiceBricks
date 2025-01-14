@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
@@ -19,7 +19,8 @@
 	  <ProjectReference Include="..\ServiceBricks.Debug\ServiceBricks.Debug.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="MongoDB.Driver" Version="3.0.0" />
+		<PackageReference Include="MongoDB.Driver" Version="3.1.0" />
+		<PackageReference Include="ServiceQuery.MongoDb" Version="2.2.0" />
 	</ItemGroup>
 	
 </Project>

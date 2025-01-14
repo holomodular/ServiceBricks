@@ -43,9 +43,24 @@ namespace ServiceBricks.Storage.MongoDb
         public virtual string CollectionName { get; set; }
 
         /// <summary>
+        /// The ServiceQueryOptions.
+        /// </summary>
+        public virtual ServiceQueryOptions ServiceQueryOptions { get; set; }
+
+        /// <summary>
         /// Determines if service query errors are logged.
         /// </summary>
         public virtual bool LogServiceQueryErrors { get; set; }
+
+        /// <summary>
+        /// Collection Settings
+        /// </summary>
+        public virtual MongoDatabaseSettings MongoDatabaseSettings { get; set; }
+
+        /// <summary>
+        /// Collection Settings
+        /// </summary>
+        public virtual MongoCollectionSettings MongoCollectionSettings { get; set; }
 
         /// <summary>
         /// Get the storage repository.
@@ -67,8 +82,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 var exp = obj.DomainGetItemFilter(obj);
                 collection.DeleteOne(exp);
             }
@@ -91,8 +106,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 var exp = obj.DomainGetItemFilter(obj);
                 await collection.DeleteOneAsync(exp);
             }
@@ -115,8 +130,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 collection.InsertOne(obj);
             }
             catch (Exception ex)
@@ -138,8 +153,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 await collection.InsertOneAsync(obj);
             }
             catch (Exception ex)
@@ -161,8 +176,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 var filter = obj.DomainGetItemFilter(obj);
                 collection.ReplaceOne(filter, obj);
             }
@@ -185,8 +200,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 var filter = obj.DomainGetItemFilter(obj);
                 await collection.ReplaceOneAsync(filter, obj);
             }
@@ -208,8 +223,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 var filter = obj.DomainGetItemFilter(obj);
                 var query = collection.Find(filter);
                 response.Item = query.FirstOrDefault();
@@ -233,8 +248,8 @@ namespace ServiceBricks.Storage.MongoDb
             try
             {
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 var filter = obj.DomainGetItemFilter(obj);
                 var query = await collection.FindAsync(filter);
                 response.Item = await query.FirstOrDefaultAsync();
@@ -264,10 +279,10 @@ namespace ServiceBricks.Storage.MongoDb
                     return response;
                 }
                 MongoClient client = new MongoClient(ConnectionString);
-                var db = client.GetDatabase(DatabaseName);
-                var collection = db.GetCollection<TDomain>(CollectionName);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
                 var queryable = collection.AsQueryable();
-                response.Item = request.Execute(queryable);
+                response.Item = request.Execute(queryable, ServiceQueryOptions);
                 return response;
             }
             catch (ServiceQueryException sqe)
@@ -289,9 +304,35 @@ namespace ServiceBricks.Storage.MongoDb
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public virtual Task<IResponseItem<ServiceQueryResponse<TDomain>>> QueryAsync(ServiceQueryRequest request)
+        public virtual async Task<IResponseItem<ServiceQueryResponse<TDomain>>> QueryAsync(ServiceQueryRequest request)
         {
-            return Task.FromResult(Query(request));
+            IResponseItem<ServiceQueryResponse<TDomain>> response = new ResponseItem<ServiceQueryResponse<TDomain>>();
+            try
+            {
+                if (request == null)
+                {
+                    response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING, "request"));
+                    return response;
+                }
+                MongoClient client = new MongoClient(ConnectionString);
+                var db = client.GetDatabase(DatabaseName, MongoDatabaseSettings);
+                var collection = db.GetCollection<TDomain>(CollectionName, MongoCollectionSettings);
+                var queryable = collection.AsQueryable();
+                response.Item = await request.MongoDbExecuteAsync(queryable, ServiceQueryOptions);
+                return response;
+            }
+            catch (ServiceQueryException sqe)
+            {
+                if (LogServiceQueryErrors)
+                    _logger.LogError(sqe, $"{nameof(QueryAsync)} {sqe.Message} {JsonConvert.SerializeObject(request)}");
+                response.AddMessage(ResponseMessage.CreateError(sqe, LocalizationResource.ERROR_SERVICEQUERY));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{nameof(QueryAsync)} {ex.Message} {JsonConvert.SerializeObject(request)}");
+                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
+            }
+            return response;
         }
     }
 }

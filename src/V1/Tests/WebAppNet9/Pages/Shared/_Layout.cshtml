@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="@System.Threading.Thread.CurrentThread.CurrentCulture.Name">
+    <head>
+        <meta charset="utf-8">
+
+        <!-- SEO Meta Tags -->
+        <title>@ViewData["Title"]</title>    
+        <meta name="keywords" content="@ViewData["Keywords"]">
+        <meta name="description" content="@ViewData["Description"]">
+        <meta name="author" content="https://ServiceBricks.com">
+
+        <!-- Mobile Meta Tag -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Favicon and Apple Icons -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+   
+        <!-- Scripts and Style Sheets -->
+
+    
+        <!-- View Head -->
+        @RenderSection("Head", required: false)
+    </head>
+    <body class="layout-body">
+        
+        <!-- Layout Header -->
+        <partial name="_HeaderPartial" />        
+
+        <div id="maincontent" name="maincontent" class="layout-body-view container">
+            <!-- Layout Content -->
+            @RenderBody()    
+        </div>
+
+        <!-- Layout Footer -->
+        <partial name="_FooterPartial" />        
+
+        <!-- Layout Scripts -->
+        <script src="/js/site.js"></script>
+    
+        <!-- View Scripts -->
+        @RenderSection("Scripts", required: false)
+       
+    </body>
+</html>

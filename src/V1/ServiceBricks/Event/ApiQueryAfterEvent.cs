@@ -13,10 +13,16 @@ namespace ServiceBricks
         /// Constructor
         /// </summary>
         /// <param name="response"></param>
-        public ApiQueryAfterEvent(ServiceQueryResponse<TDtoObject> response)
+        public ApiQueryAfterEvent(ServiceQueryRequest request, ServiceQueryResponse<TDtoObject> response)
         {
+            Request = request;
             Response = response;
         }
+
+        /// <summary>
+        /// Request
+        /// </summary>
+        public virtual ServiceQueryRequest Request { get; set; }
 
         /// <summary>
         /// Response

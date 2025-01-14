@@ -36,6 +36,11 @@ namespace ServiceBricks.Storage.EntityFrameworkCore
         public virtual DbContext Context { get; set; }
 
         /// <summary>
+        /// The ServiceQueryOptions.
+        /// </summary>
+        public virtual ServiceQueryOptions ServiceQueryOptions { get; set; }
+
+        /// <summary>
         /// Determines if service query errors are logged.
         /// </summary>
         public virtual bool LogServiceQueryErrors { get; set; }
@@ -333,7 +338,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore
                     return response;
                 }
                 var queryable = GetQueryable();
-                response.Item = request.Execute(queryable);
+                response.Item = request.Execute(queryable, ServiceQueryOptions);
                 return response;
             }
             catch (ServiceQueryException sqe)
@@ -350,9 +355,37 @@ namespace ServiceBricks.Storage.EntityFrameworkCore
             return response;
         }
 
-        public virtual Task<IResponseItem<ServiceQueryResponse<TDomain>>> QueryAsync(ServiceQueryRequest request)
+        /// <summary>
+        /// Query domain objects.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public virtual async Task<IResponseItem<ServiceQueryResponse<TDomain>>> QueryAsync(ServiceQueryRequest request)
         {
-            return Task.FromResult(Query(request));
+            ResponseItem<ServiceQueryResponse<TDomain>> response = new ResponseItem<ServiceQueryResponse<TDomain>>();
+            try
+            {
+                if (request == null)
+                {
+                    response.AddMessage(ResponseMessage.CreateError(LocalizationResource.PARAMETER_MISSING));
+                    return response;
+                }
+                var queryable = GetQueryable();
+                response.Item = await request.ExecuteAsync(queryable, ServiceQueryOptions);
+                return response;
+            }
+            catch (ServiceQueryException sqe)
+            {
+                if (LogServiceQueryErrors)
+                    _logger.LogError(sqe, $"{nameof(QueryAsync)} {sqe.Message} {JsonConvert.SerializeObject(request)}");
+                response.AddMessage(ResponseMessage.CreateError(sqe, LocalizationResource.ERROR_SERVICEQUERY));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{nameof(QueryAsync)} {ex.Message} {JsonConvert.SerializeObject(request)}");
+                response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
+            }
+            return response;
         }
     }
 }

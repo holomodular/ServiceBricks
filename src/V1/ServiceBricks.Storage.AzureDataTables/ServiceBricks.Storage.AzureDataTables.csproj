@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.1.3</Version>
+		<Version>1.2.0</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Storage.AzureDataTables</PackageId>
 		<Title>ServiceBricks.Storage.AzureDataTables</Title>
@@ -9,9 +9,9 @@
 		<Authors>holomodular</Authors>
 		<Company>HoloModular LLC</Company>
 		<Product>ServiceBricks</Product>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
 		<Nullable>disable</Nullable>
-		<Copyright>Copyright © 2024 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
+		<Copyright>Copyright © 2025 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
 		<PackageProjectUrl>https://ServiceBricks.com</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageTags>servicebricks;storage;azure;data;tables</PackageTags>
@@ -33,12 +33,12 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.1.3" />
+		<PackageReference Include="ServiceBricks" Version="1.2.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Azure.Data.Tables" Version="12.9.1" />
-		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.1.1" />
+		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.2.0" />
 	</ItemGroup>
 	
 </Project>

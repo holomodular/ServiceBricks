@@ -530,7 +530,7 @@ namespace ServiceBricks
             }
 
             // Process After
-            ApiQueryAfterEvent<TDtoObject> afterEvent = new ApiQueryAfterEvent<TDtoObject>(response.Item);
+            ApiQueryAfterEvent<TDtoObject> afterEvent = new ApiQueryAfterEvent<TDtoObject>(request, response.Item);
             respRules = _businessRuleService.ExecuteEvent(afterEvent);
             response.CopyFrom(respRules);
             if (!response.Success)
@@ -570,7 +570,7 @@ namespace ServiceBricks
             }
 
             // Process After
-            ApiQueryAfterEvent<TDtoObject> afterEvent = new ApiQueryAfterEvent<TDtoObject>(response.Item);
+            ApiQueryAfterEvent<TDtoObject> afterEvent = new ApiQueryAfterEvent<TDtoObject>(request, response.Item);
             respRules = await _businessRuleService.ExecuteEventAsync(afterEvent);
             response.CopyFrom(respRules);
             if (!response.Success)

@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\TestFiles\ExampleExtensions.cs" Link="ExampleExtensions.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\BaseTests.cs" Link="BaseTests.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\EntityFrameworkCoreStartup.cs" Link="EntityFrameworkCoreStartup.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiClient.cs" Link="ExampleApiClient.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiController.cs" Link="ExampleApiController.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiControllerTest.cs" Link="ExampleApiControllerTest.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleApiService.cs" Link="ExampleApiService.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleDomain.cs" Link="ExampleDomain.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleDtoRule.cs" Link="ExampleDtoRule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleInMemoryContext.cs" Link="ExampleInMemoryContext.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleMappingProfile.cs" Link="ExampleMappingProfile.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleModule.cs" Link="ExampleModule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleModuleAddRule.cs" Link="ExampleModuleAddRule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleQueryRule.cs" Link="ExampleQueryRule.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleStorageRepository.cs" Link="ExampleStorageRepository.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleStorageTests.cs" Link="ExampleStorageTests.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\ExampleTestManager.cs" Link="ExampleTestManager.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\IExampleApiClient.cs" Link="IExampleApiClient.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\IExampleApiController.cs" Link="IExampleApiController.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\IExampleApiService.cs" Link="IExampleApiService.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\MappingTest.cs" Link="MappingTest.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\StubApiClientTests.cs" Link="StubApiClientTests.cs" />
+	</ItemGroup>
+	
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+		<ProjectReference Include="..\..\ServiceBricks.Storage.EntityFrameworkCore.Debug\ServiceBricks.Storage.EntityFrameworkCore.Debug.csproj" />
+	  <ProjectReference Include="..\ServiceBricks.XunitNet9\ServiceBricks.XunitNet9.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="9.0.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+		<PackageReference Include="xunit" Version="2.9.3" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.1">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="6.0.3">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.msbuild" Version="6.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>

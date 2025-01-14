@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup>	  
 	  <Compile Include="..\ServiceBricks\Api\AdminPolicyApiController.cs" Link="AdminPolicyApiController.cs" />
 	  <Compile Include="..\ServiceBricks\Api\ApiClient.cs" Link="ApiClient.cs" />
 	  <Compile Include="..\ServiceBricks\Api\ApiController.cs" Link="ApiController.cs" />
@@ -175,18 +175,24 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="ServiceQuery" Version="2.1.1" />
+		<PackageReference Include="ServiceQuery" Version="2.2.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="ServiceQuery" Version="2.1.1" />
+		<PackageReference Include="ServiceQuery" Version="2.2.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="ServiceQuery" Version="2.1.1" />
+		<PackageReference Include="ServiceQuery" Version="2.2.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="ServiceQuery" Version="2.2.0" />
 	</ItemGroup>
 </Project>

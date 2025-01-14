@@ -1,3 +1,15 @@
+# 1.2.0
+- Support .NET 9.0
+- Support both sync and async querying with new ServiceQuery release
+- Upgrade all packages references to latest version
+- Fix for ApiQueryAfterEvent event to include initial request
+- Fix for .NET 6 to use 6 libraries instead of 7
+- Fix for MongoDB to add MongoDatabaseSettings and MongoCollectionSettings
+- Fix for EntityFrameworkCore and MongoDB providers to add ServiceQueryOptions
+- Fix for Postgres, Sqlite and SqlServer providers to add async methods to migration and ensurecreated rules
+- Removed try/catch blocks in ServiceBricksStart method
+- Removed old resources in webapp projects
+
 # 1.1.3
 - Fix for Azure ServiceBus Topic and Queue providers to use IBusinessRuleService from scoped IServiceProvider instead of dependency injection.
 

@@ -85,21 +85,17 @@ namespace ServiceBricks
                     var moduleAddEventType = moduleAddEventTypes.Where(x => x.GenericTypeArguments.Contains(moduleType)).FirstOrDefault();
                     if (moduleAddEventType != null)
                     {
-                        try
-                        {
-                            var moduleAddEvent = (ModuleAddEvent)Activator.CreateInstance(moduleAddEventType);
-                            moduleAddEvent.DomainObject = module;
-                            moduleAddEvent.ServiceCollection = services;
-                            moduleAddEvent.Configuration = configuration;
+                        var moduleAddEvent = (ModuleAddEvent)Activator.CreateInstance(moduleAddEventType);
+                        moduleAddEvent.DomainObject = module;
+                        moduleAddEvent.ServiceCollection = services;
+                        moduleAddEvent.Configuration = configuration;
 
-                            // Create business rule service (without logfactory since may not be registered yet)
-                            var businessRuleService = new BusinessRuleService(
-                                serviceScope.ServiceProvider,
-                                BusinessRuleRegistry.Instance);
+                        // Create business rule service (without logfactory since may not be registered yet)
+                        var businessRuleService = new BusinessRuleService(
+                            serviceScope.ServiceProvider,
+                            BusinessRuleRegistry.Instance);
 
-                            businessRuleService.ExecuteEvent(moduleAddEvent);
-                        }
-                        catch { }
+                        businessRuleService.ExecuteEvent(moduleAddEvent);
                     }
                 }
             }
@@ -116,18 +112,14 @@ namespace ServiceBricks
                     var moduleAddCompleteEventType = moduleAddCompleteEventTypes.Where(x => x.GenericTypeArguments.Contains(moduleType)).FirstOrDefault();
                     if (moduleAddCompleteEventType != null)
                     {
-                        try
-                        {
-                            var moduleAddCompleteEvent = (ModuleAddCompleteEvent)Activator.CreateInstance(moduleAddCompleteEventType);
-                            moduleAddCompleteEvent.DomainObject = module;
-                            moduleAddCompleteEvent.ServiceCollection = services;
-                            moduleAddCompleteEvent.Configuration = configuration;
+                        var moduleAddCompleteEvent = (ModuleAddCompleteEvent)Activator.CreateInstance(moduleAddCompleteEventType);
+                        moduleAddCompleteEvent.DomainObject = module;
+                        moduleAddCompleteEvent.ServiceCollection = services;
+                        moduleAddCompleteEvent.Configuration = configuration;
 
-                            // Create business rule service
-                            var businessRuleService = serviceScope.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-                            businessRuleService.ExecuteEvent(moduleAddCompleteEvent);
-                        }
-                        catch { }
+                        // Create business rule service
+                        var businessRuleService = serviceScope.ServiceProvider.GetRequiredService<IBusinessRuleService>();
+                        businessRuleService.ExecuteEvent(moduleAddCompleteEvent);
                     }
                 }
 
