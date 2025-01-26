@@ -31,14 +31,14 @@ jobs:
     - name: Test All Projects
       run: dotnet test ServiceBricksV1.sln --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\"
     - name: Merge Test Results to Get Overall Code Coverage
-      run: dotnet test src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet9 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\" -p:MergeWith="../ServiceBricks.XunitNet9/TestResults/coverage.json"
+      run: dotnet test src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet8 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\" -p:MergeWith="../ServiceBricks.XunitNet8/TestResults/coverage.json"
     - name: Create Test Coverage Badge
       uses: simon-k/dotnet-code-coverage-badge@v1.0.0
       id: create_coverage_badge
       with:
         label: Unit Test Coverage
         color: purple
-        path: src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet9/TestResults/coverage.opencover.xml
+        path: src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet8/TestResults/coverage.opencover.xml
         gist-filename: servicebricks-codecoverage.json
         gist-id: bdb5c7c570a7a88ffb3efb3505273e34
         gist-auth-token: ${{ secrets.GIST_AUTH_TOKEN }} 
