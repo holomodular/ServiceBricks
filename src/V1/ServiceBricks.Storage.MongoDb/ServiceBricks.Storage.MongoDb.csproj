@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.2.0</Version>
+		<Version>1.3.0-a</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Storage.MongoDb</PackageId>
 		<Title>ServiceBricks.Storage.MongoDb</Title>
@@ -32,8 +32,12 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
+
 	<ItemGroup>
-		<PackageReference Include="ServiceBricks" Version="1.2.0" />
+		<ProjectReference Include="..\ServiceBricks\ServiceBricks.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>		
 		<PackageReference Include="ServiceQuery.MongoDb" Version="2.2.0" />
 	</ItemGroup>
 

@@ -5,25 +5,20 @@ using ServiceQuery;
 namespace ServiceBricks
 {
     /// <summary>
-    /// This is a service for processing a domain object table like a queue.
+    /// This is a service for processing a domain object table like a work queue.
     /// </summary>
     /// <typeparam name="TDomainObject"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public abstract partial class DomainProcessQueueService<TDomainObject>
-        where TDomainObject : class, IDomainObject<TDomainObject>, IDpProcessQueue
+    public abstract partial class WorkService<TDto>
+        where TDto : class, IDataTransferObject, IDpWorkProcess
     {
-        protected readonly IDomainProcessQueueStorageRepository<TDomainObject> _repository;
-        protected readonly ILogger<DomainProcessQueueService<TDomainObject>> _logger;
+        protected readonly ILogger<WorkService<TDto>> _logger;
+        protected readonly IApiService<TDto> _apiService;
 
         /// <summary>
         /// Default Value.
         /// </summary>
-        public const int BATCH_NUMBER_TO_PROCESS = 1;
-
-        /// <summary>
-        /// Default Value.
-        /// </summary>
-        public const bool CONTINUE_PROCESSING_ON_ERROR = true;
+        public const int BATCH_NUMBER_TO_PROCESS = 10;
 
         /// <summary>
         /// Default Value.
@@ -38,7 +33,7 @@ namespace ServiceBricks
         /// <summary>
         /// Default Value.
         /// </summary>
-        public TimeSpan ORPHANED_RECORD_TIMEOUT = TimeSpan.FromMinutes(10);
+        public static TimeSpan ORPHANED_RECORD_TIMEOUT = TimeSpan.FromMinutes(10);
 
         /// <summary>
         /// Default value.
@@ -48,32 +43,26 @@ namespace ServiceBricks
         /// <summary>
         /// Default Value.
         /// </summary>
-        public TimeSpan FAILED_RETRY_INTERVAL = TimeSpan.FromMinutes(5);
+        public static TimeSpan FAILED_RETRY_INTERVAL = TimeSpan.FromMinutes(5);
 
         /// <summary>
         /// Consrtuctor.
         /// </summary>
         /// <param name="loggerFactory"></param>
-        /// <param name="repository"></param>
-        public DomainProcessQueueService(
+        /// <param name="apiService"></param>
+        public WorkService(
             ILoggerFactory loggerFactory,
-            IDomainProcessQueueStorageRepository<TDomainObject> repository)
+            IApiService<TDto> apiService)
         {
-            _logger = loggerFactory.CreateLogger<DomainProcessQueueService<TDomainObject>>();
-            _repository = repository;
+            _logger = loggerFactory.CreateLogger<WorkService<TDto>>();
+            _apiService = apiService;
             NumberToBatchProcess = BATCH_NUMBER_TO_PROCESS;
-            AllowErrorContinueProcessing = CONTINUE_PROCESSING_ON_ERROR;
             RetryFailedItems = PROCESS_FAILED_MESSAGES;
             RetryCount = RETRY_NUMBER;
             RetryFailedInterval = FAILED_RETRY_INTERVAL;
             FixOrphanedProcessingRecords = FIX_ORPHANED_RECORDS;
             OrphanedProcessingTimeout = ORPHANED_RECORD_TIMEOUT;
         }
-
-        /// <summary>
-        /// If true, the process will continue to process new messages on the queue. If false, will stop processing messages when an error happens.
-        /// </summary>
-        public virtual bool AllowErrorContinueProcessing { get; set; }
 
         /// <summary>
         /// Number of items to pickup in a batch to process.
@@ -106,6 +95,13 @@ namespace ServiceBricks
         public virtual TimeSpan OrphanedProcessingTimeout { get; set; }
 
         /// <summary>
+        /// Process the item.
+        /// </summary>
+        /// <param name="domainObject"></param>
+        /// <returns></returns>
+        public abstract Task<IResponse> ProcessItemAsync(TDto dto);
+
+        /// <summary>
         /// Execute the process.
         /// </summary>
         /// <param name="cancellationToken"></param>
@@ -113,31 +109,22 @@ namespace ServiceBricks
         {
             try
             {
-                IResponseList<TDomainObject> respItems;
+                IResponseList<TDto> respItems;
                 bool processingErrors = false; //Process new records then errors
 
                 if (FixOrphanedProcessingRecords)
                     await FixOrphanedRecords();
 
-                //Main loop
+                // Main loop
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    if (!AllowErrorContinueProcessing)
-                    {
-                        //Get batch set including errors
-                        processingErrors = true;
-                        respItems = await _repository.GetQueueItemsAsync(NumberToBatchProcess, true, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
-                    }
+                    // We are going to process all new messages first, then go back and execute errors that have already happened.
+                    if (processingErrors)
+                        respItems = await GetQueueItemsAsync(NumberToBatchProcess, true, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
                     else
-                    {
-                        //Get batch DOES NOT include errors. We are going to process all new messages first, then go back and execute errors that have already happened.
-                        if (processingErrors)
-                            respItems = await _repository.GetQueueItemsAsync(NumberToBatchProcess, true, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
-                        else
-                            respItems = await _repository.GetQueueItemsAsync(NumberToBatchProcess, false, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
-                    }
+                        respItems = await GetQueueItemsAsync(NumberToBatchProcess, false, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
 
-                    if (!respItems.Success)
+                    if (respItems.Error)
                         return;
 
                     if (respItems.List == null || respItems.List.Count == 0)
@@ -145,14 +132,14 @@ namespace ServiceBricks
                         if (processingErrors) //We completed success and error processing
                             return;
 
-                        //Try to start processing errors
+                        // Try to start processing errors
                         processingErrors = true;
                         if (!RetryFailedItems)
                             return;
                         continue; //restart
                     }
 
-                    //Process each record
+                    // Process each record
                     foreach (var item in respItems.List)
                     {
                         //Cancellation requested, make sure remaining records are marked appropriately
@@ -160,35 +147,12 @@ namespace ServiceBricks
                         {
                             item.IsProcessing = false;
                             item.ProcessDate = DateTimeOffset.UtcNow;
-                            await _repository.UpdateAsync(item);
+                            await _apiService.UpdateAsync(item);
                             continue;
                         }
 
-                        //Next item is an error and we don't process anymore
-                        if (item.IsError)
-                        {
-                            if (!AllowErrorContinueProcessing)
-                            {
-                                _logger.LogWarning(LocalizationResource.WARNING_BUSINESS_QUEUE_PROCESSOR_STOPPED);
-                                return;
-                            }
-
-                            if (!RetryFailedItems)
-                                return;
-
-                            if ((item.RetryCount + 1) > RetryCount)
-                            {
-                                item.IsProcessing = false;
-                                item.ProcessDate = DateTimeOffset.UtcNow;
-                                item.IsComplete = true;
-                                await _repository.UpdateAsync(item);
-                                continue;
-                            }
-                            item.RetryCount++;
-                        }
-
-                        //Actually do the process
-                        await DoProcessingForItem(item);
+                        // Actually do the process
+                        await DoProcessingForItemAsync(item);
                     }
                 }
             }
@@ -203,28 +167,47 @@ namespace ServiceBricks
             DateTimeOffset timeoutDate = DateTimeOffset.UtcNow.Subtract(OrphanedProcessingTimeout);
             ServiceQueryRequestBuilder queryBuilder = new ServiceQueryRequestBuilder();
             queryBuilder
-                .IsEqual(nameof(IDpProcessQueue.IsComplete), false.ToString())
+                .IsEqual(nameof(IDpWorkProcess.IsComplete), false.ToString())
                 .And()
-                .IsEqual(nameof(IDpProcessQueue.IsProcessing), true.ToString())
+                .IsEqual(nameof(IDpWorkProcess.IsProcessing), true.ToString())
                 .And()
-                .IsLessThanOrEqual(nameof(IDpProcessQueue.ProcessDate), timeoutDate.ToString());
-            var respQ = await _repository.QueryAsync(queryBuilder.Build());
-            foreach (var item in respQ.Item.List)
+                .IsLessThanOrEqual(nameof(IDpWorkProcess.ProcessDate), timeoutDate.ToString("o"));
+            var respQ = await _apiService.QueryAsync(queryBuilder.Build());
+            if (respQ.Success && respQ.Item.List.Count > 0)
             {
-                item.IsProcessing = false;
-                item.ProcessDate = DateTimeOffset.UtcNow;
-                await _repository.UpdateAsync(item);
+                foreach (var item in respQ.Item.List)
+                {
+                    item.IsProcessing = false;
+                    item.ProcessDate = DateTimeOffset.UtcNow;
+                    await _apiService.UpdateAsync(item);
+                }
             }
         }
 
-        protected virtual async Task DoProcessingForItem(TDomainObject item)
+        protected virtual async Task DoProcessingForItemAsync(TDto item)
         {
             item.ProcessDate = DateTimeOffset.UtcNow;
+            if (item.IsError)
+            {
+                // Should not process this more than retry allows
+                if ((item.RetryCount + 1) > RetryCount)
+                {
+                    item.IsProcessing = false;
+                    item.IsComplete = true;
+                    await _apiService.UpdateAsync(item);
+                    return;
+                }
+
+                // increment retry count
+                item.RetryCount++;
+            }
 
             try
             {
                 //try to process the item
                 var respProcess = await ProcessItemAsync(item);
+
+                // Save its response
                 item.ProcessResponse = JsonConvert.SerializeObject(respProcess);
                 if (respProcess.Success)
                 {
@@ -251,16 +234,50 @@ namespace ServiceBricks
             finally
             {
                 item.IsProcessing = false;
-                await _repository.UpdateAsync(item);
+                await _apiService.UpdateAsync(item);
             }
         }
 
         /// <summary>
-        /// Process the item.
+        /// Get the list of queue items to process
         /// </summary>
-        /// <param name="domainObject"></param>
+        /// <param name="batchNumberToTake"></param>
+        /// <param name="pickupErrors"></param>
+        /// <param name="errorPickupCutoffDate"></param>
         /// <returns></returns>
-        public abstract Task<IResponse> ProcessItemAsync(TDomainObject domainObject);
+        public virtual async Task<IResponseList<TDto>> GetQueueItemsAsync(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
+        {
+            ResponseList<TDto> response = new ResponseList<TDto>();
+            try
+            {
+                // Check if records are available
+                var query = GetQueueItemsQuery(
+                    batchNumberToTake,
+                    pickupErrors,
+                    errorPickupCutoffDate);
+                DateTimeOffset now = DateTimeOffset.UtcNow;
+                var respQuery = await _apiService.QueryAsync(query);
+                response.CopyFrom(respQuery);
+                if (response.Error || respQuery.Item == null || respQuery.Item.List.Count == 0)
+                    return response;
+
+                foreach (var item in respQuery.Item.List)
+                {
+                    item.IsProcessing = true;
+                    item.ProcessDate = now;
+                    var respUpdate = await _apiService.UpdateAsync(item);
+                    if (respUpdate.Success)
+                        response.List.Add(respUpdate.Item);
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_STORAGE));
+            }
+            return response;
+        }
 
         /// <summary>
         /// Get the query to pickup items from the queue.
@@ -269,29 +286,29 @@ namespace ServiceBricks
         /// <param name="pickupErrors"></param>
         /// <param name="errorPickupCutoffDate"></param>
         /// <returns></returns>
-        public static ServiceQueryRequest GetQueueItemsQuery(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
+        protected virtual ServiceQueryRequest GetQueueItemsQuery(int batchNumberToTake, bool pickupErrors, DateTimeOffset errorPickupCutoffDate)
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
 
             ServiceQueryRequestBuilder query = new ServiceQueryRequestBuilder();
-            query.IsEqual(nameof(IDpProcessQueue.IsComplete), false.ToString())
+            query.IsEqual(nameof(IDpWorkProcess.IsComplete), false.ToString())
                 .And()
-                .IsEqual(nameof(IDpProcessQueue.IsProcessing), false.ToString())
+                .IsEqual(nameof(IDpWorkProcess.IsProcessing), false.ToString())
                 .And()
-                .IsLessThanOrEqual(nameof(IDpProcessQueue.FutureProcessDate), now.ToString("o"));
+                .IsLessThanOrEqual(nameof(IDpWorkProcess.FutureProcessDate), now.ToString("o"));
             if (pickupErrors)
             {
                 query.And()
-                .IsEqual(nameof(IDpProcessQueue.IsError), true.ToString())
+                .IsEqual(nameof(IDpWorkProcess.IsError), true.ToString())
                 .And()
-                .IsLessThanOrEqual(nameof(IDpProcessQueue.ProcessDate), errorPickupCutoffDate.ToString("o"));
+                .IsLessThanOrEqual(nameof(IDpWorkProcess.ProcessDate), errorPickupCutoffDate.ToString("o"));
             }
             else
             {
                 query.And()
-                .IsEqual(nameof(IDpProcessQueue.IsError), false.ToString());
+                .IsEqual(nameof(IDpWorkProcess.IsError), false.ToString());
             }
-            query.Sort(nameof(IDpProcessQueue.CreateDate), true);
+            query.SortAsc(nameof(IDpWorkProcess.CreateDate));
             query.Paging(1, batchNumberToTake, false);
             return query.Build();
         }

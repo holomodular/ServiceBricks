@@ -32,28 +32,29 @@
 		<Compile Include="..\TestFiles\StorageEfc\IExampleApiService.cs" Link="IExampleApiService.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\MappingTest.cs" Link="MappingTest.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\StubApiClientTests.cs" Link="StubApiClientTests.cs" />
+		<Compile Include="..\TestFiles\StorageEfc\WorkServiceTests.cs" Link="WorkServiceTests.cs" />
 	</ItemGroup>
 	
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
-		<ProjectReference Include="..\..\ServiceBricks.Storage.EntityFrameworkCore.Debug\ServiceBricks.Storage.EntityFrameworkCore.Debug.csproj" />
-	  <ProjectReference Include="..\ServiceBricks.XunitNet9\ServiceBricks.XunitNet9.csproj" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />
+		<ProjectReference Include="..\..\ServiceBricks.Storage.EntityFrameworkCore\ServiceBricks.Storage.EntityFrameworkCore.csproj" />
+		<ProjectReference Include="..\ServiceBricks.XunitNet9\ServiceBricks.XunitNet9.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="9.0.1" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
 		<PackageReference Include="xunit" Version="2.9.3" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.1">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="coverlet.collector" Version="6.0.3">
+		<PackageReference Include="coverlet.collector" Version="6.0.4">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="coverlet.msbuild" Version="6.0.3">
+		<PackageReference Include="coverlet.msbuild" Version="6.0.4">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

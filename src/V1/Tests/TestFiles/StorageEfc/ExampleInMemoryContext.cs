@@ -35,6 +35,8 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
 
         public virtual DbSet<ExampleDomain> Examples { get; set; }
 
+        public virtual DbSet<ExampleWorkProcessDomain> ExampleProcessQueue { get; set; }
+
         /// <summary>
         /// OnModelCreating.
         /// </summary>
@@ -42,6 +44,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<ExampleDomain>().HasKey(key => key.Key);
+            builder.Entity<ExampleWorkProcessDomain>().HasKey(key => key.Key);
         }
     }
 }

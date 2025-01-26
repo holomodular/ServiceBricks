@@ -27,7 +27,7 @@
         public DateTime? SimpleNullableDateNotSet { get; set; }
     }
 
-    public class ExampleProcessQueueDomain : IDomainObject<ExampleProcessQueueDomain>, IDpProcessQueue, IDpCreateDate, IDpUpdateDate
+    public class ExampleWorkProcessDto : DataTransferObject, IDpWorkProcess
     {
         public int Key { get; set; }
         public string Name { get; set; }

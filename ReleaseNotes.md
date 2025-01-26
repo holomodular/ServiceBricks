@@ -1,3 +1,8 @@
+v1.3.0-a prerelease
+- Update all nuget package references
+- Add new WorkService to replace DomainProcessQueue
+- Add new test cases for workservice
+
 # 1.2.0
 - Support .NET 9.0
 - Support both sync and async querying with new ServiceQuery release

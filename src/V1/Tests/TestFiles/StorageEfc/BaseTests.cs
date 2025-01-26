@@ -21,11 +21,6 @@
     }
 
     [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
-    public partial class EfcDomainQueueProcessTests : DomainQueueProcessTests
-    {
-    }
-
-    [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
     public partial class EfcDomainRepositoryTests : DomainRepositoryTests
     {
     }

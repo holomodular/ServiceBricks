@@ -15,4 +15,16 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             ApiResource = $"EntityFrameworkCore/Example";
         }
     }
+
+    public class ExampleProcessQueueApiClient : ApiClient<ExampleWorkProcessDto>, IExampleProcessQueueApiClient
+    {
+        public ExampleProcessQueueApiClient(
+            ILoggerFactory loggerFactory,
+            IHttpClientFactory httpClientFactory,
+            IOptions<ClientApiOptions> clientApiOptions)
+            : base(loggerFactory, httpClientFactory, clientApiOptions.Value)
+        {
+            ApiResource = $"EntityFrameworkCore/ExampleProcessQueue";
+        }
+    }
 }

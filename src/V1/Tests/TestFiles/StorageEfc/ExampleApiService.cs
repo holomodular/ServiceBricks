@@ -13,4 +13,15 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
         {
         }
     }
+
+    public class ExampleProcessQueueApiService : ApiService<ExampleWorkProcessDomain, ExampleWorkProcessDto>, IExampleProcessQueueApiService
+    {
+        public ExampleProcessQueueApiService(
+            IMapper mapper,
+            IBusinessRuleService businessRuleService,
+            IDomainRepository<ExampleWorkProcessDomain> domainRepository)
+            : base(mapper, businessRuleService, domainRepository)
+        {
+        }
+    }
 }

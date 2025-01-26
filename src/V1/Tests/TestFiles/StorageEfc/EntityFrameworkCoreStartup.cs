@@ -33,12 +33,16 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             // API Service
             services.AddScoped<IApiService<ExampleDto>, ExampleApiService>();
             services.AddScoped<IExampleApiService, ExampleApiService>();
+            services.AddScoped<IApiService<ExampleWorkProcessDto>, ExampleProcessQueueApiService>();
+            services.AddScoped<IExampleProcessQueueApiService, ExampleProcessQueueApiService>();
 
             // Controllers
             services.AddScoped<IExampleApiController, ExampleApiController>();
+            services.AddScoped<IExampleProcessQueueApiController, ExampleProcessQueueApiController>();
 
             // Storage Services
             services.AddScoped<IStorageRepository<ExampleDomain>, ExampleStorageRepository<ExampleDomain>>();
+            services.AddScoped<IStorageRepository<ExampleWorkProcessDomain>, ExampleStorageRepository<ExampleWorkProcessDomain>>();
 
             // Rules
             ExampleQueryRule.Register(BusinessRuleRegistry.Instance);
@@ -47,6 +51,7 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
 
             // Register TestManager
             services.AddScoped<ITestManager<ExampleDto>, ExampleTestManager>();
+            services.AddScoped<ITestManager<ExampleWorkProcessDto>, ExampleProcessQueueTestManager>();
 
             services.AddServiceBricksComplete(Configuration);
         }

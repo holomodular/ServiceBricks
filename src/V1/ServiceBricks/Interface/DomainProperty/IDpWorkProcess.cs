@@ -3,7 +3,7 @@
     /// <summary>
     /// This allows processing from a database table like a queue.
     /// </summary>
-    public partial interface IDpProcessQueue : IDpCreateDate
+    public partial interface IDpWorkProcess : IDpCreateDate, IDpUpdateDate
     {
         /// <summary>
         /// The retry count.
