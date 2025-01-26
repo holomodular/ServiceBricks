@@ -31,7 +31,7 @@ jobs:
     - name: Test All Projects
       run: dotnet test ServiceBricksV1.sln --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\"
     - name: Merge Test Results to Get Overall Code Coverage
-      run: dotnet test src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet9 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\" -p:MergeWith="../ServiceBricks.XunitNet8/TestResults/coverage.json"
+      run: dotnet test src/V1/Tests/ServiceBricks.Storage.EntityFrameworkCore.XunitNet9 --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\" -p:MergeWith="../ServiceBricks.XunitNet9/TestResults/coverage.json"
     - name: Create Test Coverage Badge
       uses: simon-k/dotnet-code-coverage-badge@v1.0.0
       id: create_coverage_badge
