@@ -21,9 +21,9 @@ jobs:
       with:
         dotnet-version: 9.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ServiceBricksV1Build.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ServiceBricksV1Build.sln --no-restore
     - name: Test All Projects
       run: dotnet test ServiceBricksV1Build.sln --no-build --verbosity normal --filter "FullyQualifiedName!~ServiceBricks.Xunit.Integration" -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=\"json,opencover\"
     - name: Merge Test Results to Get Overall Code Coverage
