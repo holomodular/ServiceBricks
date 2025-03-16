@@ -2,7 +2,6 @@
 using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Text;
 
 namespace ServiceBricks.ServiceBus.Azure
@@ -166,7 +165,7 @@ namespace ServiceBricks.ServiceBus.Azure
         public virtual async Task SendAsync(IDomainBroadcast message)
         {
             var eventName = message.GetType().FullName;
-            var jsonMessage = JsonConvert.SerializeObject(message);
+            var jsonMessage = JsonSerializer.Instance.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(jsonMessage);
 
             var msg = new ServiceBusMessage
@@ -231,7 +230,7 @@ namespace ServiceBricks.ServiceBus.Azure
             if (type != null)
             {
                 // Convert to the broadcast type
-                var domainBroadcast = (IDomainBroadcast)JsonConvert.DeserializeObject(message, type);
+                var domainBroadcast = (IDomainBroadcast)JsonSerializer.Instance.DeserializeObject(message, type);
 
                 using (var scope = _serviceProvider.CreateScope())
                 {

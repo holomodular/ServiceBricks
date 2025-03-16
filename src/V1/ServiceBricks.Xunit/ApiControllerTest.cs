@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 using ServiceQuery;
 
 namespace ServiceBricks.Xunit
@@ -1522,7 +1522,7 @@ namespace ServiceBricks.Xunit
                 }
             }
             else
-                Assert.Fail(JsonConvert.SerializeObject(respGetAll));
+                Assert.Fail(JsonSerializer.Instance.SerializeObject(respGetAll));
 
             //Call Create
             var respCreate = controller.Create(model);

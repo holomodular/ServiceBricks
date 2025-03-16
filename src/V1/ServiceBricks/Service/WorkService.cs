@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using ServiceQuery;
 
 namespace ServiceBricks
@@ -119,10 +118,7 @@ namespace ServiceBricks
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     // We are going to process all new messages first, then go back and execute errors that have already happened.
-                    if (processingErrors)
-                        respItems = await GetQueueItemsAsync(NumberToBatchProcess, true, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
-                    else
-                        respItems = await GetQueueItemsAsync(NumberToBatchProcess, false, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
+                    respItems = await GetQueueItemsAsync(NumberToBatchProcess, processingErrors, DateTimeOffset.UtcNow.Subtract(RetryFailedInterval));
 
                     if (respItems.Error)
                         return;
@@ -208,7 +204,7 @@ namespace ServiceBricks
                 var respProcess = await ProcessItemAsync(item);
 
                 // Save its response
-                item.ProcessResponse = JsonConvert.SerializeObject(respProcess);
+                item.ProcessResponse = JsonSerializer.Instance.SerializeObject(respProcess);
                 if (respProcess.Success)
                 {
                     item.IsError = false;
@@ -226,7 +222,7 @@ namespace ServiceBricks
                 _logger.LogError(ex, ex.Message);
                 Response respError = new Response();
                 respError.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_BUSINESS_QUEUE_PROCESSOR));
-                item.ProcessResponse = JsonConvert.SerializeObject(respError);
+                item.ProcessResponse = JsonSerializer.Instance.SerializeObject(respError);
                 item.IsError = true;
                 if ((item.RetryCount + 1) > RetryCount)
                     item.IsComplete = true;

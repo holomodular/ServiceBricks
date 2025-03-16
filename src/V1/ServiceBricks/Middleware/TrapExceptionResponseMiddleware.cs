@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System.Net;
 
 namespace ServiceBricks
@@ -82,7 +81,7 @@ namespace ServiceBricks
 
                     // Write response object
                     await context.Response.WriteAsync(
-                        JsonConvert.SerializeObject(response));
+                        JsonSerializer.Instance.SerializeObject(response));
                     return;
                 }
 
@@ -107,7 +106,7 @@ namespace ServiceBricks
 
                 // Write problem details
                 await context.Response.WriteAsync(
-                    JsonConvert.SerializeObject(details));
+                    JsonSerializer.Instance.SerializeObject(details));
             }
         }
     }

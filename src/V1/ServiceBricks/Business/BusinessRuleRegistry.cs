@@ -24,15 +24,6 @@ namespace ServiceBricks
         public static BusinessRuleRegistry Instance = new BusinessRuleRegistry();
 
         /// <summary>
-        /// Constructor.
-        /// </summary>
-        public BusinessRuleRegistry()
-        {
-            LockObject = new ReaderWriterLock();
-            Cache = new Dictionary<Type, IList<RegistryContext<Type>>>();
-        }
-
-        /// <summary>
         /// Get an item.
         /// </summary>
         /// <param name="key"></param>

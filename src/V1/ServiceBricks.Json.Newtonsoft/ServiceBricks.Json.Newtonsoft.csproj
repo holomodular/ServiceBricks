@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<Version>1.3.0-b</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
-		<PackageId>ServiceBricks</PackageId>
-		<Title>ServiceBricks</Title>
-		<AssemblyTitle>ServiceBricks</AssemblyTitle>				
+		<PackageId>ServiceBricks.Json.Newtonsoft</PackageId>
+		<Title>ServiceBricks.Json.Newtonsoft</Title>
+		<AssemblyTitle>ServiceBricks.Json.Newtonsoft</AssemblyTitle>
 		<Authors>holomodular</Authors>
 		<Company>HoloModular LLC</Company>
 		<Product>ServiceBricks</Product>
@@ -14,16 +14,16 @@
 		<Copyright>Copyright © 2025 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
 		<PackageProjectUrl>https://ServiceBricks.com</PackageProjectUrl>
 		<PackageIcon>logo.png</PackageIcon>
-		<PackageTags>servicebricks;opensource;microservice;api;crud;ai;model;generation</PackageTags>
+		<PackageTags>servicebricks;json;newtonsoft</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<SignAssembly>True</SignAssembly>
-		<AssemblyOriginatorKeyFile>Resource\ServiceBricks.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>Resource\ServiceBricks.Json.Newtonsoft.snk</AssemblyOriginatorKeyFile>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
-		<IsPackable>True</IsPackable>		
+		<IsPackable>True</IsPackable>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="Resource\readme.md" Pack="True" PackagePath="\" />
@@ -32,29 +32,13 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-	
+
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>		
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="AutoMapper" Version="13.0.1" />
-		<PackageReference Include="ServiceQuery" Version="2.2.1" />
+		<ProjectReference Include="..\ServiceBricks\ServiceBricks.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="AutoMapper" Version="13.0.1" />		
-		<PackageReference Include="ServiceQuery" Version="2.2.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="AutoMapper" Version="14.0.0" />
-		<PackageReference Include="ServiceQuery" Version="2.2.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-		<PackageReference Include="AutoMapper" Version="14.0.0" />
-		<PackageReference Include="ServiceQuery" Version="2.2.1" />
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 </Project>

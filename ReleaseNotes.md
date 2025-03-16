@@ -1,3 +1,10 @@
+v1.3.0-b prerelease
+- Update all nuget package references
+- Removed Newtsonft.Json from ServiceBricks and added new project for abstraction. Uses System.Text.Json by default. Use IJsonSerializer with DI or JsonSerializer class with public static Instance for quick access and to not clutter DI.
+- Added Boolean LogExceptions property to all storage providers, so logging can be disabled when exceptions expected (semaphore).
+- Background timers will now change state to stop when ticking and restart when processing completes.
+- Minor fixes
+
 v1.3.0-a prerelease
 - Update all nuget package references
 - Add new WorkService to replace DomainProcessQueue

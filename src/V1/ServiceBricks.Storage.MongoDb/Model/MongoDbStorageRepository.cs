@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Newtonsoft.Json;
 using ServiceQuery;
 
 namespace ServiceBricks.Storage.MongoDb
@@ -25,6 +24,8 @@ namespace ServiceBricks.Storage.MongoDb
             ILoggerFactory logFactory)
         {
             _logger = logFactory.CreateLogger<MongoDbStorageRepository<TDomain>>();
+            LogServiceQueryErrors = false;
+            LogExceptions = true;
         }
 
         /// <summary>
@@ -51,6 +52,11 @@ namespace ServiceBricks.Storage.MongoDb
         /// Determines if service query errors are logged.
         /// </summary>
         public virtual bool LogServiceQueryErrors { get; set; }
+
+        /// <summary>
+        /// Determines if logging is enabled.
+        /// </summary>
+        public virtual bool LogExceptions { get; set; }
 
         /// <summary>
         /// Collection Settings
@@ -89,7 +95,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Delete)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Delete)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -113,7 +120,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(DeleteAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(DeleteAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -136,7 +144,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Create)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Create)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -159,7 +168,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(CreateAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(CreateAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -183,7 +193,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Update)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Update)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -207,7 +218,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(UpdateAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(UpdateAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -232,7 +244,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Get)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Get)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;
@@ -257,7 +270,8 @@ namespace ServiceBricks.Storage.MongoDb
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(GetAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(GetAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;
@@ -288,12 +302,13 @@ namespace ServiceBricks.Storage.MongoDb
             catch (ServiceQueryException sqe)
             {
                 if (LogServiceQueryErrors)
-                    _logger.LogError(sqe, $"{nameof(Query)} {sqe.Message} {JsonConvert.SerializeObject(request)}");
+                    _logger.LogError(sqe, $"{nameof(Query)} {sqe.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(sqe, LocalizationResource.ERROR_SERVICEQUERY));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Query)} {ex.Message} {JsonConvert.SerializeObject(request)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Query)} {ex.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;
@@ -324,12 +339,13 @@ namespace ServiceBricks.Storage.MongoDb
             catch (ServiceQueryException sqe)
             {
                 if (LogServiceQueryErrors)
-                    _logger.LogError(sqe, $"{nameof(QueryAsync)} {sqe.Message} {JsonConvert.SerializeObject(request)}");
+                    _logger.LogError(sqe, $"{nameof(QueryAsync)} {sqe.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(sqe, LocalizationResource.ERROR_SERVICEQUERY));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(QueryAsync)} {ex.Message} {JsonConvert.SerializeObject(request)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(QueryAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;

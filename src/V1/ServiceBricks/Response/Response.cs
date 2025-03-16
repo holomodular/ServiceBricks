@@ -129,7 +129,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public override string ToString()
         {
-            return System.Text.Json.JsonSerializer.Serialize(this);
+            return JsonSerializer.Instance.SerializeObject(this);
         }
 
         /// <summary>

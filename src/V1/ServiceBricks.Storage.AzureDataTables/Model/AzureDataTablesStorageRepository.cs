@@ -1,7 +1,6 @@
 ﻿using Azure;
 using Azure.Data.Tables;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using ServiceQuery;
 
 namespace ServiceBricks.Storage.AzureDataTables
@@ -23,6 +22,8 @@ namespace ServiceBricks.Storage.AzureDataTables
             ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<AzureDataTablesStorageRepository<TDomain>>();
+            LogExceptions = true;
+            LogServiceQueryErrors = false;
         }
 
         /// <summary>
@@ -51,6 +52,11 @@ namespace ServiceBricks.Storage.AzureDataTables
         public virtual bool LogServiceQueryErrors { get; set; }
 
         /// <summary>
+        /// Determines if logging is enabled.
+        /// </summary>
+        public virtual bool LogExceptions { get; set; }
+
+        /// <summary>
         /// Get the storage repository.
         /// </summary>
         /// <returns></returns>
@@ -74,7 +80,8 @@ namespace ServiceBricks.Storage.AzureDataTables
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Delete)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Delete)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -95,7 +102,8 @@ namespace ServiceBricks.Storage.AzureDataTables
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(DeleteAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(DeleteAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -117,7 +125,8 @@ namespace ServiceBricks.Storage.AzureDataTables
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Create)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Create)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -139,7 +148,8 @@ namespace ServiceBricks.Storage.AzureDataTables
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(CreateAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(CreateAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -160,7 +170,8 @@ namespace ServiceBricks.Storage.AzureDataTables
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Update)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Update)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -181,7 +192,8 @@ namespace ServiceBricks.Storage.AzureDataTables
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(UpdateAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(UpdateAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 resp.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return resp;
@@ -204,12 +216,15 @@ namespace ServiceBricks.Storage.AzureDataTables
             {
                 if (rfe.ErrorCode == "ResourceNotFound") //no errors if missing
                     return response;
-                _logger.LogError(rfe, $"{nameof(Get)} {rfe.Message} {JsonConvert.SerializeObject(obj)}");
+
+                if (LogExceptions)
+                    _logger.LogError(rfe, $"{nameof(Get)} {rfe.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 response.AddMessage(ResponseMessage.CreateError(rfe, LocalizationResource.ERROR_STORAGE));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Get)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Get)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;
@@ -232,12 +247,15 @@ namespace ServiceBricks.Storage.AzureDataTables
             {
                 if (rfe.ErrorCode == "ResourceNotFound") //no errors if missing
                     return response;
-                _logger.LogError(rfe, $"{nameof(GetAsync)} {rfe.Message} {JsonConvert.SerializeObject(obj)}");
+
+                if (LogExceptions)
+                    _logger.LogError(rfe, $"{nameof(GetAsync)} {rfe.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 response.AddMessage(ResponseMessage.CreateError(rfe, LocalizationResource.ERROR_STORAGE));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(GetAsync)} {ex.Message} {JsonConvert.SerializeObject(obj)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(GetAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(obj)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;
@@ -266,12 +284,13 @@ namespace ServiceBricks.Storage.AzureDataTables
             catch (ServiceQueryException sqe)
             {
                 if (LogServiceQueryErrors)
-                    _logger.LogError(sqe, $"{nameof(Query)} {sqe.Message} {JsonConvert.SerializeObject(request)}");
+                    _logger.LogError(sqe, $"{nameof(Query)} {sqe.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(sqe, LocalizationResource.ERROR_SERVICEQUERY));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(Query)} {ex.Message} {JsonConvert.SerializeObject(request)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(Query)} {ex.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;
@@ -300,12 +319,13 @@ namespace ServiceBricks.Storage.AzureDataTables
             catch (ServiceQueryException sqe)
             {
                 if (LogServiceQueryErrors)
-                    _logger.LogError(sqe, $"{nameof(QueryAsync)} {sqe.Message} {JsonConvert.SerializeObject(request)}");
+                    _logger.LogError(sqe, $"{nameof(QueryAsync)} {sqe.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(sqe, LocalizationResource.ERROR_SERVICEQUERY));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{nameof(QueryAsync)} {ex.Message} {JsonConvert.SerializeObject(request)}");
+                if (LogExceptions)
+                    _logger.LogError(ex, $"{nameof(QueryAsync)} {ex.Message} {JsonSerializer.Instance.SerializeObject(request)}");
                 response.AddMessage(ResponseMessage.CreateError(ex, LocalizationResource.ERROR_STORAGE));
             }
             return response;

@@ -154,7 +154,8 @@ namespace ServiceBricks
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, $"Creating registered rule {type.Value}");
+                            if (_logger != null)
+                                _logger.LogError(ex, $"Creating registered rule {type.Value}");
                         }
                     }
                 }
@@ -258,7 +259,8 @@ namespace ServiceBricks
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, $"Creating registered rule {type.Value}");
+                            if (_logger != null)
+                                _logger.LogError(ex, $"Creating registered rule {type.Value}");
                         }
                     }
                 }

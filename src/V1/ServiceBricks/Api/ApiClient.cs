@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using ServiceQuery;
 using System.Text;
 
@@ -97,7 +96,7 @@ namespace ServiceBricks
                 {
                     // Deserialize content to ITEM in the format of TModel
                     if (!string.IsNullOrEmpty(content))
-                        resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                        resp.Item = JsonSerializer.Instance.DeserializeObject<TModel>(content);
                 }
                 else
                 {
@@ -108,13 +107,13 @@ namespace ServiceBricks
                     if (_clientApiOptions.ReturnResponseObject)
                     {
                         if (!string.IsNullOrEmpty(content))
-                            resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                            resp.Item = JsonSerializer.Instance.DeserializeObject<TModel>(content);
                     }
                     else
                     {
                         try
                         {
-                            var pd = JsonConvert.DeserializeObject<ProblemDetails>(content);
+                            var pd = JsonSerializer.Instance.DeserializeObject<ProblemDetails>(content);
                             if (pd != null)
                                 resp.AddMessage(ResponseMessage.CreateError(pd.Title + ":" + pd.Detail));
                         }
@@ -168,7 +167,7 @@ namespace ServiceBricks
                 {
                     // Deserialize content to ITEM in the format of TModel
                     if (!string.IsNullOrEmpty(content))
-                        resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                        resp.Item = JsonSerializer.Instance.DeserializeObject<TModel>(content);
                     return resp;
                 }
                 else
@@ -180,13 +179,13 @@ namespace ServiceBricks
                     if (_clientApiOptions.ReturnResponseObject)
                     {
                         if (!string.IsNullOrEmpty(content))
-                            resp.Item = JsonConvert.DeserializeObject<TModel>(content);
+                            resp.Item = JsonSerializer.Instance.DeserializeObject<TModel>(content);
                     }
                     else
                     {
                         try
                         {
-                            var pd = JsonConvert.DeserializeObject<ProblemDetails>(content);
+                            var pd = JsonSerializer.Instance.DeserializeObject<ProblemDetails>(content);
                             if (pd != null)
                                 resp.AddMessage(ResponseMessage.CreateError(pd.Title + ":" + pd.Detail));
                         }
@@ -276,7 +275,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Put,
                 $"{BaseUrl}/{ApiResource}/Update");
-            string data = JsonConvert.SerializeObject(dto);
+            string data = JsonSerializer.Instance.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
 
             // Execute request
@@ -313,7 +312,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Put,
                 $"{BaseUrl}/{ApiResource}/UpdateAsync");
-            string data = JsonConvert.SerializeObject(dto);
+            string data = JsonSerializer.Instance.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
 
             // Execute request
@@ -350,7 +349,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/Create");
-            string data = JsonConvert.SerializeObject(dto);
+            string data = JsonSerializer.Instance.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
 
             // Execute request
@@ -387,7 +386,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/CreateAsync");
-            string data = JsonConvert.SerializeObject(dto);
+            string data = JsonSerializer.Instance.SerializeObject(dto);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
 
             // Execute request
@@ -466,7 +465,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/Query");
-            string data = JsonConvert.SerializeObject(serviceQueryRequest);
+            string data = JsonSerializer.Instance.SerializeObject(serviceQueryRequest);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
 
             // Execute request
@@ -503,7 +502,7 @@ namespace ServiceBricks
             HttpRequestMessage request = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"{BaseUrl}/{ApiResource}/QueryAsync");
-            string data = JsonConvert.SerializeObject(serviceQueryRequest);
+            string data = JsonSerializer.Instance.SerializeObject(serviceQueryRequest);
             request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
 
             // Execute request

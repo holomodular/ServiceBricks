@@ -56,6 +56,9 @@ namespace ServiceBricks
             // HttpContextAccessor
             services.AddHttpContextAccessor();
 
+            // Json Serializer
+            services.AddSingleton<IJsonSerializer>(JsonSerializer.Instance);
+
             // Options
             services.AddOptions();
             services.Configure<ApplicationOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APPLICATIONOPTIONS));
@@ -84,9 +87,6 @@ namespace ServiceBricks
             services.AddHostedService<ServiceBusQueueHostedService>();
             services.AddScoped<ServiceBusTaskWorker<IDomainBroadcast>>();
             services.AddSingleton<IServiceBus, ServiceBusInMemory>();
-
-            // Misc
-            ModuleSetStartedRule<ServiceBricksModule>.Register(BusinessRuleRegistry.Instance);
 
             return response;
         }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Text;
 
 namespace ServiceBricks
@@ -113,7 +112,7 @@ namespace ServiceBricks
             try
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _bearerTokenCredentials.AuthorizationUrl);
-                string data = JsonConvert.SerializeObject(_bearerTokenCredentials.AccessTokenRequest);
+                string data = JsonSerializer.Instance.SerializeObject(_bearerTokenCredentials.AccessTokenRequest);
                 request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
                 var result = base.Send(request);
                 if (result != null && result.IsSuccessStatusCode)
@@ -123,7 +122,7 @@ namespace ServiceBricks
                         using (StreamReader reader = new StreamReader(stream))
                         {
                             string content = reader.ReadToEnd();
-                            response.Item = JsonConvert.DeserializeObject<AccessTokenResponse>(content);
+                            response.Item = JsonSerializer.Instance.DeserializeObject<AccessTokenResponse>(content);
                         }
                     }
                 }
@@ -155,13 +154,13 @@ namespace ServiceBricks
             try
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _bearerTokenCredentials.AuthorizationUrl);
-                string data = JsonConvert.SerializeObject(_bearerTokenCredentials.AccessTokenRequest);
+                string data = JsonSerializer.Instance.SerializeObject(_bearerTokenCredentials.AccessTokenRequest);
                 request.Content = new StringContent(data, Encoding.UTF8, CONTENTTYPE_APPLICATIONJSON);
                 var result = await base.SendAsync(request);
                 if (result != null && result.IsSuccessStatusCode)
                 {
                     var content = await result.Content.ReadAsStringAsync();
-                    response.Item = JsonConvert.DeserializeObject<AccessTokenResponse>(content);
+                    response.Item = JsonSerializer.Instance.DeserializeObject<AccessTokenResponse>(content);
                 }
                 else
                     response.AddMessage(ResponseMessage.CreateError(LocalizationResource.ERROR_REST_CLIENT));

@@ -98,14 +98,26 @@ namespace ServiceBricks
         /// <param name="state"></param>
         protected virtual void TimerProcessing(object state)
         {
+            // Stop the timer
+            _timer?.Change(Timeout.Infinite, 0);
+
             if (TimerTickShouldProcessRun())
             {
+                // Mark the task as running
+                Interlocked.Exchange(ref _isCurrentlyRunning, 1);
+
                 // Start the background task
                 Task.Run(async () =>
                 {
                     await BackgroundProcess(_cancellationToken);
                 });
+
+                // Mark the task as not running
+                Interlocked.Exchange(ref _isCurrentlyRunning, 0);
             }
+
+            // Restart the timer
+            _timer?.Change(TimeSpan.Zero, TimerTickInterval);
         }
 
         /// <summary>
@@ -114,9 +126,6 @@ namespace ServiceBricks
         /// <returns></returns>
         protected virtual async Task BackgroundProcess(CancellationToken cancellationToken)
         {
-            // Mark the task as running
-            Interlocked.Exchange(ref _isCurrentlyRunning, 1);
-
             // Create a scope for the worker
             try
             {
@@ -140,9 +149,6 @@ namespace ServiceBricks
             {
                 _logger.LogCritical(ex, ex.Message);
             }
-
-            // Mark the task as not running
-            Interlocked.Exchange(ref _isCurrentlyRunning, 0);
         }
     }
 }

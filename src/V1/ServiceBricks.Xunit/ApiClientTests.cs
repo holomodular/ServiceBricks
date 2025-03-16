@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using ServiceQuery;
 
 namespace ServiceBricks.Xunit
@@ -83,7 +82,7 @@ namespace ServiceBricks.Xunit
 
                     if (_service != null)
                     {
-                        var dto = JsonConvert.DeserializeObject<TDto>(content);
+                        var dto = JsonSerializer.Instance.DeserializeObject<TDto>(content);
                         var resp = _service.Update(dto);
                         return GetClientResponse(resp);
                     }
@@ -105,7 +104,7 @@ namespace ServiceBricks.Xunit
                         QueryCalled = true;
                         if (_service != null)
                         {
-                            var dto = JsonConvert.DeserializeObject<ServiceQueryRequest>(content);
+                            var dto = JsonSerializer.Instance.DeserializeObject<ServiceQueryRequest>(content);
                             var resp = _service.Query(dto);
                             return GetClientResponse(resp);
                         }
@@ -115,7 +114,7 @@ namespace ServiceBricks.Xunit
                         CreateCalled = true;
                         if (_service != null)
                         {
-                            var dto = JsonConvert.DeserializeObject<TDto>(content);
+                            var dto = JsonSerializer.Instance.DeserializeObject<TDto>(content);
                             var resp = _service.Create(dto);
                             return GetClientResponse(resp);
                         }
@@ -139,13 +138,13 @@ namespace ServiceBricks.Xunit
                 {
                     return new HttpResponseMessage()
                     {
-                        Content = new StringContent(JsonConvert.SerializeObject(or.Value)),
+                        Content = new StringContent(JsonSerializer.Instance.SerializeObject(or.Value)),
                         StatusCode = or.StatusCode.Value == 200 ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.BadRequest
                     };
                 }
                 return new HttpResponseMessage()
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(response))
+                    Content = new StringContent(JsonSerializer.Instance.SerializeObject(response))
                 };
             }
 
@@ -184,7 +183,7 @@ namespace ServiceBricks.Xunit
 
                     if (_service != null)
                     {
-                        var dto = JsonConvert.DeserializeObject<TDto>(content);
+                        var dto = JsonSerializer.Instance.DeserializeObject<TDto>(content);
                         var resp = _service.Update(dto);
                         return GetClientResponse(resp);
                     }
@@ -206,7 +205,7 @@ namespace ServiceBricks.Xunit
                         QueryAsyncCalled = true;
                         if (_service != null)
                         {
-                            var dto = JsonConvert.DeserializeObject<ServiceQueryRequest>(content);
+                            var dto = JsonSerializer.Instance.DeserializeObject<ServiceQueryRequest>(content);
                             var resp = _service.Query(dto);
                             return GetClientResponse(resp);
                         }
@@ -216,7 +215,7 @@ namespace ServiceBricks.Xunit
                         CreateAsyncCalled = true;
                         if (_service != null)
                         {
-                            var dto = JsonConvert.DeserializeObject<TDto>(content);
+                            var dto = JsonSerializer.Instance.DeserializeObject<TDto>(content);
                             var resp = _service.Create(dto);
                             return GetClientResponse(resp);
                         }
