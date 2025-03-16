@@ -1,3 +1,8 @@
+v1.3.0-c prerelease
+- Fixes for background timer
+- Note: Net8 now uses EntityFrameworkCore 9
+- Note: ServiceQuery updated to 2.2.1
+
 v1.3.0-b prerelease
 - Update all nuget package references
 - Removed Newtsonft.Json from ServiceBricks and added new project for abstraction. Uses System.Text.Json by default. Use IJsonSerializer with DI or JsonSerializer class with public static Instance for quick access and to not clutter DI.

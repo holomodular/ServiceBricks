@@ -32,6 +32,8 @@ namespace ServiceBricks
         {
             _serviceProvider = serviceProvider;
             _logger = logger.CreateLogger<TaskTimerHostedService<TWorkDetail, TWorker>>();
+            TimerTickInterval = TimeSpan.FromMinutes(30);
+            TimerDueTime = TimeSpan.FromSeconds(3);
         }
 
         /// <summary>
@@ -51,12 +53,12 @@ namespace ServiceBricks
         /// <summary>
         /// The interval at which the timer ticks.
         /// </summary>
-        public abstract TimeSpan TimerTickInterval { get; }
+        public virtual TimeSpan TimerTickInterval { get; set; }
 
         /// <summary>
         /// The time to wait before the timer starts.
         /// </summary>
-        public abstract TimeSpan TimerDueTime { get; }
+        public virtual TimeSpan TimerDueTime { get; set; }
 
         /// <summary>
         /// The work detail to be processed.
@@ -77,7 +79,7 @@ namespace ServiceBricks
         public virtual Task StartAsync(CancellationToken cancellationToken)
         {
             _cancellationToken = cancellationToken;
-            _timer = new Timer(TimerProcessing, null, TimerDueTime, TimerTickInterval);
+            _timer = new Timer(TimerProcessing, null, TimerDueTime, Timeout.InfiniteTimeSpan);
             return Task.CompletedTask;
         }
 
@@ -88,7 +90,7 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual Task StopAsync(CancellationToken cancellationToken)
         {
-            _timer?.Change(Timeout.Infinite, 0);
+            _timer?.Change(Timeout.Infinite, Timeout.Infinite);
             return Task.CompletedTask;
         }
 
@@ -99,7 +101,7 @@ namespace ServiceBricks
         protected virtual void TimerProcessing(object state)
         {
             // Stop the timer
-            _timer?.Change(Timeout.Infinite, 0);
+            _timer?.Change(Timeout.Infinite, Timeout.Infinite);
 
             if (TimerTickShouldProcessRun())
             {
@@ -117,7 +119,7 @@ namespace ServiceBricks
             }
 
             // Restart the timer
-            _timer?.Change(TimeSpan.Zero, TimerTickInterval);
+            _timer?.Change(TimerTickInterval, Timeout.InfiniteTimeSpan);
         }
 
         /// <summary>
