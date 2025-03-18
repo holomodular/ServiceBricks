@@ -631,7 +631,7 @@ namespace ServiceBricks.Xunit
             var minmodel = TestManager.GetMinimumDataObject();
             var mindto = CreateBase(minmodel);
 
-            var maxmodel = TestManager.GetMinimumDataObject();
+            var maxmodel = TestManager.GetMaximumDataObject();
             var maxdto = CreateBase(maxmodel);
 
             //Call GetAll again after create

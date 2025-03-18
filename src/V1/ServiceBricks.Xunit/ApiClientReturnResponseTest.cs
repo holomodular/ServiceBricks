@@ -108,7 +108,7 @@ namespace ServiceBricks.Xunit
             Assert.True(respGetAll.Success);
             existingCount = respGetAll.Item.List.Count;
 
-            var minmodel = TestManager.GetMaximumDataObject();
+            var minmodel = TestManager.GetMinimumDataObject();
             var mindto = await CreateBaseReturnResponseAsync(minmodel);
 
             var maxmodel = TestManager.GetMaximumDataObject();
