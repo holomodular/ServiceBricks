@@ -36,11 +36,6 @@
     }
 
     [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
-    public partial class EfcMappingTests : MappingTests
-    {
-    }
-
-    [Collection(Constants.SERVICEBRICKS_COLLECTION_NAME)]
     public partial class EfcMiddlewareTests : MiddlewareTests
     {
     }

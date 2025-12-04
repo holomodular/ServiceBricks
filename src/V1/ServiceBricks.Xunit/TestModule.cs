@@ -8,10 +8,6 @@ namespace ServiceBricks.Xunit
 
         public TestModule()
         {
-            AutomapperAssemblies = new List<Assembly>()
-            {
-                typeof(TestModule).Assembly
-            };
         }
     }
 }

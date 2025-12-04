@@ -1,6 +1,4 @@
-﻿using ServiceBricks.Business;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a registry of all modules registered in the application.

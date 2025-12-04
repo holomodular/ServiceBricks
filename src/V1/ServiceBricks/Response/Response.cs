@@ -163,5 +163,46 @@ namespace ServiceBricks
             }
             return outputMessage;
         }
+
+        /// <summary>
+        /// Scrub the response to remove any sensitive system errors.
+        /// </summary>
+        public virtual void Scrub()
+        {
+            if (_messages == null)
+            {
+                if (Error)
+                {
+                    _messages = new List<IResponseMessage>()
+                    {
+                        new ResponseMessage()
+                        {
+                            Severity = ResponseSeverity.Error,
+                            Message = LocalizationResource.ERROR_SYSTEM
+                        }
+                    };
+                }
+                return;
+            }
+
+            for (int i = 0; i < _messages.Count; i++)
+            {
+                if (_messages[i].Severity == ResponseSeverity.ErrorSystemSensitive)
+                {
+                    _messages.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+            }
+
+            if (Error && !_messages.Any(x => x.Severity == ResponseSeverity.Error))
+            {
+                _messages.Add(new ResponseMessage()
+                {
+                    Severity = ResponseSeverity.Error,
+                    Message = LocalizationResource.ERROR_SYSTEM
+                });
+            }
+        }
     }
 }

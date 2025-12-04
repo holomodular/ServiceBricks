@@ -31,11 +31,6 @@ namespace ServiceBricks
         public virtual List<IModule> DependentModules { get; set; }
 
         /// <summary>
-        ///  The list of automapper assemblies.
-        /// </summary>
-        public virtual List<Assembly> AutomapperAssemblies { get; set; }
-
-        /// <summary>
         /// The list of view assemblies.
         /// </summary>
         public virtual List<Assembly> ViewAssemblies { get; set; }

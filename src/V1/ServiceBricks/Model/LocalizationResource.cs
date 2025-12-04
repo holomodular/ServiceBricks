@@ -17,6 +17,8 @@
 
         public const string ERROR_BUSINESS_QUEUE_PROCESSOR_STOPPED_CRITICAL = "Critical system error queue processor has been stopped by an error item";
 
+        public const string ERROR_MAPPING = "System Error with mapping";
+
         public const string ERROR_PROCESS = "System error with background process";
 
         public const string ERROR_PROVIDER = "System error with provider";

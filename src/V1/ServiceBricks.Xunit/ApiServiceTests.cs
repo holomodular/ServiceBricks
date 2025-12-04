@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -145,11 +144,50 @@ namespace ServiceBricks.Xunit
             }
         }
 
+        public class ExampleMappingProfile
+        {
+            /// <summary>
+            /// Register the mapping
+            /// </summary>
+            public static void Register(IMapperRegistry registry)
+            {
+                registry.Register<ExampleDomain, ExampleDto>(
+                    (s, d) =>
+                    {
+                        d.CreateDate = s.CreateDate;
+                        d.ExampleDate = s.ExampleDate;
+                        d.ExampleNullableDate = s.ExampleNullableDate;
+                        d.ExampleNullableDateNotSet = s.ExampleNullableDateNotSet;
+                        d.Name = s.Name;
+                        d.SimpleDate = s.SimpleDate;
+                        d.SimpleNullableDate = s.SimpleNullableDate.HasValue ? s.SimpleNullableDate.Value : DateTime.MinValue;
+                        d.SimpleNullableDateNotSet = s.SimpleNullableDateNotSet;
+                        d.StorageKey = s.Key.ToString();
+                        d.UpdateDate = s.UpdateDate;
+                    });
+
+                registry.Register<ExampleDto, ExampleDomain>(
+                    (s, d) =>
+                    {
+                        d.CreateDate = s.CreateDate;
+                        d.ExampleDate = s.ExampleDate;
+                        d.ExampleNullableDate = s.ExampleNullableDate;
+                        d.ExampleNullableDateNotSet = s.ExampleNullableDateNotSet;
+                        d.Key = string.IsNullOrEmpty(s.StorageKey) ? 0 : int.Parse(s.StorageKey);
+                        d.Name = s.Name;
+                        d.SimpleDate = s.SimpleDate;
+                        d.SimpleNullableDate = s.SimpleNullableDate;
+                        d.SimpleNullableDateNotSet = s.SimpleNullableDateNotSet;
+                        d.UpdateDate = s.UpdateDate;
+                    });
+            }
+        }
+
         [Fact]
         public virtual Task ApiServiceCallStorageSuccess()
         {
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-
+            ExampleMappingProfile.Register(MapperRegistry.Instance);
             var storageRepository = new ExampleStorageRepository();
             var domainRepo = new DomainRepository<ExampleDomain>(
                 SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),
@@ -198,7 +236,7 @@ namespace ServiceBricks.Xunit
         public virtual async Task ApiServiceCallStorageSuccessAsync()
         {
             var businessRuleService = SystemManager.ServiceProvider.GetRequiredService<IBusinessRuleService>();
-
+            ExampleMappingProfile.Register(MapperRegistry.Instance);
             var storageRepository = new ExampleStorageRepository();
             var domainRepo = new DomainRepository<ExampleDomain>(
                 SystemManager.ServiceProvider.GetRequiredService<ILoggerFactory>(),

@@ -44,6 +44,10 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
             services.AddScoped<IStorageRepository<ExampleDomain>, ExampleStorageRepository<ExampleDomain>>();
             services.AddScoped<IStorageRepository<ExampleWorkProcessDomain>, ExampleStorageRepository<ExampleWorkProcessDomain>>();
 
+            // Mappings
+            Mapping.ExampleMappingProfile.Register(MapperRegistry.Instance);
+            Mapping.ExampleProcessQueueMappingProfile.Register(MapperRegistry.Instance);
+
             // Rules
             ExampleQueryRule.Register(BusinessRuleRegistry.Instance);
 

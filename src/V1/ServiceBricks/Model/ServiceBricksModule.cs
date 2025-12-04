@@ -17,10 +17,6 @@ namespace ServiceBricks
         /// </summary>
         public ServiceBricksModule()
         {
-            AutomapperAssemblies = new List<Assembly>()
-            {
-                typeof(ServiceBricksModule).Assembly
-            };
         }
     }
 }

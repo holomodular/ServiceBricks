@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ServiceBricks;
 
 namespace ServiceBricks
 {
@@ -98,7 +99,7 @@ namespace ServiceBricks
         /// The timer processing method.
         /// </summary>
         /// <param name="state"></param>
-        protected virtual void TimerProcessing(object state)
+        protected virtual async void TimerProcessing(object state)
         {
             // Stop the timer
             _timer?.Change(Timeout.Infinite, Timeout.Infinite);
@@ -109,10 +110,7 @@ namespace ServiceBricks
                 Interlocked.Exchange(ref _isCurrentlyRunning, 1);
 
                 // Start the background task
-                Task.Run(async () =>
-                {
-                    await BackgroundProcess(_cancellationToken);
-                });
+                var resp = await BackgroundProcess(_cancellationToken);
 
                 // Mark the task as not running
                 Interlocked.Exchange(ref _isCurrentlyRunning, 0);
@@ -126,7 +124,7 @@ namespace ServiceBricks
         /// The background process that dequeues work and processes it.
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task BackgroundProcess(CancellationToken cancellationToken)
+        protected virtual async Task<IResponse> BackgroundProcess(CancellationToken cancellationToken)
         {
             // Create a scope for the worker
             try
@@ -145,11 +143,18 @@ namespace ServiceBricks
                     var task = (Task)workerType.GetMethod("DoWork")
                         .Invoke(worker, new object[] { TaskDetail, cancellationToken });
                     await task;
+
+                    worker = null;
+                    task = null;
+                    return new Response();
                 }
             }
             catch (Exception ex)
             {
+                Response respEr = new Response();
+                respEr.AddMessage(ResponseMessage.CreateError(ex));
                 _logger.LogCritical(ex, ex.Message);
+                return respEr;
             }
         }
     }

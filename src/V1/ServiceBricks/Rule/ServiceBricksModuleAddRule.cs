@@ -69,9 +69,16 @@ namespace ServiceBricks
             services.AddSingleton<ITaskQueue, TaskQueue>();
             services.AddHostedService<TaskQueueHostedService>();
 
-            // Business Rules
+            // Registries
             services.AddSingleton<IModuleRegistry>(ModuleRegistry.Instance);
+            services.AddSingleton<IMapperRegistry>(MapperRegistry.Instance);
             services.AddSingleton<IBusinessRuleRegistry>(BusinessRuleRegistry.Instance);
+
+            // Mappings
+            services.AddSingleton<IMapper>(Mapper.Instance);
+            DomainTypeMappingProfile.Register(MapperRegistry.Instance);
+
+            // Business Rules
             services.AddScoped<IBusinessRuleService, BusinessRuleService>();
 
             // Services

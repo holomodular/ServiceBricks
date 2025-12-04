@@ -6,10 +6,6 @@ namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Model
     {
         public ExampleModule()
         {
-            AutomapperAssemblies = new List<Assembly>()
-            {
-                typeof(ExampleModule).Assembly
-            };
         }
     }
 }

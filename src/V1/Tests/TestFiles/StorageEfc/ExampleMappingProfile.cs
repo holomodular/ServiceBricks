@@ -1,57 +1,87 @@
-﻿using AutoMapper;
-using ServiceBricks.Xunit;
+﻿using ServiceBricks.Xunit;
 
 namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit.Mapping
 {
-    public class ExampleMappingProfile : Profile
+    public class ExampleMappingProfile
     {
-        public ExampleMappingProfile()
+        /// <summary>
+        /// Register the mapping
+        /// </summary>
+        public static void Register(IMapperRegistry registry)
         {
-            CreateMap<ExampleDto, ExampleDomain>()
-                .ForMember(x => x.Key, y => y.MapFrom<KeyResolver>());
+            registry.Register<ExampleDomain, ExampleDto>(
+                (s, d) =>
+                {
+                    d.CreateDate = s.CreateDate;
+                    d.ExampleDate = s.ExampleDate;
+                    d.ExampleNullableDate = s.ExampleNullableDate;
+                    d.ExampleNullableDateNotSet = s.ExampleNullableDateNotSet;
+                    d.Name = s.Name;
+                    d.SimpleDate = s.SimpleDate;
+                    d.SimpleNullableDate = s.SimpleNullableDate;
+                    d.SimpleNullableDateNotSet = s.SimpleNullableDateNotSet;
+                    d.StorageKey = s.Key.ToString();
+                    d.UpdateDate = s.UpdateDate;
+                });
 
-            CreateMap<ExampleDomain, ExampleDto>()
-                .ForMember(x => x.StorageKey, y => y.MapFrom(z => z.Key));
-        }
-
-        public class KeyResolver : IValueResolver<DataTransferObject, object, int>
-        {
-            public int Resolve(DataTransferObject source, object destination, int sourceMember, ResolutionContext context)
-            {
-                if (string.IsNullOrEmpty(source.StorageKey))
-                    return 0;
-
-                int tempKey;
-                if (int.TryParse(source.StorageKey, out tempKey))
-                    return tempKey;
-                return 0;
-            }
+            registry.Register<ExampleDto, ExampleDomain>(
+                (s, d) =>
+                {
+                    d.CreateDate = s.CreateDate;
+                    d.ExampleDate = s.ExampleDate;
+                    d.ExampleNullableDate = s.ExampleNullableDate;
+                    d.ExampleNullableDateNotSet = s.ExampleNullableDateNotSet;
+                    int tempStorageKey;
+                    if (int.TryParse(s.StorageKey, out tempStorageKey))
+                        d.Key = tempStorageKey;
+                    d.Name = s.Name;
+                    d.SimpleDate = s.SimpleDate;
+                    d.SimpleNullableDate = s.SimpleNullableDate;
+                    d.SimpleNullableDateNotSet = s.SimpleNullableDateNotSet;
+                    d.UpdateDate = s.UpdateDate;
+                });
         }
     }
 
-    public class ExampleProcessQueueMappingProfile : Profile
+    public class ExampleProcessQueueMappingProfile
     {
-        public ExampleProcessQueueMappingProfile()
+        /// <summary>
+        /// Register the mapping
+        /// </summary>
+        public static void Register(IMapperRegistry registry)
         {
-            CreateMap<ExampleWorkProcessDto, ExampleWorkProcessDomain>()
-                .ForMember(x => x.Key, y => y.MapFrom<KeyResolver>());
+            registry.Register<ExampleWorkProcessDomain, ExampleWorkProcessDto>(
+                (s, d) =>
+                {
+                    d.CreateDate = s.CreateDate;
+                    d.FutureProcessDate = s.FutureProcessDate;
+                    d.IsComplete = s.IsComplete;
+                    d.IsError = s.IsError;
+                    d.IsProcessing = s.IsProcessing;
+                    d.Key = s.Key;
+                    d.Name = s.Name;
+                    d.ProcessDate = s.ProcessDate;
+                    d.ProcessResponse = s.ProcessResponse;
+                    d.RetryCount = s.RetryCount;
+                    d.StorageKey = s.Key.ToString();
+                    d.UpdateDate = s.UpdateDate;
+                });
 
-            CreateMap<ExampleWorkProcessDomain, ExampleWorkProcessDto>()
-                .ForMember(x => x.StorageKey, y => y.MapFrom(z => z.Key));
-        }
-
-        public class KeyResolver : IValueResolver<DataTransferObject, object, int>
-        {
-            public int Resolve(DataTransferObject source, object destination, int sourceMember, ResolutionContext context)
-            {
-                if (string.IsNullOrEmpty(source.StorageKey))
-                    return 0;
-
-                int tempKey;
-                if (int.TryParse(source.StorageKey, out tempKey))
-                    return tempKey;
-                return 0;
-            }
+            registry.Register<ExampleWorkProcessDto, ExampleWorkProcessDomain>(
+                (s, d) =>
+                {
+                    d.CreateDate = s.CreateDate;
+                    d.FutureProcessDate = s.FutureProcessDate;
+                    d.IsComplete = s.IsComplete;
+                    d.IsError = s.IsError;
+                    d.IsProcessing = s.IsProcessing;
+                    d.Key = string.IsNullOrEmpty(s.StorageKey) ? 0 : int.Parse(s.StorageKey);
+                    d.Name = s.Name;
+                    d.ProcessDate = s.ProcessDate;
+                    d.ProcessResponse = s.ProcessResponse;
+                    d.RetryCount = s.RetryCount;
+                    d.UpdateDate = s.UpdateDate;
+                });
         }
     }
 }

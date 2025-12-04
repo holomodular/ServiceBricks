@@ -158,7 +158,6 @@ namespace ServiceBricks.Xunit
         {
             ServiceBricksModule module = new ServiceBricksModule();
             var a = module.ViewAssemblies;
-            var auto = module.AutomapperAssemblies;
             var d = module.DependentModules;
             return Task.CompletedTask;
         }
@@ -534,6 +533,15 @@ namespace ServiceBricks.Xunit
             response.AddMessage(ResponseMessage.CreateError(new BusinessException(), string.Empty, new List<string>() { "field" }));
             Assert.True(response.Error);
 
+            // Scrub
+            response = new Response();
+            response.AddMessage(ResponseMessage.CreateError(new BusinessException(), "test", new List<string>() { "field" }));
+            Assert.True(response.Error);
+            Assert.True(response.Messages.Count == 2);
+            response.Scrub();
+            Assert.True(response.Messages.Count == 1);
+            Assert.True(response.Messages[0].Severity == ResponseSeverity.Error);
+
             // Info
             response = new Response();
             response.AddMessage(ResponseMessage.CreateInfo(Guid.NewGuid().ToString()));
@@ -653,14 +661,9 @@ namespace ServiceBricks.Xunit
             return Task.CompletedTask;
         }
 
-        public class TestMapProfile : DomainObjectMappingProfile<ExampleDomain, ExampleDto>
-        {
-        }
-
         [Fact]
-        public virtual Task DomainMapProfileTest()
+        public virtual Task MappingTests()
         {
-            TestMapProfile testProfile = new TestMapProfile();
             return Task.CompletedTask;
         }
 

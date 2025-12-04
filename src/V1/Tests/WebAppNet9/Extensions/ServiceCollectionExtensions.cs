@@ -1,5 +1,5 @@
 ﻿using Asp.Versioning;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using ServiceBricks;
 using WebApp.Model;
 

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ServiceQuery;
+﻿using ServiceQuery;
 
 namespace ServiceBricks
 {

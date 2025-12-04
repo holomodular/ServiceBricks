@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
@@ -97,35 +96,6 @@ namespace ServiceBricks
                 objectResult = new ObjectResult(vpd) { StatusCode = StatusCodes.Status400BadRequest };
                 return objectResult;
             });
-
-            // Get the automapper assemblies
-            List<Assembly> assemblies = new List<Assembly>();
-            var modules = ModuleRegistry.Instance.GetKeys();
-            foreach (var module in modules)
-            {
-                var tempAssemblies = module.AutomapperAssemblies;
-                if (tempAssemblies != null && tempAssemblies.Count > 0)
-                {
-                    foreach (var tempAssembly in tempAssemblies)
-                    {
-                        if (!assemblies.Contains(tempAssembly))
-                            assemblies.Add(tempAssembly);
-                    }
-                }
-            }
-
-            // Add automapper assemblies
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddMaps(assemblies);
-
-                // All datetimes as UTC
-                cfg.CreateMap<DateTime, DateTime>().ConvertUsing((s, d) =>
-                {
-                    return DateTime.SpecifyKind(s, DateTimeKind.Utc);
-                });
-            });
-            services.AddSingleton(mapperConfig.CreateMapper());
 
             return response;
         }

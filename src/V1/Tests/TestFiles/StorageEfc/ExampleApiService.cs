@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ServiceBricks.Xunit;
+﻿using ServiceBricks.Xunit;
 
 namespace ServiceBricks.Storage.EntityFrameworkCore.Xunit
 {

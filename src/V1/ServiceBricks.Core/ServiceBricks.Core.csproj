@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.3.0</Version>
+		<Version>1.4.0-a</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Core</PackageId>
 		<Title>ServiceBricks.Core</Title>
@@ -9,7 +9,7 @@
 		<Authors>holomodular</Authors>
 		<Company>HoloModular LLC</Company>
 		<Product>ServiceBricks</Product>
-		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
 		<Nullable>disable</Nullable>
 		<Copyright>Copyright © 2025 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
 		<PackageProjectUrl>https://ServiceBricks.com</PackageProjectUrl>
@@ -36,17 +36,16 @@
 
 	<ItemGroup>
 		<!-- <ProjectReference Include="..\ServiceBricks\ServiceBricks.csproj" /> -->
-		<PackageReference Include="ServiceBricks" Version="1.3.0" />
-	</ItemGroup>
+	<PackageReference Include="ServiceBricks" Version="1.4.0-a" />
+</ItemGroup>
 	
-	<ItemGroup>		
-		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.4" />
-		<PackageReference Include="Azure.Data.Tables" Version="12.10.0" />		
-		<PackageReference Include="MongoDB.Driver" Version="3.2.1" />
-		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.2.1" />
-		<PackageReference Include="ServiceQuery.EntityFrameworkCore" Version="2.2.1" />
-		<PackageReference Include="ServiceQuery.MongoDb" Version="2.2.1" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	<ItemGroup>
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
+		<PackageReference Include="Azure.Data.Tables" Version="12.11.0" />		
+		<PackageReference Include="MongoDB.Driver" Version="3.5.2" />
+		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.2.3" />
+		<PackageReference Include="ServiceQuery.EntityFrameworkCore" Version="2.2.3" />
+		<PackageReference Include="ServiceQuery.MongoDb" Version="2.2.3" />		
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
@@ -68,21 +67,30 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />		
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.11" />		
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.11" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />		
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.11" />		
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.11" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -121,10 +129,6 @@
 		<ProjectReference Include="..\ServiceBricks.Storage.SqlServer\ServiceBricks.Storage.SqlServer.csproj" PrivateAssets="All">
 			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 			<IncludeAssets>ServiceBricks.Storage.SqlServer.dll</IncludeAssets>
-		</ProjectReference>
-		<ProjectReference Include="..\ServiceBricks.Json.Newtonsoft\ServiceBricks.Json.Newtonsoft.csproj" PrivateAssets="All">
-			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-			<IncludeAssets>ServiceBricks.Json.Newtonsoft.dll</IncludeAssets>
 		</ProjectReference>
 	</ItemGroup>
 	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">

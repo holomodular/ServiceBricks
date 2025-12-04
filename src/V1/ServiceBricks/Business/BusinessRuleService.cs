@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ServiceBricks.Business;
 
 namespace ServiceBricks
 {
@@ -129,7 +128,7 @@ namespace ServiceBricks
 
                 //Find all Domain rule types for this object type
                 Type itemType = context.Object.GetType();
-                IList<RegistryContext<Type>> registry = _businessRuleRegistry.GetRegistryList(itemType);
+                IList<BusinessRuleRegistryValue<Type>> registry = _businessRuleRegistry.GetRegistryList(itemType);
                 if (registry == null || registry.Count == 0)
                 {
                     if (additionalRules == null || additionalRules.Count == 0)
@@ -234,7 +233,7 @@ namespace ServiceBricks
 
                 //Find all Domain rule types for this object type
                 Type itemType = context.Object.GetType();
-                IList<RegistryContext<Type>> registry = _businessRuleRegistry.GetRegistryList(itemType);
+                IList<BusinessRuleRegistryValue<Type>> registry = _businessRuleRegistry.GetRegistryList(itemType);
                 if (registry == null || registry.Count == 0)
                 {
                     if (additionalRules == null || additionalRules.Count == 0)

@@ -1,11 +1,9 @@
-﻿using ServiceBricks.Business;
-
-namespace ServiceBricks
+﻿namespace ServiceBricks
 {
     /// <summary>
     /// This is a registry of all business rules registered in the application.
     /// </summary>
-    public partial class BusinessRuleRegistry : IRegistryList<Type, Type>, IBusinessRuleRegistry
+    public partial class BusinessRuleRegistry : IBusinessRuleRegistryList<Type, Type>, IBusinessRuleRegistry
     {
         /// <summary>
         /// Lock object for cache
@@ -15,8 +13,8 @@ namespace ServiceBricks
         /// <summary>
         /// Cache
         /// </summary>
-        public static Dictionary<Type, IList<RegistryContext<Type>>> Cache =
-            new Dictionary<Type, IList<RegistryContext<Type>>>();
+        public static Dictionary<Type, IList<BusinessRuleRegistryValue<Type>>> Cache =
+            new Dictionary<Type, IList<BusinessRuleRegistryValue<Type>>>();
 
         /// <summary>
         /// Singleton instance of the business rule registry.
@@ -28,7 +26,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public virtual IList<RegistryContext<Type>> GetRegistryList(Type key)
+        public virtual IList<BusinessRuleRegistryValue<Type>> GetRegistryList(Type key)
         {
             LockObject.AcquireReaderLock(Timeout.Infinite);
             try
@@ -37,7 +35,7 @@ namespace ServiceBricks
                     return null;
 
                 var existing = Cache[key];
-                var list = new List<RegistryContext<Type>>();
+                var list = new List<BusinessRuleRegistryValue<Type>>();
                 foreach (var item in existing)
                     list.Add(item);
                 return list;
@@ -83,13 +81,13 @@ namespace ServiceBricks
                         }
                     }
 
-                    existing.Add(new RegistryContext<Type>() { DefinitionData = definitionData, Value = data });
+                    existing.Add(new BusinessRuleRegistryValue<Type>() { DefinitionData = definitionData, Value = data });
                     Cache[key] = existing;
                 }
                 else
                 {
-                    var newlist = new List<RegistryContext<Type>>();
-                    newlist.Add(new RegistryContext<Type>() { DefinitionData = definitionData, Value = data });
+                    var newlist = new List<BusinessRuleRegistryValue<Type>>();
+                    newlist.Add(new BusinessRuleRegistryValue<Type>() { DefinitionData = definitionData, Value = data });
                     Cache.Add(key, newlist);
                 }
             }

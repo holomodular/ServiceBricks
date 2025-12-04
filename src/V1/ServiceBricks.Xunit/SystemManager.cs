@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Reflection.PortableExecutable;
 
 namespace ServiceBricks.Xunit
 {
@@ -64,23 +65,28 @@ namespace ServiceBricks.Xunit
         private CancellationTokenSource CancellationTokenSource;
         private SemaphoreSlim _signal = new SemaphoreSlim(0);
 
-        public virtual IWebHostBuilder CreateWebHostBuilder(Type startupType)
+        public virtual IHostBuilder CreateWebHostBuilder(Type startupType)
         {
-            return new WebHostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .ConfigureAppConfiguration(config =>
+            return new HostBuilder()
+                .ConfigureWebHostDefaults(webHostBuilder =>
                 {
-                    config.AddAppSettingsConfig();
-                })
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.ClearProviders();
-                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddConsole();
-                    logging.AddDebug();
-                })
-                .UseEnvironment("Development")
-                .UseStartup(startupType);
+                    webHostBuilder
+                        .UseTestServer()
+                        .UseContentRoot(Directory.GetCurrentDirectory())
+                        .ConfigureAppConfiguration(config =>
+                        {
+                            config.AddAppSettingsConfig();
+                        })
+                        .ConfigureLogging((hostingContext, logging) =>
+                        {
+                            logging.ClearProviders();
+                            logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                            logging.AddConsole();
+                            logging.AddDebug();
+                        })
+                        .UseEnvironment("Development")
+                        .UseStartup(startupType);
+                });
         }
 
         public virtual void StopSystem()
@@ -94,18 +100,20 @@ namespace ServiceBricks.Xunit
             ServiceBricksStartup.ConfigureCompleteEvent += Startup_ConfigureCompleteEvent;
 
             // Create host builder
-            var webHostBuilder = CreateWebHostBuilder(startupType);
+            var hostBuilder = CreateWebHostBuilder(startupType);
 
             //var build = webHostBuilder.Build();
             //ServiceProvider = build.Services;
             //Configuration = (IConfiguration)build.Services.GetService(typeof(IConfiguration));
+            //TestServer = new Microsoft.AspNetCore.TestHost.TestServer(webHostBuilder);
+            //Configuration =  TestServer.Host.Services.GetService(typeof(IConfiguration));
 
-            TestServer = new Microsoft.AspNetCore.TestHost.TestServer(webHostBuilder);
+            var testHost = hostBuilder.Build();
+            TestServer = testHost.GetTestServer();
             ServiceProvider = TestServer.Services;
-            Configuration = (IConfiguration)TestServer.Host.Services.GetService(typeof(IConfiguration));
-
+            Configuration = (IConfiguration)ServiceProvider.GetRequiredService<IConfiguration>();
+            testHost.Start();
             CancellationTokenSource = new CancellationTokenSource();
-
             _signal.Wait(CancellationTokenSource.Token);
         }
 

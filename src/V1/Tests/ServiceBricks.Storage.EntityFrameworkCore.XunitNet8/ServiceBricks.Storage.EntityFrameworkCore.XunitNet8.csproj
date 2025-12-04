@@ -30,23 +30,22 @@
 		<Compile Include="..\TestFiles\StorageEfc\IExampleApiClient.cs" Link="IExampleApiClient.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\IExampleApiController.cs" Link="IExampleApiController.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\IExampleApiService.cs" Link="IExampleApiService.cs" />
-		<Compile Include="..\TestFiles\StorageEfc\MappingTest.cs" Link="MappingTest.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\StubApiClientTests.cs" Link="StubApiClientTests.cs" />
 		<Compile Include="..\TestFiles\StorageEfc\WorkServiceTests.cs" Link="WorkServiceTests.cs" />
 	</ItemGroup>
 	
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.11" />
 		<ProjectReference Include="..\..\ServiceBricks.Storage.EntityFrameworkCore\ServiceBricks.Storage.EntityFrameworkCore.csproj" />
 		<ProjectReference Include="..\ServiceBricks.XunitNet8\ServiceBricks.XunitNet8.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.14" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.22" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
 		<PackageReference Include="xunit" Version="2.9.3" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

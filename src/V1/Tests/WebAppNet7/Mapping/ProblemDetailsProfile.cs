@@ -1,21 +1,24 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using ServiceBricks;
 
 namespace WebApp.Mapping
 {
-    public class ProblemDetailsProfile : Profile
+    public class ProblemDetailsMappingProfile
     {
-        public ProblemDetailsProfile()
+        /// <summary>
+        /// Register the mapping
+        /// </summary>
+        public static void Register(IMapperRegistry registry)
         {
-            CreateMap<Exception, ProblemDetails>()
-                .ForMember(x => x.Detail, y => y.MapFrom(z => JsonConvert.SerializeObject(z)))
-                .ForMember(x => x.Status, y => y.MapFrom(z => (int)HttpStatusCode.InternalServerError))
-                .ForMember(x => x.Type, y => y.MapFrom(z => z.GetType().FullName))
-                .ForMember(x => x.Title, y => y.MapFrom(z => z.Message))
-                .ForMember(x => x.Instance, y => y.Ignore())
-                .ForMember(x => x.Extensions, y => y.Ignore());
+            registry.Register<Exception, ProblemDetails>(
+                (s, d) =>
+                {
+                    d.Detail = JsonSerializer.Instance.SerializeObject(s);
+                    d.Status = (int)HttpStatusCode.InternalServerError;
+                    d.Type = s.GetType().FullName;
+                    d.Title = s.Message;
+                });
         }
     }
 }

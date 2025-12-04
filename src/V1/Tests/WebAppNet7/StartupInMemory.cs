@@ -17,7 +17,7 @@ namespace WebApp
         {
             services.AddServiceBricks(Configuration);
             services.AddServiceBricksExampleInMemory(Configuration);
-            ModuleRegistry.Instance.Register(new WebApp.Model.WebAppModule()); // Just for automapper registration
+            Mapping.ProblemDetailsMappingProfile.Register(MapperRegistry.Instance);
             services.AddServiceBricksComplete(Configuration);
 
             services.AddCustomWebsite(Configuration);
