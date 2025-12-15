@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceBricks.Xunit;
 
@@ -9,8 +10,8 @@ namespace ServiceBricks.Client.Xunit
         public ExampleApiClient(
             ILoggerFactory loggerFactory,
             IHttpClientFactory httpClientFactory,
-            IOptions<ClientApiOptions> clientApiOptions)
-            : base(loggerFactory, httpClientFactory, clientApiOptions.Value)
+            IConfiguration configuration)
+            : base(loggerFactory, httpClientFactory, configuration.GetApiConfig())
         {
             ApiResource = $"EntityFrameworkCore/Example";
         }

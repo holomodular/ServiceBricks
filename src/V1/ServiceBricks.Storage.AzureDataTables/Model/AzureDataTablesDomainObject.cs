@@ -9,6 +9,15 @@ namespace ServiceBricks.Storage.AzureDataTables
     public abstract partial class AzureDataTablesDomainObject<TDomainObject> : DomainObject<TDomainObject>, IAzureDataTablesDomainObject<TDomainObject>
     {
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        public AzureDataTablesDomainObject()
+        {
+            PartitionKey = string.Empty;
+            RowKey = string.Empty;
+        }
+
+        /// <summary>
         /// The partition key is a unique identifier for the partition within a given table and forms the first part of an entity's primary key.
         /// </summary>
         public virtual string PartitionKey { get; set; }

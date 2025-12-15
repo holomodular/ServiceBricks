@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ServiceQuery;
 
 namespace ServiceBricks.Xunit
 {
@@ -661,11 +663,150 @@ namespace ServiceBricks.Xunit
             return Task.CompletedTask;
         }
 
+
+        public class MapA
+        {
+            public string Name { get; set; }
+        }
+        public class MapB
+        {
+            public string Name { get; set; }
+        }
+        Action<MapA, MapB> MapAmapper = (s, d) =>
+        {            
+            d.Name = s.Name;
+        };
+        Action<MapB, MapA> MapBmapper = (s, d) =>
+        {
+            d.Name = s.Name;
+        };
+
+
         [Fact]
         public virtual Task MappingTests()
         {
+
+            var mapperRegistry = SystemManager.ServiceProvider.GetRequiredService<IMapperRegistry>();
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+
+            var mapa = mapperRegistry.GetMapper<MapA, MapB>();
+            Assert.True(mapa == null);
+            mapperRegistry.Register<MapA, MapB>(MapAmapper);
+            mapa = mapperRegistry.GetMapper<MapA, MapB>();
+            Assert.True(mapa != null);
+
+            var mapb = mapperRegistry.GetMapper<MapB, MapA>();
+            Assert.True(mapb == null);
+            mapperRegistry.Register(MapBmapper);
+            mapb = mapperRegistry.GetMapper<MapB, MapA>();
+            Assert.True(mapb != null);
+
+            var a = new MapA() { Name = "a" };
+            var b = new MapB() { Name = "b" };
+
+            mapper.Map(a, b);
+            Assert.True(a.Name == b.Name);
+
+            a.Name = "a";
+            b.Name = "b";
+            mapper.Map(b, a);
+            Assert.True(a.Name == b.Name);
+
+            // CLeanup
+            mapperRegistry.UnRegister<MapA, MapB>();
+            mapperRegistry.UnRegister(typeof(MapB), typeof(MapA));
+
             return Task.CompletedTask;
         }
+
+        [Fact]
+        public virtual Task MappingListTests()
+        {
+
+            var mapperRegistry = SystemManager.ServiceProvider.GetRequiredService<IMapperRegistry>();
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+
+            var mapa = mapperRegistry.GetMapper<MapA, MapB>();
+            Assert.True(mapa == null);
+            mapperRegistry.Register<MapA, MapB>(MapAmapper);
+            mapa = mapperRegistry.GetMapper<MapA, MapB>();
+            Assert.True(mapa != null);
+
+            var mapb = mapperRegistry.GetMapper<MapB, MapA>();
+            Assert.True(mapb == null);
+            mapperRegistry.Register(MapBmapper);
+            mapb = mapperRegistry.GetMapper<MapB, MapA>();
+            Assert.True(mapb != null);
+
+            var a = new MapA() { Name = "a" };
+            var b = new MapB() { Name = "b" };
+
+            List<MapA> lista = new List<MapA>() { a };
+            List<MapB> listb = new List<MapB>();
+
+            mapper.Map(lista, listb);
+            Assert.True(listb.Count == 1);
+            Assert.True(lista[0].Name == listb[0].Name);
+
+            // CLeanup
+            mapperRegistry.UnRegister<MapA, MapB>();
+            mapperRegistry.UnRegister(typeof(MapB), typeof(MapA));
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task MappingNoRegistryTests()
+        {
+
+            var mapperRegistry = SystemManager.ServiceProvider.GetRequiredService<IMapperRegistry>();
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+
+            var mapa = mapperRegistry.GetMapper<MapA, MapB>();
+            Assert.True(mapa == null);            
+
+            var mapb = mapperRegistry.GetMapper<MapA, MapB>();
+            Assert.True(mapb == null);
+
+            var a = new MapA() { Name = "a" };
+            var b = new MapB() { Name = "b" };
+
+            Assert.Throws<BusinessException>(() =>
+            {
+                mapper.Map(a, b);
+            });            
+
+            return Task.CompletedTask;
+        }
+
+        [Fact]
+        public virtual Task MappingNoRegistrySameObjectTests()
+        {
+
+            var mapperRegistry = SystemManager.ServiceProvider.GetRequiredService<IMapperRegistry>();
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+
+            var mapa = mapperRegistry.GetMapper<MapA, MapA>();
+            Assert.True(mapa == null);
+                        
+
+            var a = new MapA() { Name = "a" };
+            var a2 = new MapA() { Name = "a2" };
+
+            mapper.Map(a, a2);
+            Assert.True(a.Name == a2.Name);
+
+            List<MapA> lista = new List<MapA>() { a };
+            List<MapA> lista2 = new List<MapA>();
+
+            mapper.Map(lista, lista2);
+            Assert.True(lista2.Count == 1);
+            Assert.True(lista[0].Name == lista2[0].Name);
+
+
+            return Task.CompletedTask;
+        }
+
 
         [Fact]
         public virtual Task DomainTypeProfileTest()

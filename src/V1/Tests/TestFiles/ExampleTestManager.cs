@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceBricks.Xunit;
@@ -29,24 +30,36 @@ namespace ServiceBricks.Client.Xunit
 
         public override IApiClient<ExampleDto> GetClient(IServiceProvider serviceProvider)
         {
-            var ClientOptions = serviceProvider.GetRequiredService<IOptions<ClientApiOptions>>().Value;
-            ClientOptions.ReturnResponseObject = false;
-            var options = new OptionsWrapper<ClientApiOptions>(ClientOptions);
+            var appConfig = serviceProvider.GetRequiredService<IConfiguration>();
+            var config = new ConfigurationBuilder()
+                .AddConfiguration(appConfig)
+                .AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":ReturnResponseObject", "false" },
+                })
+                .Build();
+
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                options);
+                config);
         }
 
         public override IApiClient<ExampleDto> GetClientReturnResponse(IServiceProvider serviceProvider)
         {
-            var ClientOptions = serviceProvider.GetRequiredService<IOptions<ClientApiOptions>>().Value;
-            ClientOptions.ReturnResponseObject = true;
-            var options = new OptionsWrapper<ClientApiOptions>(ClientOptions);
+            var appConfig = serviceProvider.GetRequiredService<IConfiguration>();
+            var config = new ConfigurationBuilder()
+                .AddConfiguration(appConfig)
+                .AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":ReturnResponseObject", "true" },
+                })
+                .Build();
+
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                options);
+                config);
         }
 
         public override IApiService<ExampleDto> GetService(IServiceProvider serviceProvider)

@@ -5,6 +5,15 @@
     /// </summary>
     public partial class ClientApiOptions
     {
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public ClientApiOptions()
+        {
+            ReturnResponseObject = true;
+        }
+
         /// <summary>
         /// The base service url.
         /// </summary>

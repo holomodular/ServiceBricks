@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Reflection.Metadata;
 
 namespace ServiceBricks
 {
@@ -64,38 +65,44 @@ namespace ServiceBricks
             var services = e.ServiceCollection;
             var configuration = e.Configuration;
 
-            // Configure modelstate errors to use response object if needed
-            services.Configure<ApiBehaviorOptions>(x => x.InvalidModelStateResponseFactory = context =>
+            services.Configure<ApiBehaviorOptions>(options =>
             {
-                ObjectResult objectResult = null;
-                if (context.HttpContext != null &&
-                    context.HttpContext.Request != null &&
-                    context.HttpContext.Request.Path.HasValue &&
-                    context.HttpContext.Request.Path.Value.StartsWith(@"/api/", StringComparison.InvariantCultureIgnoreCase))
+                options.SuppressModelStateInvalidFilter = true;
+                options.InvalidModelStateResponseFactory = context =>
                 {
-                    var apiOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<ApiOptions>>().Value;
-
-                    if (apiOptions.ReturnResponseObject)
+                    // Default result
+                    ObjectResult result;
+                    
+                    var path = context.HttpContext?.Request?.Path;                    
+                    if (path.HasValue && path.Value.HasValue && 
+                        path.Value.Value.StartsWith("/api/", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        Response response = new Response();
-                        foreach (var key in context.ModelState.Keys)
+                        var apiOptions = context.HttpContext.RequestServices
+                            .GetRequiredService<IOptions<ApiOptions>>().Value;
+                        
+                        if (apiOptions.ReturnResponseObject)
                         {
-                            foreach (var err in context.ModelState[key].Errors)
+                            var response = new Response();
+                            context.ModelState.CopyToResponse(response);
+                            result = new ObjectResult(response)
                             {
-                                if (!string.IsNullOrEmpty(key))
-                                    response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage, key));
-                                else
-                                    response.AddMessage(ResponseMessage.CreateError(err.ErrorMessage));
-                            }
+                                StatusCode = StatusCodes.Status400BadRequest
+                            };
+                            return result;
                         }
-                        objectResult = new ObjectResult(response) { StatusCode = StatusCodes.Status400BadRequest };
-                        return objectResult;
                     }
-                }
-                var vpd = new ValidationProblemDetails(context.ModelState);
-                objectResult = new ObjectResult(vpd) { StatusCode = StatusCodes.Status400BadRequest };
-                return objectResult;
+
+                    // Fallback to default ValidationProblemDetails
+                    var problemDetails = new ValidationProblemDetails(context.ModelState);
+                    result = new ObjectResult(problemDetails)
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+
+                    return result;
+                };
             });
+
 
             return response;
         }

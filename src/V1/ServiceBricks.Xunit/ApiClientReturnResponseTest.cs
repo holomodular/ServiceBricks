@@ -1,9 +1,10 @@
-﻿using ServiceQuery;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ServiceQuery;
 
 namespace ServiceBricks.Xunit
 {
     public abstract class ApiClientReturnResponseTest<TDto>
-        where TDto : class, IDataTransferObject
+        where TDto : class, IDataTransferObject, new()
     {
         public virtual ISystemManager SystemManager { get; set; }
 
@@ -122,6 +123,108 @@ namespace ServiceBricks.Xunit
             await DeleteBaseReturnResponseAsync(mindto);
             await DeleteBaseReturnResponseAsync(maxdto);
         }
+
+
+        [Fact]
+        public virtual async Task CreateAck_NullDataReturnResponseAsync()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+
+            //Call CreateAck
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respCreateAck = await client.CreateAckAsync(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respCreateAck.Error);
+        }
+
+        public virtual async Task<TDto> CreateAckBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            int existingCount = 0;
+            List<TDto> existingList = new List<TDto>();
+            //Call GetAll
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respGetAll = await client.QueryAsync(GetDefaultServiceQueryRequest());
+            Assert.True(respGetAll.Success);
+            existingCount = respGetAll.Item.List.Count;
+            existingList = respGetAll.Item.List;
+
+            //Call CreateAck
+            var respCreateAck = await client.CreateAckAsync(model);
+
+            Assert.True(respCreateAck.Success);
+
+            //Call GetAll and find recently created
+            respGetAll = await client.QueryAsync(GetDefaultServiceQueryRequest());
+
+            //Find new one
+            TDto found = null;
+            foreach (var item in respGetAll.Item.List)
+            {
+                bool existingFound = false;
+                foreach (var existingitem in existingList)
+                {
+                    if (existingitem.StorageKey == item.StorageKey)
+                    {
+                        existingFound = true;
+                        break;
+                    }
+                }
+                if (existingFound)
+                    continue;
+                found = item; //do this for cleanup
+            }
+            Assert.True(found != null);
+
+            //Validate
+            TestManager.ValidateObjects(model, found, HttpMethod.Post);
+
+            //Call GetItem
+            var respGetItem = await client.GetAsync(found.StorageKey);
+
+            //Validate
+            TestManager.ValidateObjects(model, respGetItem.Item, HttpMethod.Post);
+
+            //Call GetAll
+            respGetAll = await client.QueryAsync(GetDefaultServiceQueryRequest());
+
+            Assert.True(respGetAll.Item.List.Count == 1 + existingCount);
+            var foundObject = TestManager.FindObject(respGetAll.Item.List, respGetItem.Item);
+            Assert.True(foundObject != null);
+
+            //Validate
+            TestManager.ValidateObjects(respGetItem.Item, foundObject, HttpMethod.Get);
+            return respGetItem.Item;
+        }
+
+        [Fact]
+        public virtual async Task CreateAck_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = await CreateAckBaseReturnResponseAsync(model);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        [Fact]
+        public virtual async Task CreateAck_MaxDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = await CreateAckBaseReturnResponseAsync(model);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
 
         [Fact]
         public virtual async Task GetAll_MinDataReturnResponseAsync()
@@ -423,6 +526,103 @@ namespace ServiceBricks.Xunit
             await DeleteBaseReturnResponseAsync(dto);
         }
 
+
+
+        [Fact]
+        public virtual async Task UpdateAck_NullDataReturnResponseAsync()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call UpdateAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respUpdateAck = await client.UpdateAckAsync(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respUpdateAck.Error);
+        }
+
+        protected virtual async Task UpdateAckNoChangeBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call UpdateAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respUpdateAck = await client.UpdateAckAsync(model);
+
+            Assert.True(respUpdateAck.Success);
+            
+        }
+
+        [Fact]
+        public virtual async Task UpdateAck_NoChange_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            await UpdateAckNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        [Fact]
+        public virtual async Task UpdateAck_NoChange_MaxDataAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            await UpdateAckNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        protected virtual async Task UpdateAckBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            //UpdateAck the object
+            if (model == null)
+                throw new ArgumentNullException("model");
+            TestManager.UpdateObject(model);
+
+            //Call UpdateAck
+            var respUpdateAck = await client.UpdateAckAsync(model);
+
+            Assert.True(respUpdateAck.Success);
+
+        }
+
+        [Fact]
+        public virtual async Task UpdateAck_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+            var dto = await CreateBaseReturnResponseAsync(model);
+            await UpdateAckBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        [Fact]
+        public virtual async Task UpdateAck_MaxDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+            var dto = await CreateBaseReturnResponseAsync(model);
+            await UpdateAckBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+
         protected virtual async Task DeleteBaseReturnResponseAsync(TDto model)
         {
             if (SystemManager == null || SystemManager.ServiceProvider == null)
@@ -534,6 +734,254 @@ namespace ServiceBricks.Xunit
             await DeleteBaseReturnResponseAsync(dto);
         }
 
+        [Fact]
+        public virtual async Task Patch_NullDataReturnResponseAsync()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call Patch
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respPatch = await client.PatchAsync(null, null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respPatch.Error);
+        }
+
+        protected virtual async Task PatchNoChangeBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call Patch
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respPatch = await client.PatchAsync(model.StorageKey, new Microsoft.AspNetCore.JsonPatch.JsonPatchDocument<TDto>());
+
+            Assert.True(respPatch.Success);
+
+        }
+
+        [Fact]
+        public virtual async Task Patch_NoChange_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            await PatchNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        [Fact]
+        public virtual async Task Patch_NoChange_MaxDataAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            await PatchNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        protected virtual async Task PatchBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            //Patch the object
+            if (model == null)
+                throw new ArgumentNullException("model");
+
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+            var copy = mapper.Map<TDto, TDto>(model);
+            TestManager.UpdateObject(model);
+
+            var patch = JsonPatchHelper.CreatePatch(copy, model);
+
+            //Call Patch
+            var respPatch = await client.PatchAsync(model.StorageKey, patch);
+            Assert.True(respPatch.Success);
+
+            var respGet = await client.GetAsync(model.StorageKey);
+            TestManager.ValidateObjects(model, respGet.Item, HttpMethod.Patch);
+        }
+
+        [Fact]
+        public virtual async Task Patch_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+            var dto = await CreateBaseReturnResponseAsync(model);
+            await PatchBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        [Fact]
+        public virtual async Task Patch_MaxDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+            var dto = await CreateBaseReturnResponseAsync(model);
+            await PatchBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+
+        [Fact]
+        public virtual async Task PatchAck_NullDataReturnResponseAsync()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call PatchAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respPatchAck = await client.PatchAckAsync(null, null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respPatchAck.Error);
+        }
+
+        protected virtual async Task PatchAckNoChangeBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call PatchAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respPatchAck = await client.PatchAckAsync(model.StorageKey, new Microsoft.AspNetCore.JsonPatch.JsonPatchDocument<TDto>());
+
+            Assert.True(respPatchAck.Success);
+        }
+
+        [Fact]
+        public virtual async Task PatchAck_NoChange_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            await PatchAckNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        [Fact]
+        public virtual async Task PatchAck_NoChange_MaxDataAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = await CreateBaseReturnResponseAsync(model);
+
+            await PatchAckNoChangeBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        protected virtual async Task PatchAckBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            //PatchAck the object
+            if (model == null)
+                throw new ArgumentNullException("model");
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+            var copy = mapper.Map<TDto, TDto>(model);
+
+            TestManager.UpdateObject(model);
+
+            var patch = JsonPatchHelper.CreatePatch(copy, model);
+
+            //Call PatchAck
+            var respPatchAck = await client.PatchAckAsync(model.StorageKey, patch);
+
+            Assert.True(respPatchAck.Success);
+
+        }
+
+        [Fact]
+        public virtual async Task PatchAck_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+            var dto = await CreateBaseReturnResponseAsync(model);
+            await PatchAckBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+        [Fact]
+        public virtual async Task PatchAck_MaxDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+            var dto = await CreateBaseReturnResponseAsync(model);
+            await PatchAckBaseReturnResponseAsync(dto);
+
+            // Cleanup
+            await DeleteBaseReturnResponseAsync(dto);
+        }
+
+
+        [Fact]
+        public virtual async Task Validate_NullDataReturnResponseAsync()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+
+            //Call Validate
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respValidate = await client.ValidateAsync(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respValidate.Error);
+        }
+
+        public virtual async Task ValidateBaseReturnResponseAsync(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            
+            //Call Validate
+            var respValidate = await client.ValidateAsync(model);
+
+            Assert.True(respValidate.Success);
+        }
+
+        [Fact]
+        public virtual async Task Validate_MinDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            await ValidateBaseReturnResponseAsync(model);            
+        }
+
+        [Fact]
+        public virtual async Task Validate_MaxDataReturnResponseAsync()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            await ValidateBaseReturnResponseAsync(model);
+
+        }
+
+
         #endregion Async
 
         #region Sync
@@ -634,8 +1082,6 @@ namespace ServiceBricks.Xunit
             var maxmodel = TestManager.GetMaximumDataObject();
             var maxdto = CreateBaseReturnResponse(maxmodel);
 
-            Create_MaxDataReturnResponse();
-
             //Call GetAll again after create
             respGetAll = client.Query(GetDefaultServiceQueryRequest());
             Assert.True(respGetAll.Item.List.Count == 2 + existingCount);
@@ -644,6 +1090,106 @@ namespace ServiceBricks.Xunit
             DeleteBaseReturnResponse(mindto);
             DeleteBaseReturnResponse(maxdto);
         }
+
+        [Fact]
+        public virtual void CreateAck_NullDataReturnResponse()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+
+            //Call CreateAck
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respCreateAck = client.CreateAck(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respCreateAck.Error);
+        }
+
+        public virtual TDto CreateAckBaseReturnResponse(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            int existingCount = 0;
+            List<TDto> existingList = new List<TDto>();
+            //Call GetAll
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respGetAll = client.Query(GetDefaultServiceQueryRequest());
+            Assert.True(respGetAll.Success);
+            existingCount = respGetAll.Item.List.Count;
+            existingList = respGetAll.Item.List;
+
+            //Call CreateAck
+            var respCreateAck = client.CreateAck(model);
+
+            //Call GetAll and find recently created
+            respGetAll = client.Query(GetDefaultServiceQueryRequest());
+
+            //Find new one
+            TDto found = null;
+            foreach (var item in respGetAll.Item.List)
+            {
+                bool existingFound = false;
+                foreach (var existingitem in existingList)
+                {
+                    if (existingitem.StorageKey == item.StorageKey)
+                    {
+                        existingFound = true;
+                        break;
+                    }
+                }
+                if (existingFound)
+                    continue;
+                found = item; //do this for cleanup
+            }
+            Assert.True(found != null);
+
+            //Validate
+            TestManager.ValidateObjects(model, found, HttpMethod.Post);
+
+            //Call GetItem
+            var respGetItem = client.Get(found.StorageKey);
+
+            //Validate
+            TestManager.ValidateObjects(model, respGetItem.Item, HttpMethod.Post);
+
+            //Call GetAll
+            respGetAll = client.Query(GetDefaultServiceQueryRequest());
+
+            Assert.True(respGetAll.Item.List.Count == 1 + existingCount);
+            var foundObject = TestManager.FindObject(respGetAll.Item.List, respGetItem.Item);
+            Assert.True(foundObject != null);
+
+            //Validate
+            TestManager.ValidateObjects(respGetItem.Item, foundObject, HttpMethod.Get);
+            return respGetItem.Item;
+        }
+
+        [Fact]
+        public virtual void CreateAck_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = CreateAckBaseReturnResponse(model);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void CreateAck_MaxDataReturnResponse()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = CreateAckBaseReturnResponse(model);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+
 
         [Fact]
         public virtual void GetAll_MinDataReturnResponse()
@@ -945,6 +1491,100 @@ namespace ServiceBricks.Xunit
             DeleteBaseReturnResponse(dto);
         }
 
+
+        [Fact]
+        public virtual void UpdateAck_NullDataReturnResponse()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call UpdateAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respUpdateAck = client.UpdateAck(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respUpdateAck.Error);
+        }
+
+        protected virtual void UpdateAckNoChangeBaseReturnResponse(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call UpdateAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respUpdateAck = client.UpdateAck(model);
+
+            Assert.True(respUpdateAck.Success);
+        }
+
+        [Fact]
+        public virtual void UpdateAck_NoChange_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = CreateBaseReturnResponse(model);
+
+            UpdateAckNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void UpdateAck_NoChange_MaxData()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = CreateBaseReturnResponse(model);
+
+            UpdateAckNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        protected virtual void UpdateAckBaseReturnResponse(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            //UpdateAck the object
+            if (model == null)
+                throw new ArgumentNullException("model");
+            TestManager.UpdateObject(model);
+
+            //Call UpdateAck
+            var respUpdateAck = client.UpdateAck(model);
+
+            Assert.True(respUpdateAck.Success);
+            
+        }
+
+        [Fact]
+        public virtual void UpdateAck_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+            var dto = CreateBaseReturnResponse(model);
+            UpdateAckBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void UpdateAck_MaxDataReturnResponse()
+        {
+            var model = TestManager.GetMaximumDataObject();
+            var dto = CreateBaseReturnResponse(model);
+            UpdateAckBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
         protected virtual void DeleteBaseReturnResponse(TDto model)
         {
             if (SystemManager == null || SystemManager.ServiceProvider == null)
@@ -1054,6 +1694,252 @@ namespace ServiceBricks.Xunit
 
             // Cleanup
             DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void Patch_NullDataReturnResponse()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call Patch
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respPatch = client.Patch(null, null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respPatch.Error);
+        }
+
+        protected virtual void PatchNoChangeBaseReturnResponse(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call Patch
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respPatch = client.Patch(model.StorageKey, new Microsoft.AspNetCore.JsonPatch.JsonPatchDocument<TDto>());
+
+            Assert.True(respPatch.Success);
+            
+        }
+
+        [Fact]
+        public virtual void Patch_NoChange_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = CreateBaseReturnResponse(model);
+
+            PatchNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void Patch_NoChange_MaxData()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = CreateBaseReturnResponse(model);
+
+            PatchNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        protected virtual void PatchBaseReturnResponse(TDto model) 
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            //Patch the object
+            if (model == null)
+                throw new ArgumentNullException("model");
+
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+            var copy = mapper.Map<TDto, TDto>(model);
+            TestManager.UpdateObject(model);
+
+            var patch = JsonPatchHelper.CreatePatch(copy, model);
+
+            //Call Patch
+            var respPatch = client.Patch(model.StorageKey, patch);
+            Assert.True(respPatch.Success);
+
+            var respGet  = client.Get(model.StorageKey);
+            TestManager.ValidateObjects(model, respGet.Item, HttpMethod.Patch);
+        }
+
+        [Fact]
+        public virtual void Patch_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+            var dto = CreateBaseReturnResponse(model);
+            PatchBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void Patch_MaxDataReturnResponse()
+        {
+            var model = TestManager.GetMaximumDataObject();
+            var dto = CreateBaseReturnResponse(model);
+            PatchBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+
+        [Fact]
+        public virtual void PatchAck_NullDataReturnResponse()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call PatchAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respPatchAck = client.PatchAck(null, null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respPatchAck.Error);
+        }
+
+        protected virtual void PatchAckNoChangeBaseReturnResponse(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            //Call PatchAck
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            var respPatchAck = client.PatchAck(model.StorageKey, new Microsoft.AspNetCore.JsonPatch.JsonPatchDocument<TDto>());
+
+            Assert.True(respPatchAck.Success);
+        }
+
+        [Fact]
+        public virtual void PatchAck_NoChange_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            var dto = CreateBaseReturnResponse(model);
+
+            PatchAckNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void PatchAck_NoChange_MaxData()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            var dto = CreateBaseReturnResponse(model);
+
+            PatchAckNoChangeBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        protected virtual void PatchAckBaseReturnResponse(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+            //PatchAck the object
+            if (model == null)
+                throw new ArgumentNullException("model");
+            var mapper = SystemManager.ServiceProvider.GetRequiredService<IMapper>();
+            var copy = mapper.Map<TDto, TDto>(model);            
+
+            TestManager.UpdateObject(model);
+
+            var patch = JsonPatchHelper.CreatePatch(copy, model);
+
+            //Call PatchAck
+            var respPatchAck = client.PatchAck(model.StorageKey, patch);
+
+            Assert.True(respPatchAck.Success);
+
+        }
+
+        [Fact]
+        public virtual void PatchAck_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+            var dto = CreateBaseReturnResponse(model);
+            PatchAckBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void PatchAck_MaxDataReturnResponse()
+        {
+            var model = TestManager.GetMaximumDataObject();
+            var dto = CreateBaseReturnResponse(model);
+            PatchAckBaseReturnResponse(dto);
+
+            // Cleanup
+            DeleteBaseReturnResponse(dto);
+        }
+
+        [Fact]
+        public virtual void Validate_NullDataReturnResponse()
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+
+            //Call Validate
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var respValidate = client.Validate(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            Assert.True(respValidate.Error);
+        }
+
+        public virtual void ValidateBaseReturnResponse(TDto model)
+        {
+            if (SystemManager == null || SystemManager.ServiceProvider == null)
+                throw new ArgumentNullException(nameof(SystemManager));
+
+            var client = TestManager.GetClientReturnResponse(SystemManager.ServiceProvider);
+
+            //Call Validate
+            var respValidate = client.Validate(model);
+
+
+            Assert.True(respValidate.Success);
+        }
+
+        [Fact]
+        public virtual void Validate_MinDataReturnResponse()
+        {
+            var model = TestManager.GetMinimumDataObject();
+
+            ValidateBaseReturnResponse(model);
+        }
+
+        [Fact]
+        public virtual void Validate_MaxDataReturnResponse()
+        {
+            var model = TestManager.GetMaximumDataObject();
+
+            ValidateBaseReturnResponse(model);
+
         }
 
         #endregion Sync

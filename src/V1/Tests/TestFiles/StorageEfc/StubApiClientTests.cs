@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceBricks.Storage.EntityFrameworkCore.Xunit;
@@ -27,13 +28,23 @@ namespace ServiceBricks.Xunit
             var apioptions = new OptionsWrapper<ApiOptions>(new ApiOptions() { ReturnResponseObject = false });
             var apiservice = serviceProvider.GetRequiredService<IApiService<ExampleDto>>();
             var controller = new ExampleApiController(apiservice, apioptions);
-            var options = new OptionsWrapper<ClientApiOptions>(new ClientApiOptions() { ReturnResponseObject = false, BaseServiceUrl = "https://localhost:7000/", TokenUrl = "https://localhost:7000/token" });
+            
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":ReturnResponseObject", "false" },
+                    { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":DisableAuthentication", "false" },
+                    { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":TokenUrl", "https://localhost:7000/token" },
+                    { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":BaseServiceUrl", "https://localhost:7000/" },
+                })
+                .Build();
+
             var handler = new ApiClientTests.CustomGenericHttpClientHandler<ExampleDto>(controller);
             var clientHandlerFactory = new ExampleHttpClientFactory(handler);
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 clientHandlerFactory,
-                options);
+                config);
         }
 
         public ApiClientTests.CustomGenericHttpClientHandler<ExampleDto> Handler { get; set; }
@@ -43,14 +54,23 @@ namespace ServiceBricks.Xunit
             var apioptions = new OptionsWrapper<ApiOptions>(new ApiOptions() { ReturnResponseObject = true });
             var apiservice = serviceProvider.GetRequiredService<IApiService<ExampleDto>>();
             var controller = new ExampleApiController(apiservice, apioptions);
+            
+            var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                            { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":ReturnResponseObject", "true" },
+                            { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":DisableAuthentication", "false" },
+                            { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":TokenUrl", "https://localhost:7000/token" },
+                            { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":BaseServiceUrl", "https://localhost:7000/" },
+            })
+            .Build();
 
-            var options = new OptionsWrapper<ClientApiOptions>(new ClientApiOptions() { ReturnResponseObject = true, BaseServiceUrl = "https://localhost:7000/", TokenUrl = "https://localhost:7000/token" });
             var handler = new ApiClientTests.CustomGenericHttpClientHandler<ExampleDto>(controller);
             var clientHandlerFactory = new ExampleHttpClientFactory(handler);
             return new ExampleApiClient(
                 serviceProvider.GetRequiredService<ILoggerFactory>(),
                 clientHandlerFactory,
-                options);
+                config);
         }
     }
 
@@ -74,15 +94,4 @@ namespace ServiceBricks.Xunit
         }
     }
 
-    public class StubExampleApiClient : ApiClient<ExampleDto>, IExampleApiClient
-    {
-        public StubExampleApiClient(
-            ILoggerFactory loggerFactory,
-            IHttpClientFactory httpClientFactory,
-            IOptions<ClientApiOptions> clientApiOptions)
-            : base(loggerFactory, httpClientFactory, clientApiOptions.Value)
-        {
-            ApiResource = $"EntityFrameworkCore/Example";
-        }
-    }
 }

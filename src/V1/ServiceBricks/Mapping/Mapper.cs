@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ServiceBricks
 {
     public class Mapper : IMapper
     {
+       
         public static IMapper Instance = new Mapper(MapperRegistry.Instance);
 
         private readonly IMapperRegistry _mapperRegistry;
@@ -16,8 +18,15 @@ namespace ServiceBricks
             _mapperRegistry = mapperRegistry;
         }
 
+        /// <summary>
+        /// Map
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public TDestination Map<TSource, TDestination>(TSource source)
-            where TDestination : class, new()
+              where TDestination : class, new()
         {
             if (source == null)
                 return null;
@@ -26,6 +35,15 @@ namespace ServiceBricks
             return Map(source, destination);
         }
 
+        /// <summary>
+        /// Map
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
+        /// <exception cref="BusinessException"></exception>
         public TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
             where TDestination : class, new()
         {
@@ -43,67 +61,80 @@ namespace ServiceBricks
                 return destination;
             }
 
-            // Single-object mapping (existing behavior)
+            // Single-object mapping
             var mapper = _mapperRegistry.GetMapper(sourceType, destinationType);
             if (mapper == null)
+            {
+                // Fallback: same type, use public properties
+                if (sourceType == destinationType)
+                {
+                    MapByPublicProperties(source, destination, sourceType);
+                    return destination;
+                }
+
                 throw new BusinessException($"Missing mapping for {sourceType} to {destinationType}");
+            }
 
             mapper(source, destination);
             return destination;
         }
 
-        public TDestination Map<TDestination>(object source)
-            where TDestination : class, new()
+        /// <summary>
+        /// Fallback method to map public properties
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <param name="type"></param>
+        private void MapByPublicProperties(object source, object destination, Type type)
         {
-            if (source == null)
-                return null;
+            if (source == null || destination == null)
+                return;
 
-            var sourceType = source.GetType();
-            var destinationType = typeof(TDestination);
+            var props = type
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p => p.CanRead && p.CanWrite);
 
-            // If both source and destination are collections, map element-by-element
-            if (TryGetEnumerableElementType(sourceType, out var sourceElementType) &&
-                TryGetEnumerableElementType(destinationType, out var destElementType))
+            foreach (var prop in props)
             {
-                var destination = new TDestination();
-                MapCollection(source, destination, sourceElementType, destElementType);
-                return destination;
+                var value = prop.GetValue(source);
+                prop.SetValue(destination, value);
             }
-
-            // Single-object mapping (existing behavior)
-            var mapper = _mapperRegistry.GetMapper(sourceType, destinationType);
-            if (mapper == null)
-                throw new BusinessException($"Missing mapping for {sourceType} to {destinationType}");
-
-            var dest = new TDestination();
-            mapper(source, dest);
-            return dest;
         }
 
-        /// <summary>
-        /// Map a collection of source elements into a collection of destination elements.
-        /// Relies on a registered mapper for element types (sourceElementType → destElementType).
-        /// </summary>
-        private void MapCollection(object sourceCollection,
-                                   object destinationCollection,
-                                   Type sourceElementType,
-                                   Type destElementType)
+        private void MapCollection(
+     object sourceCollection,
+     object destinationCollection,
+     Type sourceElementType,
+     Type destElementType)
         {
             var itemMapper = _mapperRegistry.GetMapper(sourceElementType, destElementType);
-            if (itemMapper == null)
-                throw new BusinessException($"Missing mapping for {sourceElementType} to {destElementType}");
 
             if (sourceCollection is not IEnumerable sourceEnumerable)
                 throw new BusinessException($"Source type {sourceCollection.GetType()} is not enumerable.");
 
             if (destinationCollection is not IList destList)
-                throw new BusinessException(
-                    $"Destination type {destinationCollection.GetType()} must implement IList to map collections.");
+                throw new BusinessException($"Destination type {destinationCollection.GetType()} must implement IList to map collections.");
+
+            if (itemMapper == null && sourceElementType != destElementType)
+                throw new BusinessException($"Missing mapping for {sourceElementType} to {destElementType}");
 
             foreach (var srcItem in sourceEnumerable)
             {
+                // Create an element instance, not the collection type.
                 var destItem = Activator.CreateInstance(destElementType);
-                itemMapper(srcItem, destItem);
+                if (destItem == null)
+                    throw new BusinessException($"Unable to create instance of {destElementType}.");
+
+                if (itemMapper != null)
+                {
+                    itemMapper(srcItem, destItem);
+                }
+                else
+                {
+                    // Fallback when element types are the same
+                    MapByPublicProperties(srcItem, destItem, destElementType);
+                }
+
                 destList.Add(destItem);
             }
         }

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <IsPackable>False</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\TestFiles\WebApp\appsettings.json" Link="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.20" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
+	  <PackageReference Include="ServiceBricks.Core" Version="1.4.0-c" />
+	  <PackageReference Include="ServiceBricks.Cache.Microservice" Version="1.4.0-c" />
+      <PackageReference Include="ServiceBricks.Logging.Microservice" Version="1.4.0-c" />
+      <PackageReference Include="ServiceBricks.Notification.Microservice" Version="1.4.0-c" />
+	  <PackageReference Include="ServiceBricks.Security.Microservice" Version="1.4.0-c" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Shared\_Layout.cshtml" />
+    <None Include="Pages\_ViewImports.cshtml" />
+    <None Include="Pages\_ViewStart.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\ServiceBricks.TestDataTypes.AzureDataTables\ServiceBricks.TestDataTypes.AzureDataTables.csproj" />
+		<ProjectReference Include="..\..\ServiceBricks.TestDataTypes.Cosmos\ServiceBricks.TestDataTypes.Cosmos.csproj" />
+		<ProjectReference Include="..\..\ServiceBricks.TestDataTypes.InMemory\ServiceBricks.TestDataTypes.InMemory.csproj" />
+		<ProjectReference Include="..\..\ServiceBricks.TestDataTypes.MongoDb\ServiceBricks.TestDataTypes.MongoDb.csproj" />
+		<ProjectReference Include="..\..\ServiceBricks.TestDataTypes.Postgres\ServiceBricks.TestDataTypes.Postgres.csproj" />
+		<ProjectReference Include="..\..\ServiceBricks.TestDataTypes.Sqlite\ServiceBricks.TestDataTypes.Sqlite.csproj" />
+		<ProjectReference Include="..\..\ServiceBricks.TestDataTypes.SqlServer\ServiceBricks.TestDataTypes.SqlServer.csproj" />
+        <ProjectReference Include="..\..\ServiceBricks.TestDataTypes.Microservice\ServiceBricks.TestDataTypes.Microservice.csproj" />
+	</ItemGroup>
+
+</Project>
+

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<Version>1.0.0</Version>
+		<Description>This microservice test all datatypes for generation.</Description>
+		<AssemblyTitle>ServiceBricks.TestDataTypes.AzureDataTables</AssemblyTitle>
+		<Authors>holomodular</Authors>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\ServiceBricks.Core\ServiceBricks.Core.csproj" />
+		<ProjectReference Include="..\..\..\..\ServiceBricks.Storage.AzureDataTables\ServiceBricks.Storage.AzureDataTables.csproj" />
+	</ItemGroup>
+    <ItemGroup>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes\ServiceBricks.TestDataTypes.csproj" />
+	</ItemGroup>
+</Project>

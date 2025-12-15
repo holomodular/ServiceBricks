@@ -23,6 +23,15 @@
 
         /// <summary>
         /// Get an item.
+        /// </summary>        
+        /// <returns></returns>
+        public virtual IList<MapperRegistryValue> GetRegistryList<TSource>()
+        {
+            return GetRegistryList(typeof(TSource));
+        }
+
+        /// <summary>
+        /// Get an item.
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -44,6 +53,16 @@
             {
                 LockObject.ReleaseReaderLock();
             }
+        }
+
+        /// <summary>
+        /// Get a mapping
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public virtual Action<object, object> GetMapper<TSource, TDestination>()
+        {
+            return GetMapper(typeof(TSource), typeof(TDestination));
         }
 
         /// <summary>
@@ -142,6 +161,16 @@
             {
                 LockObject.ReleaseWriterLock();
             }
+        }
+
+        /// <summary>
+        /// Unregister a source and destination.
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TDestination"></typeparam>
+        public virtual void UnRegister<TSource,TDestination>()
+        {
+            UnRegister(typeof(TSource), typeof(TDestination));
         }
 
         /// <summary>

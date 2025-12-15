@@ -17,14 +17,14 @@ Leveraging Domain-Driven Design (DDD), Event-Driven Architecture (EDA), and a ho
 * **Advanced Architecture:** Provides the core architectural patterns, implementation, standardization, and governance for your microservices.
 * **REST APIs:** Expose standardized, secure REST APIs to manage your data.
 * **Storage Agnostic:** Interchangeably supports relational, document, cloud or embedded database engines
-* **Seamless Integration:** Switch storage providers without impacting microservice operations.
+* **Seamless Integration:** Switch storage providers without impacting microservice operations and avoid vendor lock-in.
 
 
 ## Major Features
 
 * **Artificial Intelligence Integration:** Use large language models to build, query and manipulate your microservice data using simple human input.
 * **Generics:** Extensive use of generics, allowing the compiler to generate most of the required source code.
-* **REST API Services:** Templated, repository-based services for quickly exposing standard CRUD methods or custom methods.
+* **REST API Services:** Templated, repository-based services for quickly exposing standard CRUD+QPV (Query, Patch, Validate) methods or custom methods.
 * **[ServiceQuery Integration](https://github.com/holomodular/ServiceQuery):** Supports standardized, polyglot, dynamic data querying for all database engines.
 * **[Business Rule Engine](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/BusinessRuleEngine.md):** Polymorphic techniques to build reusable business logic.
 * **[Domain-Driven Design (DDD)](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/FlowOfData.md) & [Event-Driven Architecture (EDA)](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/EventDrivenArchitecture.md):** Customize business logic for any supported object and method.
@@ -33,8 +33,8 @@ Leveraging Domain-Driven Design (DDD), Event-Driven Architecture (EDA), and a ho
 * **[Service Bus Engine](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/BroadcastsAndServiceBus.md):** Supports broadcasts of system data with InMemory and Azure Service Bus.
 * **[Classic or Modern REST API Design](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/ClassicVsModernRestApi.md):** Choose between Classic or Modern modes, with various response formats.
 * **[NuGet Packages](https://github.com/holomodular/ServiceBricks-Documentation/blob/main/V1/NuGet.md):** Quickly build new services and applications.
-* **Testing Framework:** Comprehensive Xunit test framework for robust unit and integration testing.
-* **Open Source:** Only three dependencies (AutoMapper, Newtonsoft.Json, and ServiceQuery), all MIT licensed.
+* **Testing Framework:** Comprehensive Xunit test framework for robust unit and integration testing with thousands of tests available.
+* **Open Source:** All referenced assemblies are open source and licensed under MIT or an equivalent license.
 
 
 ## Getting Started with Examples
@@ -49,12 +49,16 @@ Check out our [ServiceBricks-Documentation](https://github.com/holomodular/Servi
 
 Get started quickly with our pre-built microservices:
 
-* [ServiceBricks-Cache](https://github.com/holomodular/ServiceBricks-Cache): Generic data storage microservice with a built in expiration process.
-* [ServiceBricks-Logging](https://github.com/holomodular/ServiceBricks-Logging): Service-scoped or centralized logging and web request auditing microservice.
-* [ServiceBricks-Notification](https://github.com/holomodular/ServiceBricks-Notification): Notification and delivery of emails and SMS messages.
-* [ServiceBricks-Security](https://github.com/holomodular/ServiceBricks-Security): Authentication, authorization, and application security with JWT bearer token support for multi-application deployments.
+* [ServiceBricks-Cache](https://github.com/holomodular/ServiceBricks-Cache): Generic data storage microservice with a built in expiration process and a distributed semaphore for cache-level locking for multi-instance deployments.
+* [ServiceBricks-Logging](https://github.com/holomodular/ServiceBricks-Logging): Service-scoped or centralized logging and a web request auditing microservice.
+* [ServiceBricks-Notification](https://github.com/holomodular/ServiceBricks-Notification): Notification and delivery for emails and SMS messages.
+* [ServiceBricks-Security](https://github.com/holomodular/ServiceBricks-Security): Authentication, authorization, and application security with JWT bearer token support for multi-instance deployments.
+* [ServiceBricks-Work](https://github.com/holomodular/ServiceBricks-Work): Work queue microservice for reliable, event-driven background processing.
 
+## Trademarks
+
+“ServiceBricks”, "ServiceQuery" and “HoloModular” are trademarks of HoloModular LLC. The MIT License covers code only; it does not grant rights to use our trademarks, logos, or brand assets (including in modified or redistributed versions) without permission.
 
 ## About
 
-ServiceBricks is owned and maintained by HoloModular LLC. Visit our websites at https://HoloModular.com or https://ServiceBricks.com to learn more.
+ServiceBricks is owned and maintained by HoloModular LLC and authored by Danny Logsdon (Founder). Visit our websites at https://HoloModular.com, https://ServiceBricks.com or https://www.linkedin.com/in/danlogsdon to learn more.

@@ -91,7 +91,7 @@ namespace ServiceBricks
                 // Create problem details
                 ProblemDetails details;
                 if (_apiOptions.ExposeSystemErrors)
-                    details = _mapper.Map<ProblemDetails>(exception);
+                    details = _mapper.Map<Exception, ProblemDetails>(exception);
                 else
                 {
                     details = new ProblemDetails()

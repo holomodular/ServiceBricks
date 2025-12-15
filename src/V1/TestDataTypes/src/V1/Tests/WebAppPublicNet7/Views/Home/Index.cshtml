@@ -1,0 +1,93 @@
+@{
+    ViewBag.Title = "Welcome to ServiceBricks!";
+}
+<h1>Welcome to ServiceBricks!</h1>
+<p>
+    This is the ServiceBricks Web API Starter Application. You can modify this application however you like.
+</p>
+<h2>Test Admin Account</h2>
+<p>
+    In the WebApp.Extensions.ApplicationBuilderExtensions class, a default test admin account is already created for you with the following credentials:
+    <div>Username: unittest@servicebricks.com</div>
+    <div>Password: UnitTest123!@@#</div>
+</p>
+<h2>Using Different Database Engines</h2>
+<p>
+    Change the Program.cs file and change the line:
+    <code>webBuilder.UseStartup&lt;StartupInMemory&gt;();</code>
+    to use the startup class for the database engine you choose.
+    Also make sure to update the appsettings.json file with the correct connection string for your provider under the Storage key.
+</p>
+<h2>ServiceQuery</h2>
+<p>
+    We have developed a companion library called <b>ServiceQuery</b> that allows you to query your microservice data using SQL and NoSQL database engines.
+    Visit <a target="_blank" href="https://ServiceQuery.com">https://ServiceQuery.com</a> to learn more.
+</p>
+<p>
+    By default, all queries use paging and return the first page of 1000 records. Here are a few queries to get you started.
+    <br />
+    This query is the default 1st page of 1000 records:
+    <code>
+        { "filters": [] }
+    </code>
+    <br />
+    This query will include the count of all records along with the 1st page of 5 records per page:
+    <code>
+        { "filters": [ { "filterType": "includecount" },{ "filterType":"pagesize", "values": ["5"] } ] }
+    </code>
+    <br />
+    This query will only return a count of all records. Note: this uses the aggregate response property:
+    <code>
+        { "filters": [ { "filterType": "count" }] }
+    </code>
+    <br />
+    This query will give you records that equals a value:
+    <code>
+        { "filters": [ { "filterType": "equal", "properties":["PropertyName"], "values":["PropertyValue"] }] }
+    </code>
+
+</p>
+<h2>Swagger</h2>
+<p>
+    To obtain a bearer token for use with swagger, call the <b>AuthenticationApi.AuthenticateUser method</b>.
+    <br />
+    Note: You can also use Postman and post the to the following url:
+    <b>https://localhost:7000/api/v1.0/Security/Authentication/AuthenticateUser</b>
+</p>
+<p>
+    <ol>
+        <li>Copy and paste the code below and add to the <b>AuthenticationApi.AuthenticateUser method</b> and click Execute.
+        <br/>
+            <code>
+                {
+                "client_id": "unittest@servicebricks.com",
+                "grant_type": "password",
+                "client_secret": "UnitTest123!@@#"
+                }
+            </code>
+        </li>
+        <li>
+            Copy the "access_token" from the response, you will use this next.
+        </li>
+        <li>
+            At the top of the swagger page, click the Authorize button with the open lock icon. Paste the value from the access_token into the value textbox and click the Authorize button and then the Close button.
+            The button when now display with a closed lock icon.
+        </li>
+        <li>
+            You can now access all methods of the ServiceBricks API as an Admin user.
+        </li>
+    </ol>
+
+</p>
+<p>
+
+</p>
+<p>
+    <a href="/swagger" target="_blank">View Swagger Page</a>
+</p>
+<h2>About ServiceBricks</h2>
+<p>
+    Please visit our website at <a href="https://ServiceBricks.com" target="_blank">https://ServiceBricks.com</a> to learn more.
+    ServiceBricks is a product by <a href="https://HoloModular.com" target="_blank">HoloModular LLC</a>
+</p>
+

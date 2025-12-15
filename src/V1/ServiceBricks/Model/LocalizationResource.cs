@@ -7,6 +7,10 @@
     {
         public const string ERROR_API = "System error with API";
 
+        public const string ERROR_API_MAX_PATCH = "System error with maximum number of patches";
+
+        public const string ERROR_API_SYNC_DISABLED = "System error sync methods disabled";
+
         public const string ERROR_BUSINESS_RULE = "System error with business rules";
 
         public const string ERROR_BUSINESS_RULE_CONCURRENCY = "System error with concurrency business rule";
@@ -39,7 +43,7 @@
 
         public const string ERROR_ITEMS_NOT_FOUND = "Items not found";
 
-        public const string ERROR_USER_NOT_FOUND = "User not found";
+        public const string ERROR_USER_NOT_FOUND = "User not found";        
 
         public const string ITEM_DELETED_SUCCESS = "Item deleted successfully";
 
@@ -62,5 +66,19 @@
         public const string PARAMETER_MISSING = "Parameter is missing";
 
         public const string UNIT_TEST = "UNIT TEST";
+
+        public const string OPENAPI_CREATE_DESCRIPTION = "Create an object";
+        
+        public const string OPENAPI_UPDATE_DESCRIPTION = "Update an object";
+        
+        public const string OPENAPI_GET_DESCRIPTION = "Get an object by StorageKey";
+        
+        public const string OPENAPI_DELETE_DESCRIPTION = "Delete an object by StorageKey";
+        
+        public const string OPENAPI_QUERY_DESCRIPTION = "Query for objects using ServiceQuery";
+        
+        public const string OPENAPI_PATCH_DESCRIPTION = "Patch an object by StorageKey";
+        
+        public const string OPENAPI_VALIDATE_DESCRIPTION = "Validate an object";
     }
 }

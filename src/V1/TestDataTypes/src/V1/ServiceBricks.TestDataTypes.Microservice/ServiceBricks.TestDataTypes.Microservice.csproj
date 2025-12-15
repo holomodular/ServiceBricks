@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<Version>1.0.0</Version>
+		<Description>This microservice test all datatypes for generation.</Description>
+		<AssemblyTitle>ServiceBricks.TestDataTypes.Microservice</AssemblyTitle>
+		<Authors>holomodular</Authors>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+        <IsPackable>True</IsPackable>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\ServiceBricks.Core\ServiceBricks.Core.csproj" />
+	</ItemGroup>
+    <ItemGroup>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes\ServiceBricks.TestDataTypes.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.AzureDataTables\ServiceBricks.TestDataTypes.AzureDataTables.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.AzureDataTables.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.Cosmos\ServiceBricks.TestDataTypes.Cosmos.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.Cosmos.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.EntityFrameworkCore\ServiceBricks.TestDataTypes.EntityFrameworkCore.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.EntityFrameworkCore.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.InMemory\ServiceBricks.TestDataTypes.InMemory.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.InMemory.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.Model\ServiceBricks.TestDataTypes.Model.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.Model.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.MongoDb\ServiceBricks.TestDataTypes.MongoDb.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.MongoDb.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.Postgres\ServiceBricks.TestDataTypes.Postgres.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.Postgres.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.Sqlite\ServiceBricks.TestDataTypes.Sqlite.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.Sqlite.dll</IncludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\ServiceBricks.TestDataTypes.SqlServer\ServiceBricks.TestDataTypes.SqlServer.csproj" PrivateAssets="All">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>ServiceBricks.TestDataTypes.SqlServer.dll</IncludeAssets>
+		</ProjectReference>
+	</ItemGroup>
+	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+		</ItemGroup>
+	</Target>
+</Project>

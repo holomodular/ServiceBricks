@@ -19,5 +19,20 @@
         /// The access token response.
         /// </summary>
         public virtual AccessTokenResponse AccessTokenResponse { get; set; }
+
+
+        /// <summary>
+        /// Access token that will be cached
+        /// </summary>
+        public class CachedAccessToken
+        {
+            public AccessTokenResponse Response { get; set; }
+            public DateTimeOffset ExpiresAtUtc { get; set; }
+
+            public bool IsExpired
+            {
+                get { return DateTimeOffset.UtcNow >= ExpiresAtUtc; }
+            }
+        }
     }
 }

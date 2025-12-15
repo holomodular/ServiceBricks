@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Version>1.4.0-a</Version>
+		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
+		<PackageId>ServiceBricks.Json.Newtonsoft</PackageId>
+		<Title>ServiceBricks.Json.Newtonsoft</Title>
+		<AssemblyTitle>ServiceBricks.Json.Newtonsoft</AssemblyTitle>
+		<Authors>holomodular</Authors>
+		<Company>HoloModular LLC</Company>
+		<Product>ServiceBricks</Product>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
+		<Copyright>Copyright © 2025 HoloModular LLC. All Rights Reserved. Visit https://HoloModular.com to learn more.</Copyright>
+		<PackageProjectUrl>https://ServiceBricks.com</PackageProjectUrl>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageTags>servicebricks;json;newtonsoft</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>Resource\ServiceBricks.Json.Newtonsoft.snk</AssemblyOriginatorKeyFile>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/holomodular/ServiceBricks</RepositoryUrl>
+		<IsPackable>True</IsPackable>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="Resource\readme.md" Pack="True" PackagePath="\" />
+		<None Include="Resource\logo.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ServiceBricks\ServiceBricks.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+	</ItemGroup>
+
+</Project>

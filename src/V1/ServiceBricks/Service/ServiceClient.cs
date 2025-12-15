@@ -18,6 +18,11 @@
         public const string CONTENTTYPE_APPLICATIONJSON = "application/json";
 
         /// <summary>
+        /// Application/JSON content type for patch.
+        /// </summary>
+        public const string CONTENTTYPE_APPLICATIONJSONPATCH = "application/json-patch+json";
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="httpClientFactory"></param>

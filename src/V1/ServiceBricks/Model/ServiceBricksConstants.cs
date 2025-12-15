@@ -6,6 +6,11 @@
     public partial class ServiceBricksConstants
     {
         /// <summary>
+        /// Maximum patch operations
+        /// </summary>
+        public const int DEFAULT_API_MAX_PATCH_OPERATIONS = 1000;
+
+        /// <summary>
         /// Appsetting for the client api options.
         /// </summary>
         public const string APPSETTING_CLIENT_APIOPTIONS = @"ServiceBricks:Client:Api";

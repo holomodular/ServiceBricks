@@ -5,6 +5,7 @@
     /// </summary>
     public partial class ApiOptions
     {
+
         /// <summary>
         /// Determines if the API should expose ErrorSystemSensitive severity errors.
         /// </summary>
@@ -14,5 +15,10 @@
         /// Determines if the API should return a response object with the response, classic vs modern design.
         /// </summary>
         public virtual bool ReturnResponseObject { get; set; }
+
+        /// <summary>
+        /// Disable Controller sync methods
+        /// </summary>
+        public virtual bool DisableSyncMethods { get; set; }
     }
 }

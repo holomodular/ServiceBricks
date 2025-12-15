@@ -57,13 +57,13 @@ namespace ServiceBricks
             services.AddHttpContextAccessor();
 
             // Json Serializer
+            services.AddServiceBricksJsonNewtonsoft(configuration); // For JsonPatchDocument usage
             services.AddSingleton<IJsonSerializer>(JsonSerializer.Instance);
 
             // Options
             services.AddOptions();
             services.Configure<ApplicationOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APPLICATIONOPTIONS));
-            services.Configure<ApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APIOPTIONS));
-            services.Configure<ClientApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS));
+            services.Configure<ApiOptions>(configuration.GetSection(ServiceBricksConstants.APPSETTING_APIOPTIONS));            
 
             // Background task queue for any ordered background processing
             services.AddSingleton<ITaskQueue, TaskQueue>();

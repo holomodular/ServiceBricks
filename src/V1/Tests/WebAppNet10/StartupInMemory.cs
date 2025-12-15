@@ -17,7 +17,7 @@ namespace WebApp
         {
             services.AddServiceBricks(Configuration);
             services.AddServiceBricksExampleInMemory(Configuration);
-            Mapping.ProblemDetailsMappingProfile.Register(MapperRegistry.Instance);
+            ProblemDetailsMappingProfile.Register(MapperRegistry.Instance);
             services.AddServiceBricksComplete(Configuration);
 
             services.AddCustomWebsite(Configuration);

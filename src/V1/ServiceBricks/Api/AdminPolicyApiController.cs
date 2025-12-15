@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ServiceQuery;
@@ -11,7 +12,7 @@ namespace ServiceBricks
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial class AdminPolicyApiController<TDto> : ApiController<TDto>
-        where TDto : class, new()
+        where TDto : class, IDataTransferObject, new()
     {
         /// <summary>
         /// Constructor.
@@ -67,7 +68,7 @@ namespace ServiceBricks
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
-        public override async Task<ActionResult> GetAsync([FromRoute] string storageKey)
+        public override async Task<ActionResult> GetAsync([FromRoute] string storageKey, CancellationToken cancellationToken = default)
         {
             return await base.GetAsync(storageKey);
         }
@@ -82,7 +83,7 @@ namespace ServiceBricks
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
-        public override async Task<ActionResult> GetFromQueryAsync([FromQuery] string storageKey)
+        public override async Task<ActionResult> GetFromQueryAsync([FromQuery] string storageKey, CancellationToken cancellationToken = default)
         {
             return await base.GetAsync(storageKey);
         }
@@ -113,9 +114,39 @@ namespace ServiceBricks
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
-        public override async Task<ActionResult> UpdateAsync([FromBody] TDto dto)
+        public override async Task<ActionResult> UpdateAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
         {
             return await base.UpdateAsync(dto);
+        }
+
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("UpdateAck")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override ActionResult UpdateAck([FromBody] TDto dto)
+        {
+            return base.UpdateAck(dto);
+        }
+
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("UpdateAckAsync")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override async Task<ActionResult> UpdateAckAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
+        {
+            return await base.UpdateAckAsync(dto);
         }
 
         /// <summary>
@@ -144,9 +175,39 @@ namespace ServiceBricks
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
-        public override async Task<ActionResult> CreateAsync([FromBody] TDto dto)
+        public override async Task<ActionResult> CreateAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
         {
             return await base.CreateAsync(dto);
+        }
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("CreateAck")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override ActionResult CreateAck([FromBody] TDto dto)
+        {
+            return base.CreateAck(dto);
+        }
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("CreateAckAsync")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override async Task<ActionResult> CreateAckAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
+        {
+            return await base.CreateAckAsync(dto);
         }
 
         /// <summary>
@@ -191,7 +252,7 @@ namespace ServiceBricks
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
-        public override async Task<ActionResult> DeleteAsync([FromRoute] string storageKey)
+        public override async Task<ActionResult> DeleteAsync([FromRoute] string storageKey, CancellationToken cancellationToken = default)
         {
             return await base.DeleteAsync(storageKey);
         }
@@ -206,7 +267,7 @@ namespace ServiceBricks
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
-        public override async Task<ActionResult> DeleteFromQueryAsync([FromQuery] string storageKey)
+        public override async Task<ActionResult> DeleteFromQueryAsync([FromQuery] string storageKey, CancellationToken cancellationToken = default)
         {
             return await base.DeleteAsync(storageKey);
         }
@@ -236,9 +297,202 @@ namespace ServiceBricks
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
-        public override async Task<ActionResult> QueryAsync([FromBody] ServiceQueryRequest request)
+        public override async Task<ActionResult> QueryAsync([FromBody] ServiceQueryRequest request, CancellationToken cancellationToken = default)
         {
             return await base.QueryAsync(request);
         }
+
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{storageKey}")]
+        [Route("Patch/{storageKey}")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override ActionResult Patch(
+            [FromRoute] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument)
+        {
+            return base.Patch(storageKey, patchDocument);
+        }
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("")]
+        [Route("Patch")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override ActionResult PatchFromQuery(
+            [FromQuery] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument)
+        {
+            return base.Patch(storageKey, patchDocument);
+        }
+
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("PatchAsync/{storageKey}")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override async Task<ActionResult> PatchAsync(
+            [FromRoute] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument,
+            CancellationToken cancellationToken = default)
+        {
+            return await base.PatchAsync(storageKey, patchDocument);
+        }
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("PatchAsync")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override async Task<ActionResult> PatchFromQueryAsync(
+            [FromQuery] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument,
+            CancellationToken cancellationToken = default)
+        {
+            return await base.PatchAsync(storageKey, patchDocument);
+        }
+
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("PatchAck/{storageKey}")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override ActionResult PatchAck(
+            [FromRoute] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument)
+        {
+            return base.PatchAck(storageKey, patchDocument);
+        }
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("PatchAck")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override ActionResult PatchAckFromQuery(
+            [FromQuery] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument)
+        {
+            return PatchAck(storageKey, patchDocument);
+        }
+
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("PatchAckAsync/{storageKey}")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override async Task<ActionResult> PatchAckAsync(
+            [FromRoute] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument,
+            CancellationToken cancellationToken = default)
+        {
+            return await base.PatchAckAsync(storageKey, patchDocument);
+        }
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("PatchAckAsync")]
+        [Consumes("application/json-patch+json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override async Task<ActionResult> PatchAckFromQueryAsync(
+            [FromQuery] string storageKey,
+            [FromBody] JsonPatchDocument<TDto> patchDocument,
+            CancellationToken cancellationToken = default)
+        {
+            return await base.PatchAckAsync(storageKey, patchDocument);
+        }
+
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Validate")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override ActionResult Validate([FromBody] TDto dto)
+        {
+            return base.Validate(dto);
+        }
+
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("ValidateAsync")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_ADMIN)]
+        public override async Task<ActionResult> ValidateAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
+        {
+            return await base.ValidateAsync(dto, cancellationToken);
+        }
+
     }
 }

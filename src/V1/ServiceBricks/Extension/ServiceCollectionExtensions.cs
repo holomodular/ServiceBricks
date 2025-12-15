@@ -30,6 +30,32 @@ namespace ServiceBricks
         }
 
         /// <summary>
+        /// Add the Newtonsoft.Json library as the default JSON serializer
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddServiceBricksJsonNewtonsoft(this IServiceCollection services, IConfiguration configuration)
+        {
+            JsonSerializer.Instance = new NewtonsoftJsonSerializerProvider();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Add the Newtonsoft.Json library as the default JSON serializer
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddServiceBricksJsonSystemText(this IServiceCollection services, IConfiguration configuration)
+        {
+            JsonSerializer.Instance = new SystemTextJsonSerializerProvider();
+
+            return services;
+        }
+
+        /// <summary>
         /// Get the ApplicationParts for the ServiceBricks.
         /// </summary>
         /// <param name="services"></param>

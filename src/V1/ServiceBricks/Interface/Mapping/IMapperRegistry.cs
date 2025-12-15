@@ -31,6 +31,13 @@
         IList<MapperRegistryValue> GetRegistryList(Type key);
 
         /// <summary>
+        /// Get the registry list
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        IList<MapperRegistryValue> GetRegistryList<TSource>();
+
+        /// <summary>
         /// Get the mapper
         /// </summary>
         /// <param name="source"></param>
@@ -39,10 +46,25 @@
         Action<object, object> GetMapper(Type source, Type destination);
 
         /// <summary>
+        /// Get the mapper
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <returns></returns>
+        Action<object, object> GetMapper<TSource, TDestination>();
+
+        /// <summary>
         /// Unregister all matching items.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         void UnRegister(Type source, Type destination);
+
+        /// <summary>
+        /// Unregister all matching items.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        void UnRegister<TSource,TDestination>();
     }
 }

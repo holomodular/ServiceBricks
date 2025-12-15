@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using ServiceQuery;
 
 namespace ServiceBricks
@@ -8,6 +9,7 @@ namespace ServiceBricks
     /// </summary>
     /// <typeparam name="TDto"></typeparam>
     public partial interface IApiController<TDto>
+        where TDto : class
     {
         /// <summary>
         /// Create
@@ -21,7 +23,21 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<ActionResult> CreateAsync(TDto dto);
+        Task<ActionResult> CreateAsync(TDto dto, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        ActionResult CreateAck(TDto dto);
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<ActionResult> CreateAckAsync(TDto dto, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Update
@@ -35,7 +51,21 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<ActionResult> UpdateAsync(TDto dto);
+        Task<ActionResult> UpdateAsync(TDto dto, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        ActionResult UpdateAck(TDto dto);
+
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<ActionResult> UpdateAckAsync(TDto dto, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Delete
@@ -49,7 +79,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="storageKey"></param>
         /// <returns></returns>
-        Task<ActionResult> DeleteAsync(string storageKey);
+        Task<ActionResult> DeleteAsync(string storageKey, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get
@@ -63,7 +93,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="storageKey"></param>
         /// <returns></returns>
-        Task<ActionResult> GetAsync(string storageKey);
+        Task<ActionResult> GetAsync(string storageKey, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Query
@@ -77,13 +107,53 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<ActionResult> QueryAsync(ServiceQueryRequest request);
+        Task<ActionResult> QueryAsync(ServiceQueryRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Get error response
+        /// Patch
         /// </summary>
-        /// <param name="response"></param>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
         /// <returns></returns>
-        ActionResult GetErrorResponse(IResponse response);
+        ActionResult Patch(string storageKey, JsonPatchDocument<TDto> patchDocument);
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        Task<ActionResult> PatchAsync(string storageKey, JsonPatchDocument<TDto> patchDocument, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        ActionResult PatchAck(string storageKey, JsonPatchDocument<TDto> patchDocument);
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        Task<ActionResult> PatchAckAsync(string storageKey, JsonPatchDocument<TDto> patchDocument, CancellationToken cancellationToken = default);
+        
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        ActionResult Validate(TDto dto);
+
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ActionResult> ValidateAsync(TDto dto, CancellationToken cancellationToken = default);
     }
 }

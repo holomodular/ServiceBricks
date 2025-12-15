@@ -1,4 +1,5 @@
-﻿using ServiceQuery;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using ServiceQuery;
 
 namespace ServiceBricks
 {
@@ -45,6 +46,20 @@ namespace ServiceBricks
         Task<IResponseItem<TDto>> UpdateAsync(TDto dto);
 
         /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        IResponse UpdateAck(TDto dto);
+
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<IResponse> UpdateAckAsync(TDto dto);
+
+        /// <summary>
         /// Create
         /// </summary>
         /// <param name="dto"></param>
@@ -57,6 +72,20 @@ namespace ServiceBricks
         /// <param name="dto"></param>
         /// <returns></returns>
         Task<IResponseItem<TDto>> CreateAsync(TDto dto);
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        IResponse CreateAck(TDto dto);
+
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<IResponse> CreateAckAsync(TDto dto);
 
         /// <summary>
         /// Delete
@@ -85,5 +114,52 @@ namespace ServiceBricks
         /// <param name="serviceQueryRequest"></param>
         /// <returns></returns>
         Task<IResponseItem<ServiceQueryResponse<TDto>>> QueryAsync(ServiceQueryRequest serviceQueryRequest);
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        IResponseItem<TDto> Patch(string storageKey, JsonPatchDocument<TDto> patchDocument);
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        Task<IResponseItem<TDto>> PatchAsync(string storageKey, JsonPatchDocument<TDto> patchDocument);
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        IResponse PatchAck(string storageKey, JsonPatchDocument<TDto> patchDocument);
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        /// <param name="storageKey"></param>
+        /// <param name="patchDocument"></param>
+        /// <returns></returns>
+        Task<IResponse> PatchAckAsync(string storageKey, JsonPatchDocument<TDto> patchDocument);
+
+        /// <summary>
+        /// Validate.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        IResponse Validate(TDto dto);
+
+        /// <summary>
+        /// Validate.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<IResponse> ValidateAsync(TDto dto);
+
     }
 }

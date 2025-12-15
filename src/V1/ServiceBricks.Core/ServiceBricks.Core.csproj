@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.4.0-a</Version>
+		<Version>1.4.0-d</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Core</PackageId>
 		<Title>ServiceBricks.Core</Title>
@@ -36,16 +36,17 @@
 
 	<ItemGroup>
 		<!-- <ProjectReference Include="..\ServiceBricks\ServiceBricks.csproj" /> -->
-	<PackageReference Include="ServiceBricks" Version="1.4.0-a" />
+		<PackageReference Include="ServiceBricks" Version="1.4.0-d" />
 </ItemGroup>
 	
-	<ItemGroup>
+	<ItemGroup>		
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
 		<PackageReference Include="Azure.Data.Tables" Version="12.11.0" />		
 		<PackageReference Include="MongoDB.Driver" Version="3.5.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="ServiceQuery.AzureDataTables" Version="2.2.3" />
 		<PackageReference Include="ServiceQuery.EntityFrameworkCore" Version="2.2.3" />
-		<PackageReference Include="ServiceQuery.MongoDb" Version="2.2.3" />		
+		<PackageReference Include="ServiceQuery.MongoDb" Version="2.2.3" />				
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
@@ -85,11 +86,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="10.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
 	</ItemGroup>
 

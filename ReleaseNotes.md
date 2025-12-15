@@ -1,3 +1,14 @@
+# 1.4.0-d
+- Support for .Net Core 10
+- Included Newtonsoft.Json back into project for use with JsonPatchDocument, need services.AddControllers().AddNewtonsoftJson() as well.
+- New API method Patch to send incremental updates without a full payload. Returns a full payload object.
+- New API method Validate to validate a given object.
+- New API methods CreateAck, UpdateAck, PatchAck that return only a response for low latency/small packet sizes.
+- New format querystring parameter (and optional header parameter) that specifies the response format either classic or modern. Server default is classic so that it matches swagger API definitions.
+- Upgrades to Swagger and OpenAPI caused changes to swagger apply security operations.
+- xUnit test fixes
+- Added TestDataTypes microservice hard-wired to framework to allow easier testing and debugging.
+
 # 1.3.0
 - Rollup quarterly release. See previous release notes.
 
