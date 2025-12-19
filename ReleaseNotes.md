@@ -1,3 +1,8 @@
+# 1.4.0-e
+- Fixes for Azure ServiceBus Queue and Topics
+- Async API methods as canonical
+- New test home page
+
 # 1.4.0-d
 - Support for .Net Core 10
 - Included Newtonsoft.Json back into project for use with JsonPatchDocument, need services.AddControllers().AddNewtonsoftJson() as well.

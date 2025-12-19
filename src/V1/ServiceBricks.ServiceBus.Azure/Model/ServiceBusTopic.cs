@@ -106,13 +106,13 @@ namespace ServiceBricks.ServiceBus.Azure
             {
                 // Create rule if needed
                 string maxRuleName = GetRuleName(e);
-                var existing = existingRules.Where(x => x.Name == maxRuleName).FirstOrDefault();
+                var existing = existingRules.Where(x => string.Compare(x.Name, maxRuleName, true)==0).FirstOrDefault();
                 if (existing == null)
                     await CreateRule(e);
             }
 
             // Remove default "true" rule for subscription
-            if (existingRules.Where(x => x.Name == RuleProperties.DefaultRuleName).Any())
+            if (existingRules.Where(x => string.Compare(x.Name, RuleProperties.DefaultRuleName, true)==0).Any())
                 await RemoveDefaultRuleAsync();
 
             // Start processor
@@ -364,7 +364,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <returns></returns>
         protected virtual Task ErrorHandler(ProcessErrorEventArgs args)
         {
-            _logger.LogError(args.Exception, $"{args.ErrorSource}");
+            _logger.LogError(args.Exception, $"ServiceBus Error: {JsonSerializer.Instance.SerializeObject(args)}");
             return Task.CompletedTask;
         }
 
@@ -377,7 +377,7 @@ namespace ServiceBricks.ServiceBus.Azure
         protected virtual async Task<bool> ProcessBroadcastAsync(string broadcastName, string message)
         {
             // If subscribed to, a reference will be found
-            var type = _businessRuleRegistry.GetKeys().Where(x => x.FullName == broadcastName).FirstOrDefault();
+            var type = _businessRuleRegistry.GetKeys().Where(x => string.Compare(x.FullName, broadcastName, true)==0).FirstOrDefault();
             if (type != null)
             {
                 // Convert to the broadcast type
@@ -392,6 +392,9 @@ namespace ServiceBricks.ServiceBus.Azure
                     return resp.Success;
                 }
             }
+            else
+                _logger.LogWarning($"ServiceBus message {broadcastName} was not handled");
+            
             return true;
         }
     }

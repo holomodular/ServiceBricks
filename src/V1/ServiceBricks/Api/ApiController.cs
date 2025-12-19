@@ -30,8 +30,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="storageKey"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("{storageKey}")]
+        [HttpGet]        
         [Route("Get/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -87,8 +86,8 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="storageKey"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("")]
+        [HttpGet]        
+        [Route("{storageKey}")]
         [Route("GetAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -113,6 +112,7 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpGet]
+        [Route("")]
         [Route("GetAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -138,6 +138,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPut]        
         [Route("Update")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual ActionResult Update([FromBody] TDto dto)
@@ -167,6 +168,7 @@ namespace ServiceBricks
         [HttpPut]
         [Route("")]
         [Route("UpdateAsync")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<ActionResult> UpdateAsync(
@@ -191,6 +193,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAck")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual ActionResult UpdateAck([FromBody] TDto dto)
@@ -219,6 +222,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAckAsync")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<ActionResult> UpdateAckAsync(
@@ -243,6 +247,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]        
         [Route("Create")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual ActionResult Create([FromBody] TDto dto)
@@ -276,6 +281,7 @@ namespace ServiceBricks
         [HttpPost]
         [Route("")]
         [Route("CreateAsync")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<ActionResult> CreateAsync(
@@ -304,6 +310,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("CreateAck")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual ActionResult CreateAck([FromBody] TDto dto)
@@ -337,6 +344,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("CreateAckAsync")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<ActionResult> CreateAckAsync(
@@ -366,8 +374,7 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="storageKey"></param>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("{storageKey}")]
+        [HttpDelete]        
         [Route("Delete/{storageKey}")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -423,8 +430,8 @@ namespace ServiceBricks
         /// </summary>
         /// <param name="storageKey"></param>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("")]
+        [HttpDelete]        
+        [Route("{storageKey}")]
         [Route("DeleteAsync/{storageKey}")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -449,6 +456,7 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpDelete]
+        [Route("")]
         [Route("DeleteAsync")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -474,6 +482,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("Query")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual ActionResult Query([FromBody] ServiceQueryRequest request)
@@ -502,6 +511,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("QueryAsync")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         public virtual async Task<ActionResult> QueryAsync(
@@ -526,8 +536,7 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <param name="patchDocument"></param>
         /// <returns></returns>
-        [HttpPatch]
-        [Route("{storageKey}")]
+        [HttpPatch]        
         [Route("Patch/{storageKey}")]
         [Consumes("application/json-patch+json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -592,8 +601,8 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <param name="patchDocument"></param>
         /// <returns></returns>
-        [HttpPatch]
-        [Route("")]
+        [HttpPatch]        
+        [Route("{storageKey}")]
         [Route("PatchAsync/{storageKey}")]
         [Consumes("application/json-patch+json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -621,6 +630,7 @@ namespace ServiceBricks
         /// <param name="patchDocument"></param>
         /// <returns></returns>
         [HttpPatch]
+        [Route("")]
         [Route("PatchAsync")]
         [Consumes("application/json-patch+json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]

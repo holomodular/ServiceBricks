@@ -32,23 +32,6 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{storageKey}")]
-        [Route("Get/{storageKey}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
-        public override ActionResult Get([FromRoute] string storageKey)
-        {
-            return base.Get(storageKey);
-        }
-
-        /// <summary>
-        /// Get
-        /// </summary>
-        /// <param name="storageKey"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("")]
         [Route("Get")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -64,6 +47,7 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpGet]
+        [Route("{storageKey}")]
         [Route("GetAsync/{storageKey}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -79,6 +63,7 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpGet]
+        [Route("")]
         [Route("GetAsync")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
@@ -94,8 +79,8 @@ namespace ServiceBricks
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("")]
         [Route("Update")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
@@ -110,7 +95,9 @@ namespace ServiceBricks
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPut]
+        [Route("")]
         [Route("UpdateAsync")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
@@ -126,7 +113,8 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAck")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override ActionResult UpdateAck([FromBody] TDto dto)
@@ -141,7 +129,8 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPut]
         [Route("UpdateAckAsync")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override async Task<ActionResult> UpdateAckAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
@@ -149,16 +138,15 @@ namespace ServiceBricks
             return await base.UpdateAckAsync(dto);
         }
 
-
         /// <summary>
         /// Create
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("")]
         [Route("Create")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [Consumes("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override ActionResult Create([FromBody] TDto dto)
@@ -172,8 +160,10 @@ namespace ServiceBricks
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
+        [Route("")]
         [Route("CreateAsync")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [Consumes("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override async Task<ActionResult> CreateAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
@@ -188,7 +178,8 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("CreateAck")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override ActionResult CreateAck([FromBody] TDto dto)
@@ -203,7 +194,8 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("CreateAckAsync")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.Created)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override async Task<ActionResult> CreateAckAsync([FromBody] TDto dto, CancellationToken cancellationToken = default)
@@ -217,9 +209,8 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("{storageKey}")]
         [Route("Delete/{storageKey}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override ActionResult Delete([FromRoute] string storageKey)
@@ -233,9 +224,8 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("")]
         [Route("Delete")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override ActionResult DeleteFromQuery([FromQuery] string storageKey)
@@ -249,8 +239,9 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpDelete]
+        [Route("{storageKey}")]
         [Route("DeleteAsync/{storageKey}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override async Task<ActionResult> DeleteAsync([FromRoute] string storageKey, CancellationToken cancellationToken = default)
@@ -264,8 +255,9 @@ namespace ServiceBricks
         /// <param name="storageKey"></param>
         /// <returns></returns>
         [HttpDelete]
+        [Route("")]
         [Route("DeleteAsync")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override async Task<ActionResult> DeleteFromQueryAsync([FromQuery] string storageKey, CancellationToken cancellationToken = default)
@@ -280,6 +272,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("Query")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
@@ -295,6 +288,7 @@ namespace ServiceBricks
         /// <returns></returns>
         [HttpPost]
         [Route("QueryAsync")]
+        [Consumes("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
@@ -303,6 +297,7 @@ namespace ServiceBricks
             return await base.QueryAsync(request);
         }
 
+
         /// <summary>
         /// Patch
         /// </summary>
@@ -310,7 +305,6 @@ namespace ServiceBricks
         /// <param name="patchDocument"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("{storageKey}")]
         [Route("Patch/{storageKey}")]
         [Consumes("application/json-patch+json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -330,7 +324,6 @@ namespace ServiceBricks
         /// <param name="patchDocument"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("")]
         [Route("Patch")]
         [Consumes("application/json-patch+json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -351,6 +344,7 @@ namespace ServiceBricks
         /// <param name="patchDocument"></param>
         /// <returns></returns>
         [HttpPatch]
+        [Route("{storageKey}")]
         [Route("PatchAsync/{storageKey}")]
         [Consumes("application/json-patch+json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -371,6 +365,7 @@ namespace ServiceBricks
         /// <param name="patchDocument"></param>
         /// <returns></returns>
         [HttpPatch]
+        [Route("")]
         [Route("PatchAsync")]
         [Consumes("application/json-patch+json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -394,7 +389,7 @@ namespace ServiceBricks
         [HttpPatch]
         [Route("PatchAck/{storageKey}")]
         [Consumes("application/json-patch+json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override ActionResult PatchAck(
@@ -413,7 +408,7 @@ namespace ServiceBricks
         [HttpPatch]
         [Route("PatchAck")]
         [Consumes("application/json-patch+json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override ActionResult PatchAckFromQuery(
@@ -433,7 +428,7 @@ namespace ServiceBricks
         [HttpPatch]
         [Route("PatchAckAsync/{storageKey}")]
         [Consumes("application/json-patch+json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override async Task<ActionResult> PatchAckAsync(
@@ -453,7 +448,7 @@ namespace ServiceBricks
         [HttpPatch]
         [Route("PatchAckAsync")]
         [Consumes("application/json-patch+json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
         [Authorize(Policy = ServiceBricksConstants.SECURITY_POLICY_USER)]
         public override async Task<ActionResult> PatchAckFromQueryAsync(

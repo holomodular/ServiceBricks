@@ -1,4 +1,4 @@
-![ServiceBricks Logo](https://github.com/holomodular/ServiceBricks/blob/main/Logo.png)  
+![ServiceBricks Logo](https://raw.githubusercontent.com/holomodular/ServiceBricks/main/Logo.png) 
 
 [![NuGet version](https://badge.fury.io/nu/ServiceBricks.svg)](https://badge.fury.io/nu/ServiceBricks)
 ![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/holomodular-support/bdb5c7c570a7a88ffb3efb3505273e34/raw/servicebricks-codecoverage.json)

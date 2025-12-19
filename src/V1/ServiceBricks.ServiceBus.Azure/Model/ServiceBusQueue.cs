@@ -2,6 +2,7 @@
 using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Text;
 
 namespace ServiceBricks.ServiceBus.Azure
@@ -69,12 +70,17 @@ namespace ServiceBricks.ServiceBus.Azure
                 try
                 {
                     // Create queue if needed
-                    var existing = existingQueues.Where(x => x.Name == e.FullName).FirstOrDefault();
+                    var existing = existingQueues.Where(x => string.Compare(x.Name, e.FullName, true) == 0).FirstOrDefault();
                     if (existing == null)
-                        _ = await _serviceBusConnection.AdministrationClient.CreateQueueAsync(e.FullName);
+                    {
+                        var respCreate = await _serviceBusConnection.AdministrationClient.CreateQueueAsync(e.FullName);
+                        if(respCreate != null && respCreate.Value != null)
+                            existing = respCreate.Value;
+                    }
 
                     // Start processor
-                    await StartQueueProcessorAsync(e.FullName);
+                    if(existing != null)
+                        await StartQueueProcessorAsync(existing.Name);
                 }
                 catch (Exception ex)
                 {
@@ -192,7 +198,7 @@ namespace ServiceBricks.ServiceBus.Azure
             processor.ProcessMessageAsync +=
                 async (args) =>
                 {
-                    var eventName = $"{args.Message.Subject}";
+                    var eventName = args.Message.Subject;
                     string messageData = args.Message.Body.ToString();
 
                     // Process the message
@@ -213,7 +219,7 @@ namespace ServiceBricks.ServiceBus.Azure
         /// <returns></returns>
         protected virtual Task ErrorHandler(ProcessErrorEventArgs args)
         {
-            _logger.LogError(args.Exception, $"ServiceBus Error: {args.ErrorSource}");
+            _logger.LogError(args.Exception, $"ServiceBus Error: {JsonSerializer.Instance.SerializeObject(args)}");
             return Task.CompletedTask;
         }
 
@@ -226,7 +232,7 @@ namespace ServiceBricks.ServiceBus.Azure
         protected virtual async Task<bool> ProcessBroadcastAsync(string broadcastName, string message)
         {
             // If subscribed to, a reference will be found
-            var type = _businessRuleRegistry.GetKeys().Where(x => x.FullName == broadcastName).FirstOrDefault();
+            var type = _businessRuleRegistry.GetKeys().Where(x => string.Compare(x.FullName, broadcastName, true)==0).FirstOrDefault();
             if (type != null)
             {
                 // Convert to the broadcast type
@@ -241,6 +247,9 @@ namespace ServiceBricks.ServiceBus.Azure
                     return resp.Success;
                 }
             }
+            else
+                _logger.LogWarning($"ServiceBus message {broadcastName} was not handled");
+            
             return true;
         }
     }

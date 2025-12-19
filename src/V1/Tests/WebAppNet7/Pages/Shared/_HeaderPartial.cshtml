@@ -1,13 +1,27 @@
-﻿<header class="layout-header container">
-    <div class="row">
-        <div class="col-md-4">
-            <img src="/Logo.png" alt="ServiceBricks Logo" />            
+﻿ <nav class="navbar navbar-expand-lg navbar-dark py-3">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" href="#">
+            <img src="/Icon.png" width="40" /> ServiceBricks<sup>&reg;</sup>
+            <span class="badge rounded-pill text-bg-dark ms-2 border border-light border-opacity-10">Dev Test Site</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topnav" aria-controls="topnav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="topnav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="#quickstart">Quickstart</a></li>
+                <li class="nav-item"><a class="nav-link" href="#swagger">Swagger</a></li>
+                <li class="nav-item"><a class="nav-link" href="#storage">Storage</a></li>
+                <li class="nav-item"><a class="nav-link" href="#servicequery">ServiceQuery</a></li>
+                <li class="nav-item"><a class="nav-link" href="#usage">Usage</a></li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-primary btn-sm px-3" href="/swagger" target="_blank" rel="noopener">
+                        <i class="bi bi-box-arrow-up-right me-1"></i> Open Swagger
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div class="col-md-4">
-            <strong class="fs-5">Web API Starter Application</strong>
-        </div>
-        <div class="col-md-4">
-            
-        </div>
-    </div>        
-</header>
+    </div>
+</nav>

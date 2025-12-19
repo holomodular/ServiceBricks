@@ -10,11 +10,11 @@ namespace WebApp.Controllers
     [Route("Home")]
     public class HomeController : Controller
     {
-        IApiClient<ExampleDto> _apiClient;
-        public HomeController(IApiClient<ExampleDto> apiClient)
-        {
-            _apiClient = apiClient;
-        }
+        //IApiClient<ExampleDto> _apiClient;
+        //public HomeController(IApiClient<ExampleDto> apiClient)
+        //{
+        //    _apiClient = apiClient;
+        //}
 
         [HttpGet]
         [Route("")]
@@ -26,27 +26,27 @@ namespace WebApp.Controllers
         }
 
 
-        [Route("Test")]
-        public IActionResult Test()
-        {
+        //[Route("Test")]
+        //public IActionResult Test()
+        //{
 
-            var respCreate = _apiClient.Create(new ExampleDto()
-            {
-                Name = "test"
-            });
+        //    var respCreate = _apiClient.Create(new ExampleDto()
+        //    {
+        //        Name = "test"
+        //    });
 
             
 
-            var respQuery = _apiClient.Query(new ServiceQuery.ServiceQueryRequest());
+        //    var respQuery = _apiClient.Query(new ServiceQuery.ServiceQueryRequest());
 
-            respCreate.Item.Name = "test2";
-            var respUpdate = _apiClient.Update(respCreate.Item);
+        //    respCreate.Item.Name = "test2";
+        //    var respUpdate = _apiClient.Update(respCreate.Item);
 
-            var respDelete = _apiClient.Delete(respCreate.Item.StorageKey);
+        //    var respDelete = _apiClient.Delete(respCreate.Item.StorageKey);
 
-            HomeViewModel model = new HomeViewModel();
-            return View("Index", model);
-        }
+        //    HomeViewModel model = new HomeViewModel();
+        //    return View("Index", model);
+        //}
 
 
         [HttpGet]

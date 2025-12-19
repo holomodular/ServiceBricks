@@ -33,7 +33,7 @@ namespace ServiceBricks.Client.Xunit
             var appConfig = serviceProvider.GetRequiredService<IConfiguration>();
             var config = new ConfigurationBuilder()
                 .AddConfiguration(appConfig)
-                .AddInMemoryCollection(new Dictionary<string, string?>
+                .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":ReturnResponseObject", "false" },
                 })
@@ -50,7 +50,7 @@ namespace ServiceBricks.Client.Xunit
             var appConfig = serviceProvider.GetRequiredService<IConfiguration>();
             var config = new ConfigurationBuilder()
                 .AddConfiguration(appConfig)
-                .AddInMemoryCollection(new Dictionary<string, string?>
+                .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     { ServiceBricksConstants.APPSETTING_CLIENT_APIOPTIONS + ":ReturnResponseObject", "true" },
                 })

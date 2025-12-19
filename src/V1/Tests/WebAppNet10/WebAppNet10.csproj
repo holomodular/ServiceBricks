@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ServiceBricks.Storage.EntityFrameworkCore.XunitNet10\ServiceBricks.Storage.EntityFrameworkCore.XunitNet10.csproj" />
+    <ProjectReference Include="..\ServiceBricks.Storage.EntityFrameworkCore.XunitNet10\ServiceBricks.Storage.EntityFrameworkCore.XunitNet10.csproj" />	  
   </ItemGroup>
 
 </Project>

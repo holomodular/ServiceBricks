@@ -1,93 +1,381 @@
-@{
-    ViewBag.Title = "Welcome to ServiceBricks!";
+﻿@{
+    ViewBag.Title = "Welcome to ServiceBricks";
+    ViewBag.Description = "Welcome to ServiceBricks";
+    ViewBag.Keywords = "Welcome to ServiceBricks";
 }
-<h1>Welcome to ServiceBricks!</h1>
-<p>
-    This is the ServiceBricks Web API Starter Application. You can modify this application however you like.
-</p>
-<h2>Test Admin Account</h2>
-<p>
-    In the WebApp.Extensions.ApplicationBuilderExtensions class, a default test admin account is already created for you with the following credentials:
-    <div>Username: unittest@servicebricks.com</div>
-    <div>Password: UnitTest123!@@#</div>
-</p>
-<h2>Using Different Database Engines</h2>
-<p>
-    Change the Program.cs file and change the line:
-    <code>webBuilder.UseStartup&lt;StartupInMemory&gt;();</code>
-    to use the startup class for the database engine you choose.
-    Also make sure to update the appsettings.json file with the correct connection string for your provider under the Storage key.
-</p>
-<h2>ServiceQuery</h2>
-<p>
-    We have developed a companion library called <b>ServiceQuery</b> that allows you to query your microservice data using SQL and NoSQL database engines.
-    Visit <a target="_blank" href="https://ServiceQuery.com">https://ServiceQuery.com</a> to learn more.
-</p>
-<p>
-    By default, all queries use paging and return the first page of 1000 records. Here are a few queries to get you started.
-    <br />
-    This query is the default 1st page of 1000 records:
-    <code>
-        { "filters": [] }
-    </code>
-    <br />
-    This query will include the count of all records along with the 1st page of 5 records per page:
-    <code>
-        { "filters": [ { "filterType": "includecount" },{ "filterType":"pagesize", "values": ["5"] } ] }
-    </code>
-    <br />
-    This query will only return a count of all records. Note: this uses the aggregate response property:
-    <code>
-        { "filters": [ { "filterType": "count" }] }
-    </code>
-    <br />
-    This query will give you records that equals a value:
-    <code>
-        { "filters": [ { "filterType": "equal", "properties":["PropertyName"], "values":["PropertyValue"] }] }
-    </code>
+    <!-- Hero -->
+    <section class="hero glass mb-4">
+      <div class="hero-inner p-4 p-md-5">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-7">
+              <h1 class="purple">Example Microservice</h1>
+            <div class="small-label mb-2">ServiceBricks Web API Starter Application</div>
+            <h2 class="display-6 fw-semibold mb-3">
+              Your microservice is running.
+              <span class="d-block muted fw-normal mt-2">Swagger, auth, storage providers, and ServiceQuery—ready for development.</span>
+            </h2>
 
-</p>
-<h2>Swagger</h2>
-<p>
-    To obtain a bearer token for use with swagger, call the <b>AuthenticationApi.AuthenticateUser method</b>.
-    <br />
-    Note: You can also use Postman and post the to the following url:
-    <b>https://localhost:7000/api/v1.0/Security/Authentication/AuthenticateUser</b>
-</p>
-<p>
-    <ol>
-        <li>Copy and paste the code below and add to the <b>AuthenticationApi.AuthenticateUser method</b> and click Execute.
-        <br/>
-            <code>
-                {
-                "client_id": "unittest@servicebricks.com",
-                "grant_type": "password",
-                "client_secret": "UnitTest123!@@#"
-                }
-            </code>
-        </li>
-        <li>
-            Copy the "access_token" from the response, you will use this next.
-        </li>
-        <li>
-            At the top of the swagger page, click the Authorize button with the open lock icon. Paste the value from the access_token into the value textbox and click the Authorize button and then the Close button.
-            The button when now display with a closed lock icon.
-        </li>
-        <li>
-            You can now access all methods of the ServiceBricks API as an Admin user.
-        </li>
-    </ol>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <span class="chip"><i class="bi bi-shield-lock"></i> JWT Security</span>
+              <span class="chip"><i class="bi bi-layers"></i> Multi-Provider Storage</span>
+              <span class="chip"><i class="bi bi-braces-asterisk"></i> REST + Query</span>
+              <span class="chip"><i class="bi bi-speedometer2"></i> Test Harness Friendly</span>
+            </div>
 
-</p>
-<p>
+            <div class="d-flex flex-wrap gap-2">
+              <a class="btn btn-primary px-4" href="/swagger" target="_blank" rel="noopener">
+                <i class="bi bi-box-arrow-up-right me-2"></i>Launch Swagger
+              </a>
+              <a class="btn btn-outline-light px-4" href="#quickstart">
+                <i class="bi bi-play-circle me-2"></i>Quickstart
+              </a>
+            </div>
 
-</p>
-<p>
-    <a href="/swagger" target="_blank">View Swagger Page</a>
-</p>
-<h2>About ServiceBricks</h2>
-<p>
-    Please visit our website at <a href="https://ServiceBricks.com" target="_blank">https://ServiceBricks.com</a> to learn more.
-    ServiceBricks is a product by <a href="https://HoloModular.com" target="_blank">HoloModular LLC</a>
-</p>
+            <div class="mt-4 muted">
+              <span class="me-2"><i class="bi bi-link-45deg"></i></span>
+              <a href="https://ServiceBricks.com" target="_blank" rel="noopener">ServiceBricks.com</a>
+              <span class="mx-2">•</span>
+                    <a href="https://ServiceQuery.com" target="_blank" rel="noopener">ServiceQuery.com</a>
+                    <span class="mx-2">•</span>
+              <a href="https://HoloModular.com" target="_blank" rel="noopener">HoloModular LLC</a>
+            </div>
+          </div>
 
+          <div class="col-lg-5">
+            <div class="glass rounded-4 p-3 p-md-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="fw-semibold"><i class="bi bi-terminal me-2"></i>Status</div>
+                <span class="badge rounded-pill text-bg-success bg-opacity-75">Online</span>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="p-3 rounded-4 border border-light border-opacity-10" style="background: rgba(0,0,0,.18);">
+                    <div class="small-label">Base URL</div>
+                    <div class="mt-1"><span class="kbd" id="baseUrl">https://localhost:7000</span></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="p-3 rounded-4 border border-light border-opacity-10" style="background: rgba(0,0,0,.18);">
+                    <div class="small-label">Swagger</div>
+                    <div class="mt-1 d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                      <span class="kbd">/swagger</span>
+                      <a class="btn btn-sm btn-outline-light" href="/swagger" target="_blank" rel="noopener">
+                        Open <i class="bi bi-arrow-right ms-1"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="alert alert-soft mt-3 mb-0 rounded-4">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span class="fw-semibold">Developer note:</span> This landing page ships with the test website to guide local development and integration testing.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart / Admin -->
+    <section id="quickstart" class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="glass rounded-4 p-4 h-100">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="h5 mb-0"><i class="bi bi-person-badge me-2"></i>Test Admin Account</h2>
+            <span class="badge rounded-pill text-bg-dark border border-light border-opacity-10">Created automatically</span>
+          </div>
+          <p class="muted mb-3">
+            In <span class="kbd">WebApp.Extensions.ApplicationBuilderExtensions</span>, a default test admin account is created for you.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="p-3 rounded-4 border border-light border-opacity-10" style="background: rgba(0,0,0,.18);">
+                <div class="small-label">Username</div>
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                  <span class="kbd" id="adminUser">unittest@servicebricks.com</span>
+                  <button class="btn btn-sm btn-outline-light" type="button" data-copy="#adminUser">
+                    <i class="bi bi-clipboard me-1"></i>Copy
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="p-3 rounded-4 border border-light border-opacity-10" style="background: rgba(0,0,0,.18);">
+                <div class="small-label">Password</div>
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                  <span class="kbd" id="adminPass">UnitTest123!@@#</span>
+                  <button class="btn btn-sm btn-outline-light" type="button" data-copy="#adminPass">
+                    <i class="bi bi-clipboard me-1"></i>Copy
+                  </button>
+                </div>
+                <div class="muted mt-2 small">
+                  Don’t use this in production. Replace with your own identity strategy and secrets management.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 small muted" id="copyToast" style="display:none;">
+            <i class="bi bi-check2-circle me-1"></i>Copied to clipboard.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="glass rounded-4 p-4 h-100">
+          <h2 class="h5 mb-3"><i class="bi bi-rocket-takeoff me-2"></i>Recommended next steps</h2>
+          <ol class="list-tight muted mb-0">
+            <li>Open <a href="/swagger" target="_blank" rel="noopener">Swagger</a> and confirm endpoints load.</li>
+            <li>Authenticate to get a bearer token (see below) and authorize Swagger.</li>
+            <li>Pick a storage provider startup class and set your connection string.</li>
+            <li>Use ServiceQuery examples to validate paging, count, and filters.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Storage -->
+    <section id="storage" class="mb-4">
+      <div class="glass rounded-4 p-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <h2 class="h5 mb-0"><i class="bi bi-database me-2"></i>Using Different Database Engines</h2>
+          <span class="chip"><i class="bi bi-gear"></i> Program.cs + appsettings.json</span>
+        </div>        
+        <p class="muted mb-3">
+            By default, this web application uses the <span class="kbd">InMemory</span> database provider. Any changes made will be lost when the application terminates. Change your startup class in <span class="kbd">Program.cs</span> to the provider you want, and update the connection string under the Storage key in <span class="kbd">appsettings.json</span>.
+        </p>
+
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="small-label mb-2">Examples</div>
+            <pre class="codeblock">
+webBuilder.UseStartup&lt;StartupInMemory&gt;();
+webBuilder.UseStartup&lt;StartupAzureDataTables&gt;();
+webBuilder.UseStartup&lt;StartupCosmos&gt;();
+webBuilder.UseStartup&lt;StartupMongoDb&gt;();
+webBuilder.UseStartup&lt;StartupPostgres&gt;();
+webBuilder.UseStartup&lt;StartupSqlite&gt;();
+webBuilder.UseStartup&lt;StartupSqlServer&gt;();
+                </pre>
+          </div>
+          <div class="col-lg-6">
+            <div class="small-label mb-2">Tip</div>
+            <div class="p-3 rounded-4 border border-light border-opacity-10" style="background: rgba(0,0,0,.18);">
+              <div class="muted">
+                        Keep local providers fast for unit/integration tests (e.g., InMemory/SQLite), and switch to cloud providers for full environment validation. Switch your storage provider with only one line of code.
+              </div>                    
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ServiceQuery -->
+    <section id="servicequery" class="mb-4">
+      <div class="glass rounded-4 p-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <h2 class="h5 mb-0"><i class="bi bi-search me-2"></i>ServiceQuery<sup>&reg;</sup></h2>
+          <a class="btn btn-sm btn-outline-light" href="https://ServiceQuery.com" target="_blank" rel="noopener">
+            Visit ServiceQuery.com <i class="bi bi-box-arrow-up-right ms-1"></i>
+          </a>
+        </div>
+
+        <p class="muted">
+            ServiceQuery<sup>&reg;</sup> is our companion library that enables querying your microservice data across all database providers.
+          By default, queries use paging and return the first page of <span class="kbd">1000</span> records.
+            Visit <a target="_blank" href="https://ServiceQuery.com/GetStarted">https://ServiceQuery.com/GetStarted</a> for more complex query building examples and the full list of available filters.
+        </p>
+
+        <div class="row g-3">
+          <div class="col-lg-6">
+                <div class="small-label mb-2">Default (page 1, 1000 records) <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q1"><i class="bi bi-clipboard me-1"></i>Copy Default</button></div>
+            <pre class="codeblock" id="q1">{ "filters": [] }</pre>
+          </div>
+          <div class="col-lg-6">
+                <div class="small-label mb-2">Include count (with records) <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q2"><i class="bi bi-clipboard me-1"></i>Copy Include Count</button></div>
+            <pre class="codeblock" id="q2">{ "filters": [ { "filterType": "includecount" } ] }</pre>
+          </div>
+          <div class="col-lg-6">
+                <div class="small-label mb-2">Count only (aggregate with no records) <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q3"><i class="bi bi-clipboard me-1"></i>Copy Count</button></div>
+            <pre class="codeblock" id="q3">{ "filters": [ { "filterType": "count" }] }</pre>
+          </div>
+          <div class="col-lg-6">
+                <div class="small-label mb-2">Equal filter <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q4"><i class="bi bi-clipboard me-1"></i>Copy Equal</button></div>
+            <pre class="codeblock" id="q4">{ "filters": [ { "filterType": "=", "properties":["PropertyName"], "values":["PropertyValue"] }] }</pre>
+          </div>
+            <div class="col-lg-6">
+                <div class="small-label mb-2">Greater Than filter <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q6"><i class="bi bi-clipboard me-1"></i>Copy Greater Than</button></div>
+                <pre class="codeblock" id="q6">{ "filters": [ { "filterType": ">", "properties":["PropertyName"], "values":["PropertyValue"] }] }</pre>
+            </div>
+            <div class="col-lg-6">
+                <div class="small-label mb-2">Less Than or Equal filter <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q7"><i class="bi bi-clipboard me-1"></i>Copy Less Than or Equal</button></div>
+                <pre class="codeblock" id="q7">{ "filters": [ { "filterType": "<=", "properties":["PropertyName"], "values":["PropertyValue"] }] }</pre>
+            </div>
+            <div class="col-lg-6">
+                <div class="small-label mb-2">StartsWith filter (string) <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q8"><i class="bi bi-clipboard me-1"></i>Copy StartsWith</button></div>
+                <pre class="codeblock" id="q8">{ "filters": [ { "filterType": "startswith", "properties":["PropertyName"], "values":["PropertyValue"] }] }</pre>
+            </div>
+            <div class="col-lg-6">
+                <div class="small-label mb-2">Contains filter (string) <button class="btn btn-sm btn-outline-light" type="button" data-copy="#q10"><i class="bi bi-clipboard me-1"></i>Copy Contains</button></div>
+                <pre class="codeblock" id="q10">{ "filters": [ { "filterType": "contains", "properties":["PropertyName"], "values":["PropertyValue"] }] }</pre>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">          
+            Note: When working with DateTime and DateTimeOffset values, use <span class="kbd">.ToString("o")</span> to ensure proper round-trip serialization.
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- Swagger -->
+    <section id="swagger" class="mb-4">
+      <div class="glass rounded-4 p-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <h2 class="h5 mb-0"><i class="bi bi-braces me-2"></i>Swagger Authentication</h2>
+          <a class="btn btn-sm btn-primary" href="/swagger" target="_blank" rel="noopener">
+            <i class="bi bi-box-arrow-up-right me-1"></i>View Swagger
+          </a>
+        </div>
+
+        <p class="muted mb-3">
+          To obtain a bearer token for use with Swagger, call the <span class="kbd">AuthenticationApi.AuthenticateUserAsync</span> method.
+          You can also use Postman to POST to:
+          <span class="kbd">https://localhost:7000/api/v1.0/Security/Authentication/AuthenticateUserAsync</span>
+        </p>
+
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="small-label mb-2">Request Body</div>
+            <pre class="codeblock" id="authBody">{
+  "client_id": "unittest@servicebricks.com",
+  "grant_type": "password",
+  "client_secret": "UnitTest123!@@#"
+}</pre>
+            <button class="btn btn-sm btn-outline-light mt-2" type="button" data-copy="#authBody">
+              <i class="bi bi-clipboard me-1"></i>Copy JSON
+            </button>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="small-label mb-2">Steps</div>
+            <ol class="list-tight muted mb-0">
+              <li>Execute <span class="kbd">AuthenticateUserAsync</span> to get a token response.</li>
+              <li>Copy the <span class="kbd">access_token</span> value.</li>
+              <li>In Swagger, click <span class="kbd">Authorize</span> (open lock), paste token, and authorize.</li>
+              <li>The lock icon closes — you now have Admin access to secured endpoints.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<!-- Usage -->
+<section id="usage" class="mb-4">
+    <div class="glass rounded-4 p-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <h2 class="h5 mb-0"><i class="bi bi-code-slash me-2"></i>Using ServiceBricks in Your Web App</h2>
+            <span class="chip"><i class="bi bi-plug"></i> DI + API Services</span>
+        </div>
+
+        <p class="muted mb-3">
+            ServiceBricks API services are designed to be easy to use from any ASP.NET Core app.
+            Just inject the <span class="kbd">IApiService</span> (or a specific service interface) you want, then call methods like
+            <span class="kbd">Create</span>, <span class="kbd">Get</span>, <span class="kbd">Update</span>, <span class="kbd">Patch</span>, <span class="kbd">Validate</span>, and more.
+        </p>
+
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="small-label mb-2">Example: Inject a Service and Create a Record</div>
+                <pre class="codeblock" id="usageCode">public class HomeController : Controller
+{
+    private readonly ILogMessageApiService _service;
+
+    public HomeController(ILogMessageApiService service)
+    {
+        _service = service;
+
+        // Create a record (sync example)
+        _service.Create(new ServiceBricks.Logging.LogMessageDto
+        {
+            // set any properties you want here
+        });
+    }
+}</pre>
+                <button class="btn btn-sm btn-outline-light mt-2" type="button" data-copy="#usageCode">
+                    <i class="bi bi-clipboard me-1"></i>Copy Code
+                </button>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="small-label mb-2">Why it feels seamless</div>
+                <div class="p-3 rounded-4 border border-light border-opacity-10" style="background: rgba(0,0,0,.18);">
+                    <ul class="list-tight muted mb-0">
+                        <li><span class="fw-semibold text-white">Same service calls</span> regardless of your configured storage provider.</li>
+                        <li>Swap providers by changing your startup class and connection string.</li>
+                        <li>Use sync or async methods based on your app’s needs.</li>
+                        <li>Everything stays consistent across environments (local, test, cloud).</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-soft mt-3 mb-0 rounded-4">
+                    <i class="bi bi-arrow-repeat me-2"></i>
+                    Configure a different storage provider — your controller/service code stays the same.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- About -->
+    <section class="mb-4">
+      <div class="glass rounded-4 p-4">
+        <h2 class="h5 mb-2"><i class="bi bi-info-circle me-2"></i>About ServiceBricks<sup>&reg;</sup></h2>
+        <p class="muted mb-0">
+          Learn more at <a href="https://ServiceBricks.com" target="_blank" rel="noopener">ServiceBricks.com</a>.
+          ServiceBricks is a product by <a href="https://HoloModular.com" target="_blank" rel="noopener">HoloModular LLC</a>.
+        </p>
+      </div>
+    </section>
+  
+
+@section Scripts
+{
+    <script>
+        // Set base URL text
+        (function(){
+          try {
+            const origin = window.location.origin || "";
+            if (origin) document.getElementById("baseUrl").textContent = origin;
+          } catch (e) { /* ignore */ }
+          document.getElementById("year").textContent = new Date().getFullYear();
+        })();
+
+        // Copy-to-clipboard helper
+        $(document).on("click", "[data-copy]", async function () {
+          const selector = $(this).attr("data-copy");
+          const el = document.querySelector(selector);
+          if (!el) return;
+
+          const text = (el.innerText || el.textContent || "").trim();
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch (e) {
+            // Fallback
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+          }
+
+          $("#copyToast").stop(true,true).fadeIn(120).delay(900).fadeOut(250);
+        });
+    </script>
+}
