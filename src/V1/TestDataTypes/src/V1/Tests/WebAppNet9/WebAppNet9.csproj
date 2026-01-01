@@ -16,12 +16,12 @@
   <ItemGroup>
 	  <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.11" />
-	  <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
-	  <PackageReference Include="ServiceBricks.Core" Version="1.4.0-e" />
-	  <PackageReference Include="ServiceBricks.Cache.Microservice" Version="1.4.0-e" />
-      <PackageReference Include="ServiceBricks.Logging.Microservice" Version="1.4.0-e" />
-      <PackageReference Include="ServiceBricks.Notification.Microservice" Version="1.4.0-e" />
-	  <PackageReference Include="ServiceBricks.Security.Microservice" Version="1.4.0-e" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+	  <PackageReference Include="ServiceBricks.Core" Version="1.4.0" />
+	  <PackageReference Include="ServiceBricks.Cache.Microservice" Version="1.4.0" />
+      <PackageReference Include="ServiceBricks.Logging.Microservice" Version="1.4.0" />
+      <PackageReference Include="ServiceBricks.Notification.Microservice" Version="1.4.0" />
+	  <PackageReference Include="ServiceBricks.Security.Microservice" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

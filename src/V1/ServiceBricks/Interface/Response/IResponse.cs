@@ -50,5 +50,10 @@
         /// <param name="seperator"></param>
         /// <returns></returns>
         string GetMessage(string seperator);
+
+        /// <summary>
+        /// Scrub the response to remove any sensitive system errors.
+        /// </summary>
+        void Scrub();
     }
 }

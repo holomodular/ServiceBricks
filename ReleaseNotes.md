@@ -1,3 +1,6 @@
+# 1.4.0
+- Rollup Release
+
 # 1.4.0-e
 - Fixes for Azure ServiceBus Queue and Topics
 - Async API methods as canonical

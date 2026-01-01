@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Version>1.4.0-e</Version>
+		<Version>1.4.0</Version>
 		<Description>The open source microservices platform. Visit https://ServiceBricks.com to learn more.</Description>
 		<PackageId>ServiceBricks.Storage.EntityFrameworkCore</PackageId>
 		<Title>ServiceBricks.Storage.EntityFrameworkCore</Title>
@@ -38,7 +38,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>		
-		<PackageReference Include="ServiceQuery.EntityFrameworkCore" Version="2.2.3" />
+		<PackageReference Include="ServiceQuery.EntityFrameworkCore" Version="2.2.4" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">

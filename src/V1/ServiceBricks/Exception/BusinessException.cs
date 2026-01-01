@@ -1,4 +1,6 @@
-﻿namespace ServiceBricks
+﻿using System.Text;
+
+namespace ServiceBricks
 {
     /// <summary>
     /// This is the base exception for all managed exceptions in the platform.
@@ -180,17 +182,75 @@
             }
         }
 
+        /// <summary>
+        /// Get all the messages as a string
+        /// </summary>
+        /// <param name="seperator"></param>
+        /// <returns></returns>
         public virtual string GetMessage(string seperator)
         {
-            if (_messages != null && _messages.Count > 0)
-                return string.Join(seperator, _messages.Select(x => x.ToString()));
-            if (Error)
+            if (_messages == null || _messages.Count == 0)
             {
-                if (!string.IsNullOrEmpty(Message))
-                    return Message;
-                return "Error";
+                if (Error)
+                    return "Error";
+                return "Success";
             }
-            return "Success";
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var message in _messages)
+            {
+                sb.Append(Enum.GetName(typeof(ResponseSeverity), message.Severity));
+                sb.Append(": ");
+                sb.Append(message.Message);
+                if (message.Fields != null && message.Fields.Count > 0)
+                {
+                    sb.Append(" Fields: ");
+                    sb.Append(string.Join(",", message.Fields));
+                }
+                sb.Append(seperator);
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Scrub the response to remove any sensitive system errors.
+        /// </summary>
+        public virtual void Scrub()
+        {
+            if (_messages == null)
+            {
+                if (Error)
+                {
+                    _messages = new List<IResponseMessage>()
+                    {
+                        new ResponseMessage()
+                        {
+                            Severity = ResponseSeverity.Error,
+                            Message = LocalizationResource.ERROR_SYSTEM
+                        }
+                    };
+                }
+                return;
+            }
+
+            for (int i = 0; i < _messages.Count; i++)
+            {
+                if (_messages[i].Severity == ResponseSeverity.ErrorSystemSensitive)
+                {
+                    _messages.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+            }
+
+            if (Error && !_messages.Any(x => x.Severity == ResponseSeverity.Error))
+            {
+                _messages.Add(new ResponseMessage()
+                {
+                    Severity = ResponseSeverity.Error,
+                    Message = LocalizationResource.ERROR_SYSTEM
+                });
+            }
         }
     }
 }

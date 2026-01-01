@@ -139,17 +139,16 @@ namespace ServiceBricks
         /// <returns></returns>
         public virtual string GetMessage(string seperator)
         {
-            if (_messages == null && _messages.Count == 0)
+            if (_messages == null || _messages.Count == 0)
             {
                 if (Error)
                     return "Error";
                 return "Success";
             }
 
-            string outputMessage = string.Empty;
+            StringBuilder sb = new StringBuilder();
             foreach (var message in _messages)
-            {
-                StringBuilder sb = new StringBuilder();
+            {                
                 sb.Append(Enum.GetName(typeof(ResponseSeverity), message.Severity));
                 sb.Append(": ");
                 sb.Append(message.Message);
@@ -158,10 +157,9 @@ namespace ServiceBricks
                     sb.Append(" Fields: ");
                     sb.Append(string.Join(",", message.Fields));
                 }
-                sb.Append(seperator);
-                outputMessage += sb.ToString();
+                sb.Append(seperator);                
             }
-            return outputMessage;
+            return sb.ToString();
         }
 
         /// <summary>
