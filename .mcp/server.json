@@ -4,6 +4,7 @@
   "title": "ServiceBricks",
   "description": "Generate a ServiceBricks C# .NET microservice as a ZIP file.",
   "version": "0.1.0",
+  "websiteUrl": "https://servicebricks.com",
   "repository": {
     "url": "https://github.com/holomodular/ServiceBricks",
     "source": "github"
