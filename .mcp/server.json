@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.holomodular/servicebricks",
+  "title": "ServiceBricks",
+  "description": "Generate a ServiceBricks C# .NET microservice as a ZIP file.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/holomodular/ServiceBricks",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://servicebricks.com/api/mcp"
+    }
+  ]
+}
