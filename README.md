@@ -11,6 +11,12 @@
 [ServiceBricks](https://ServiceBricks.com) is a powerful open-source microservices platform designed to streamline the development, deployment, and maintenance of distributed systems with artificial intelligence. 
 Leveraging Domain-Driven Design (DDD), Event-Driven Architecture (EDA), and a host of advanced features, ServiceBricks empowers teams to create scalable, customizable services tailored to specific business domains.
 
+## MCP Server
+ServiceBricks is available as a hosted MCP server (Model Context Protocol).
+
+**Server ID (Official MCP Registry):** io.github.holomodular/servicebricks  
+**Endpoint (Streamable HTTP):** https://servicebricks.com/api/mcp
+
 ## Why ServiceBricks?
 
 * **FREE:** MIT-licensed, ServiceBricks offers advanced technology as a secure foundation for anyone to build on.
